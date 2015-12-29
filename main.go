@@ -1,9 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	ui "github.com/gizak/termui"
+	"os"
+	"strings"
+	"time"
 	//jira "github.com/mikepea/go-jira"
+	"jira"
 )
 
 const (
@@ -36,59 +41,32 @@ func nextQuery(n int) {
 	querySelected = querySelected + n
 }
 
-var origQueries = []string{
-	"[0] [My Tickets]",
-	"[1] [My Watched Tickets]",
-	"[2] [unlabelled]",
-	"[3] [Ops]",
+type Query struct {
+	Name string
+	JQL  string
+}
+
+var origQueries = []Query{
+	Query{"My Tickets", "--project OPS AND owner = 'mikepea'"},
+	Query{"My Watched Tickets", "--project OPS AND watcher = 'mikepea'"},
+	Query{"unlabelled", "--project OPS AND labels IS EMPTY"},
+	Query{"Ops Queue", "--project OPS"},
 }
 
 var queries = []string{
-	"[0] [My Tickets]",
-	"[1] [My Watched Tickets]",
-	"[2] [unlabelled]",
-	"[3] [Ops]",
-}
-
-var origTickets = []string{
-	"[0] [github.com/gizak/ui]",
-	"[1] [你好，世界]",
-	"[2] [こんにちは世界]",
-	"[3] [color output]",
-	"[4] [output.go]",
-	"[5] [random_out.go]",
-	"[6] [dashboard.go]",
-	"[7] [nsf/termbox-go]",
-}
-
-var tickets = []string{
-	"[0] [github.com/gizak/ui]",
-	"[1] [你好，世界]",
-	"[2] [こんにちは世界]",
-	"[3] [color output]",
-	"[4] [output.go]",
-	"[5] [random_out.go]",
-	"[6] [dashboard.go]",
-	"[7] [nsf/termbox-go]",
-}
-
-func markActiveTicket() {
-	for i, v := range origTickets {
-		if i == ticketSelected {
-			tickets[i] = v + "(fg-white,bg-blue)"
-		} else {
-			tickets[i] = v + "()"
-		}
-	}
+	"My Tickets",
+	"My Watched Tickets",
+	"unlabelled",
+	"OPS queue",
 }
 
 func markActiveQuery() {
 	for i, v := range origQueries {
+		selected := ""
 		if i == querySelected {
-			queries[i] = v + "(fg-white,bg-blue)"
-		} else {
-			queries[i] = v + "()"
+			selected = "fg-white,bg-blue"
 		}
+		queries[i] = fmt.Sprintf("[%s](%s)", v.Name, selected)
 	}
 }
 
@@ -98,12 +76,7 @@ func updateQueries(ls *ui.List) {
 	ui.Render(ls)
 }
 
-func updateTickets(ls *ui.List) {
-	markActiveTicket()
-	ls.Items = tickets
-	ui.Render(ls)
-}
-
+/*
 func nextPage() {
 	if currentPage == ticketList {
 		currentPage = ticketShow
@@ -114,6 +87,7 @@ func nextPage() {
 	}
 	ui.StopLoop()
 }
+*/
 
 func handleTicketQueryPage() {
 
@@ -145,86 +119,72 @@ func handleTicketQueryPage() {
 		prevQuery(1)
 		updateQueries(ls)
 	})
-	ui.Handle("/sys/kbd/n", func(ui.Event) {
-		nextPage()
-	})
 
 	ui.Loop()
 
 }
 
-func handleTicketListPage() {
+func getJiraOpts() map[string]interface{} {
 
-	err := ui.Init()
-	if err != nil {
-		panic(err)
+	user := os.Getenv("USER")
+	home := os.Getenv("HOME")
+	defaultQueryFields := "summary,created,updated,priority,status,reporter,assignee"
+	defaultSort := "priority asc, created"
+	defaultMaxResults := 500
+
+	defaults := map[string]interface{}{
+		"user":        user,
+		"endpoint":    os.Getenv("JIRA_ENDPOINT"),
+		"queryfields": defaultQueryFields,
+		"directory":   fmt.Sprintf("%s/.jira.d/templates", home),
+		"sort":        defaultSort,
+		"max_results": defaultMaxResults,
+		"method":      "GET",
+		"quiet":       false,
 	}
-	defer ui.Close()
-
-	ls := ui.NewList()
-	ls.Items = tickets
-	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = "List"
-	ls.Height = 10
-	ls.Width = 80
-	ls.Y = 0
-	markActiveTicket()
-	ui.Render(ls)
-
-	ui.Handle("/sys/kbd/q", func(ui.Event) {
-		ui.StopLoop()
-		exitNow = true
-	})
-	ui.Handle("/sys/kbd/j", func(ui.Event) {
-		nextTicket(1)
-		updateTickets(ls)
-	})
-	ui.Handle("/sys/kbd/k", func(ui.Event) {
-		prevTicket(1)
-		updateTickets(ls)
-	})
-	ui.Handle("/sys/kbd/n", func(ui.Event) {
-		nextPage()
-	})
-	ui.Loop()
-
+	//opts := make(map[string]interface{})
+	return defaults
 }
 
-func handleTicketShowPage() {
+func runJiraQuery(query string) (interface{}, error) {
+	opts := getJiraOpts()
+	opts["query"] = query
+	c := jira.New(opts)
+	return c.FindIssues()
+}
 
-	fmt.Println("TicketShow!")
-	err := ui.Init()
-	if err != nil {
-		panic(err)
-	}
-	defer ui.Close()
-	ui.Handle("/sys/kbd/q", func(ui.Event) {
-		ui.StopLoop()
-		exitNow = true
-	})
-	ui.Handle("/sys/kbd/j", func(ui.Event) {
-	})
-	ui.Handle("/sys/kbd/k", func(ui.Event) {
-	})
-	ui.Handle("/sys/kbd/n", func(ui.Event) {
-		nextPage()
-	})
-	ui.Loop()
-
+func JiraQueryAsStrings(query string) []string {
+	opts := getJiraOpts()
+	opts["query"] = query
+	c := jira.New(opts)
+	data, _ := c.FindIssues()
+	buf := new(bytes.Buffer)
+	jira.RunTemplate(c.GetTemplate("list"), data, buf)
+	return strings.Split(buf.String(), "\n")
 }
 
 func main() {
 
+	opts := getJiraOpts()
+	c := jira.New(opts)
+
+	// check to see if we can run a query, otherwise force a login
+	// TODO: make this quicker somehow
+	if _, err := runJiraQuery("assignee = 'mikepea' AND resolution = Unresolved"); err != nil {
+		//fmt.Println(err)
+		c.CmdLogin()
+	}
+
+	lines := JiraQueryAsStrings("assignee = 'mikepea' AND resolution = Unresolved")
+	fmt.Println(lines)
+
+	// debug pause
+	//time.Sleep(2 * time.Millisecond)
+	time.Sleep(5 * time.Second)
+
 	for exitNow != true {
 
-		switch {
-		case currentPage == ticketQuery:
-			handleTicketQueryPage()
-		case currentPage == ticketList:
-			handleTicketListPage()
-		case currentPage == ticketShow:
-			handleTicketShowPage()
-		}
+		handleTicketQueryPage()
 
 	}
 
