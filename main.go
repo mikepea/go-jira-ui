@@ -35,26 +35,43 @@ var activeTicketShowList *ui.List
 
 func prevTicketLine(n int) {
 	ticketShowLineSelected = ticketShowLineSelected - n
+	if ticketShowLineSelected < 0 {
+		ticketShowLineSelected = 0
+	}
 }
 
 func nextTicketLine(n int) {
-	ticketShowLineSelected = ticketShowLineSelected + n
+	if ticketShowLineSelected < len(currentTicketShowCache)-n {
+		ticketShowLineSelected = ticketShowLineSelected + n
+	} else {
+		ticketShowLineSelected = len(currentTicketShowCache) - 1
+	}
 }
 
 func prevTicket(n int) {
 	ticketSelected = ticketSelected - n
+	if ticketSelected < 0 {
+		ticketSelected = 0
+	}
 }
 
 func nextTicket(n int) {
-	ticketSelected = ticketSelected + n
+	if ticketSelected < len(currentTicketListCache)-1 {
+		ticketSelected = ticketSelected + n
+	}
 }
 
 func prevQuery(n int) {
 	querySelected = querySelected - n
+	if querySelected < 0 {
+		querySelected = 0
+	}
 }
 
 func nextQuery(n int) {
-	querySelected = querySelected + n
+	if querySelected < len(origQueries)-1 {
+		querySelected = querySelected + n
+	}
 }
 
 type Query struct {
@@ -217,7 +234,7 @@ func JiraQueryAsStrings(query string) []string {
 	data, _ := c.FindIssues()
 	buf := new(bytes.Buffer)
 	jira.RunTemplate(c.GetTemplate("list"), data, buf)
-	return strings.Split(buf.String(), "\n")
+	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
 func JiraTicketAsStrings(id string) []string {
@@ -226,7 +243,7 @@ func JiraTicketAsStrings(id string) []string {
 	data, _ := c.ViewIssue(id)
 	buf := new(bytes.Buffer)
 	jira.RunTemplate(c.GetTemplate("view"), data, buf)
-	return strings.Split(buf.String(), "\n")
+	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
 func updateQueryPage(ls *ui.List) {
