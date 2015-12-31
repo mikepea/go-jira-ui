@@ -3,12 +3,11 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/Netflix-Skunkworks/go-jira"
 	ui "github.com/gizak/termui"
 	"github.com/op/go-logging"
 	"os"
 	"strings"
-	//jira "github.com/mikepea/go-jira"
-	"jira"
 )
 
 const (
