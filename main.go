@@ -6,8 +6,6 @@ import (
 	ui "github.com/gizak/termui"
 	"github.com/op/go-logging"
 	"os"
-	"os/exec"
-	"strconv"
 	"strings"
 	//jira "github.com/mikepea/go-jira"
 	"jira"
@@ -18,9 +16,6 @@ const (
 	ticketList  = 2
 	ticketShow  = 3
 )
-
-var uiWidth int = 80
-var uiHeight int = 24
 
 var exitNow = false
 
@@ -128,8 +123,8 @@ func handleTicketQueryPage() {
 	ls.Items = displayQueries
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "List"
-	ls.Height = uiHeight
-	ls.Width = uiWidth
+	ls.Height = ui.TermHeight()
+	ls.Width = ui.TermWidth()
 	ls.Y = 0
 	activeQueryList = ls
 	markActiveQuery()
@@ -147,8 +142,8 @@ func handleTicketListPage() {
 	ls.Items = displayTickets
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = fmt.Sprintf("%s: %s", queryName, queryJQL)
-	ls.Height = uiHeight
-	ls.Width = uiWidth
+	ls.Height = ui.TermHeight()
+	ls.Width = ui.TermWidth()
 	ls.Y = 0
 	activeTicketListList = ls
 	markActiveTicket()
@@ -169,8 +164,8 @@ func handleTicketShowPage() {
 	ls.Items = displayTicketShow
 	ls.ItemFgColor = ui.ColorYellow
 	ls.Border = false
-	ls.Height = uiHeight
-	ls.Width = uiWidth
+	ls.Height = ui.TermHeight()
+	ls.Width = ui.TermWidth()
 	ls.Overflow = "wrap"
 	ls.Y = 0
 	activeTicketShowList = ls
@@ -287,7 +282,6 @@ func handleBackKey() {
 }
 
 func handleResize() {
-	setTerminalSize()
 	changePage()
 }
 
@@ -336,23 +330,7 @@ var (
 	format = "%{color}%{time:2006-01-02T15:04:05.000Z07:00} %{level:-5s} [%{shortfile}]%{color:reset} %{message}"
 )
 
-func setTerminalSize() {
-	cmd := exec.Command("stty", "size")
-	cmd.Stdin = os.Stdin
-	if out, err := cmd.Output(); err == nil {
-		trimOut := strings.TrimSpace(string(out))
-		h, err1 := strconv.Atoi(strings.Split(trimOut, " ")[0])
-		w, err2 := strconv.Atoi(strings.Split(trimOut, " ")[1])
-		if err1 == nil && err2 == nil {
-			uiHeight = h
-			uiWidth = w
-		}
-	}
-}
-
 func main() {
-
-	setTerminalSize()
 
 	opts := getJiraOpts()
 
