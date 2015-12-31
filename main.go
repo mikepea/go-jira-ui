@@ -194,7 +194,7 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/k", func(ui.Event) {
 		handleUpKey()
 	})
-	ui.Handle("/sys/kbd/l", func(ui.Event) {
+	ui.Handle("/sys/kbd/<enter>", func(ui.Event) {
 		handleSelectKey()
 	})
 }
