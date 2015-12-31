@@ -25,8 +25,10 @@ func prevTicket(n int) {
 }
 
 func nextTicket(n int) {
-	if ticketListLineSelected < len(currentTicketListCache)-1 {
+	if ticketListLineSelected < len(currentTicketListCache)-n {
 		ticketListLineSelected = ticketListLineSelected + n
+	} else {
+		ticketListLineSelected = len(currentTicketListCache) - 1
 	}
 	if ticketListLineSelected > lastLineDisplayed(activeTicketListList, displayTicketListFirstLine, 3) {
 		displayTicketListFirstLine = displayTicketListFirstLine + n

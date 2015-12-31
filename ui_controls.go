@@ -17,6 +17,15 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/<enter>", func(ui.Event) {
 		handleSelectKey()
 	})
+	ui.Handle("/sys/kbd/<space>", func(ui.Event) {
+		handlePageDownKey()
+	})
+	ui.Handle("/sys/kbd/C-f", func(ui.Event) {
+		handlePageDownKey()
+	})
+	ui.Handle("/sys/kbd/C-b", func(ui.Event) {
+		handlePageUpKey()
+	})
 	ui.Handle("/sys/wnd/resize", func(ui.Event) {
 		handleResize()
 	})
@@ -77,6 +86,34 @@ func handleDownKey() {
 		updateTicketListPage(activeTicketListList)
 	case ticketShow:
 		nextTicketLine(1)
+		updateTicketShowPage(activeTicketShowList)
+	}
+}
+
+func handlePageUpKey() {
+	switch currentPage {
+	case ticketQuery:
+		prevQuery(1)
+		updateQueryPage(activeQueryList)
+	case ticketList:
+		prevTicket(activeTicketListList.Height - 3)
+		updateTicketListPage(activeTicketListList)
+	case ticketShow:
+		prevTicketLine(activeTicketShowList.Height - 5)
+		updateTicketShowPage(activeTicketShowList)
+	}
+}
+
+func handlePageDownKey() {
+	switch currentPage {
+	case ticketQuery:
+		nextQuery(1)
+		updateQueryPage(activeQueryList)
+	case ticketList:
+		nextTicket(activeTicketListList.Height - 3)
+		updateTicketListPage(activeTicketListList)
+	case ticketShow:
+		nextTicketLine(activeTicketShowList.Height - 5)
 		updateTicketShowPage(activeTicketShowList)
 	}
 }
