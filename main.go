@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	ui "github.com/gizak/termui"
+	"github.com/op/go-logging"
 	"os"
 	"strings"
 	"time"
@@ -163,9 +164,17 @@ func JiraQueryAsStrings(query string) []string {
 	return strings.Split(buf.String(), "\n")
 }
 
+var (
+	log    = logging.MustGetLogger("jira")
+	format = "%{color}%{time:2006-01-02T15:04:05.000Z07:00} %{level:-5s} [%{shortfile}]%{color:reset} %{message}"
+)
+
 func main() {
 
 	opts := getJiraOpts()
+
+	logging.SetLevel(logging.NOTICE, "")
+
 	c := jira.New(opts)
 
 	// check to see if we can run a query, otherwise force a login
