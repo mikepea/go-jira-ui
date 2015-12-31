@@ -27,9 +27,19 @@ var previousQuery = ""
 
 var ticketSelected = 0
 var querySelected = 0
+var ticketShowLineSelected = 0
 
 var activeQueryList *ui.List
-var activeTicketList *ui.List
+var activeTicketListList *ui.List
+var activeTicketShowList *ui.List
+
+func prevTicketLine(n int) {
+	ticketShowLineSelected = ticketShowLineSelected - n
+}
+
+func nextTicketLine(n int) {
+	ticketShowLineSelected = ticketShowLineSelected + n
+}
 
 func prevTicket(n int) {
 	ticketSelected = ticketSelected - n
@@ -69,6 +79,9 @@ var displayQueries = []string{
 var currentTicketListCache []string
 var displayTickets []string
 
+var currentTicketShowCache []string
+var displayTicketShow []string
+
 func displayQueryResults(query string) []string {
 	results := JiraQueryAsStrings(query)
 	return results
@@ -94,6 +107,16 @@ func markActiveTicket() {
 	}
 }
 
+func markActiveTicketLine() {
+	for i, v := range currentTicketShowCache {
+		selected := ""
+		if i == ticketShowLineSelected {
+			selected = "fg-white,bg-blue"
+		}
+		displayTicketShow[i] = fmt.Sprintf("[%s](%s)", v, selected)
+	}
+}
+
 func handleTicketQueryPage() {
 	ls := ui.NewList()
 	ls.Items = displayQueries
@@ -107,16 +130,6 @@ func handleTicketQueryPage() {
 	ui.Render(ls)
 }
 
-func changePage() {
-	switch currentPage {
-	case ticketQuery:
-		handleTicketQueryPage()
-	case ticketList:
-		handleTicketListPage()
-	case ticketShow:
-	}
-}
-
 func handleTicketListPage() {
 	ticketSelected = 0
 	currentTicketListCache = displayQueryResults(origQueries[querySelected].JQL)
@@ -128,9 +141,42 @@ func handleTicketListPage() {
 	ls.Height = 30
 	ls.Width = 132
 	ls.Y = 0
-	activeTicketList = ls
+	activeTicketListList = ls
 	markActiveTicket()
 	ui.Render(ls)
+}
+
+func getTicketIdFromListLine(line string) string {
+	return strings.Split(line, " ")[0]
+}
+
+func handleTicketShowPage() {
+	ticketId := getTicketIdFromListLine(currentTicketListCache[ticketSelected])
+	ticketShowLineSelected = 0
+	currentTicketShowCache = JiraTicketAsStrings(ticketId)
+	displayTicketShow = make([]string, len(currentTicketShowCache))
+	ls := ui.NewList()
+	ls.Items = displayTicketShow
+	ls.ItemFgColor = ui.ColorYellow
+	ls.BorderLabel = "List"
+	ls.Height = 30
+	ls.Width = 80
+	ls.Overflow = "wrap"
+	ls.Y = 0
+	activeTicketShowList = ls
+	markActiveTicketLine()
+	ui.Render(ls)
+}
+
+func changePage() {
+	switch currentPage {
+	case ticketQuery:
+		handleTicketQueryPage()
+	case ticketList:
+		handleTicketListPage()
+	case ticketShow:
+		handleTicketShowPage()
+	}
 }
 
 func getJiraOpts() map[string]interface{} {
@@ -172,6 +218,15 @@ func JiraQueryAsStrings(query string) []string {
 	return strings.Split(buf.String(), "\n")
 }
 
+func JiraTicketAsStrings(id string) []string {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	data, _ := c.ViewIssue(id)
+	buf := new(bytes.Buffer)
+	jira.RunTemplate(c.GetTemplate("view"), data, buf)
+	return strings.Split(buf.String(), "\n")
+}
+
 func updateQueryPage(ls *ui.List) {
 	markActiveQuery()
 	ls.Items = displayQueries
@@ -183,10 +238,14 @@ func updateTicketListPage(ls *ui.List) {
 	ui.Render(ls)
 }
 
+func updateTicketShowPage(ls *ui.List) {
+	markActiveTicketLine()
+	ui.Render(ls)
+}
+
 func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/q", func(ui.Event) {
-		ui.StopLoop()
-		exitNow = true
+		handleBackKey()
 	})
 	ui.Handle("/sys/kbd/j", func(ui.Event) {
 		handleDownKey()
@@ -199,13 +258,28 @@ func registerKeyboardHandlers() {
 	})
 }
 
+func handleBackKey() {
+	switch currentPage {
+	case ticketQuery:
+		ui.StopLoop()
+		exitNow = true
+	case ticketList:
+		previousPage = currentPage
+		currentPage = ticketQuery
+	case ticketShow:
+		previousPage = currentPage
+		currentPage = ticketList
+	}
+	changePage()
+}
+
 func handleSelectKey() {
 	switch currentPage {
 	case ticketQuery:
 		currentPage = ticketList
 		previousPage = ticketQuery
 	case ticketList:
-		currentPage = ticketQuery
+		currentPage = ticketShow
 		previousPage = ticketList
 	}
 	changePage()
@@ -218,7 +292,10 @@ func handleUpKey() {
 		updateQueryPage(activeQueryList)
 	case ticketList:
 		prevTicket(1)
-		updateTicketListPage(activeTicketList)
+		updateTicketListPage(activeTicketListList)
+	case ticketShow:
+		prevTicketLine(1)
+		updateTicketShowPage(activeTicketShowList)
 	}
 }
 
@@ -229,7 +306,10 @@ func handleDownKey() {
 		updateQueryPage(activeQueryList)
 	case ticketList:
 		nextTicket(1)
-		updateTicketListPage(activeTicketList)
+		updateTicketListPage(activeTicketListList)
+	case ticketShow:
+		nextTicketLine(1)
+		updateTicketShowPage(activeTicketShowList)
 	}
 }
 
