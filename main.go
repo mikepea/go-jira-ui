@@ -33,6 +33,10 @@ func changePage() {
 	}
 }
 
+func lastLineDisplayed(ls *ui.List, firstLine int, correction int) int {
+	return firstLine + ls.Height - correction
+}
+
 func getJiraOpts() map[string]interface{} {
 
 	user := os.Getenv("USER")
