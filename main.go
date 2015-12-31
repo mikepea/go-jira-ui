@@ -63,18 +63,14 @@ type Query struct {
 }
 
 var origQueries = []Query{
-	Query{"My Tickets", "project = OPS AND assignee = currentUser() AND resolution = Unresolved"},
+	Query{"My Assigned Tickets", "assignee = currentUser() AND resolution = Unresolved"},
+	Query{"My Reported Tickets", "reporter = currentUser() AND resolution = Unresolved"},
 	Query{"My Watched Tickets", "watcher = currentUser() AND resolution = Unresolved"},
-	Query{"unlabelled", "project = OPS AND labels IS EMPTY AND resolution = Unresolved"},
+	Query{"OPS unlabelled", "project = OPS AND labels IS EMPTY AND resolution = Unresolved"},
 	Query{"Ops Queue", "project = OPS AND resolution = Unresolved"},
 }
 
-var displayQueries = []string{
-	"My Tickets",
-	"My Watched Tickets",
-	"unlabelled",
-	"OPS queue",
-}
+var displayQueries []string
 
 var currentTicketListCache []string
 var displayTickets []string
@@ -120,6 +116,7 @@ func markActiveTicketLine() {
 func handleTicketQueryPage() {
 	ui.Clear()
 	ls := ui.NewList()
+	displayQueries = make([]string, len(origQueries))
 	ls.Items = displayQueries
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "List"
