@@ -139,12 +139,14 @@ func handleTicketQueryPage() {
 func handleTicketListPage() {
 	ui.Clear()
 	ticketSelected = 0
-	currentTicketListCache = displayQueryResults(origQueries[querySelected].JQL)
+	queryName := origQueries[querySelected].Name
+	queryJQL := origQueries[querySelected].JQL
+	currentTicketListCache = displayQueryResults(queryJQL)
 	displayTickets = make([]string, len(currentTicketListCache))
 	ls := ui.NewList()
 	ls.Items = displayTickets
 	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = "List"
+	ls.BorderLabel = fmt.Sprintf("%s: %s", queryName, queryJQL)
 	ls.Height = uiHeight
 	ls.Width = uiWidth
 	ls.Y = 0
@@ -166,7 +168,6 @@ func handleTicketShowPage() {
 	ls := ui.NewList()
 	ls.Items = displayTicketShow
 	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = ticketId
 	ls.Border = false
 	ls.Height = uiHeight
 	ls.Width = uiWidth
