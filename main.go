@@ -6,6 +6,8 @@ import (
 	ui "github.com/gizak/termui"
 	"github.com/op/go-logging"
 	"os"
+	"os/exec"
+	"strconv"
 	"strings"
 	//jira "github.com/mikepea/go-jira"
 	"jira"
@@ -16,6 +18,9 @@ const (
 	ticketList  = 2
 	ticketShow  = 3
 )
+
+var uiWidth int = 80
+var uiHeight int = 24
 
 var exitNow = false
 
@@ -118,12 +123,13 @@ func markActiveTicketLine() {
 }
 
 func handleTicketQueryPage() {
+	ui.Clear()
 	ls := ui.NewList()
 	ls.Items = displayQueries
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "List"
-	ls.Height = 10
-	ls.Width = 80
+	ls.Height = uiHeight
+	ls.Width = uiWidth
 	ls.Y = 0
 	activeQueryList = ls
 	markActiveQuery()
@@ -131,6 +137,7 @@ func handleTicketQueryPage() {
 }
 
 func handleTicketListPage() {
+	ui.Clear()
 	ticketSelected = 0
 	currentTicketListCache = displayQueryResults(origQueries[querySelected].JQL)
 	displayTickets = make([]string, len(currentTicketListCache))
@@ -138,8 +145,8 @@ func handleTicketListPage() {
 	ls.Items = displayTickets
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "List"
-	ls.Height = 30
-	ls.Width = 132
+	ls.Height = uiHeight
+	ls.Width = uiWidth
 	ls.Y = 0
 	activeTicketListList = ls
 	markActiveTicket()
@@ -151,6 +158,7 @@ func getTicketIdFromListLine(line string) string {
 }
 
 func handleTicketShowPage() {
+	ui.Clear()
 	ticketId := getTicketIdFromListLine(currentTicketListCache[ticketSelected])
 	ticketShowLineSelected = 0
 	currentTicketShowCache = JiraTicketAsStrings(ticketId)
@@ -158,9 +166,10 @@ func handleTicketShowPage() {
 	ls := ui.NewList()
 	ls.Items = displayTicketShow
 	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = "List"
-	ls.Height = 30
-	ls.Width = 80
+	ls.BorderLabel = ticketId
+	ls.Border = false
+	ls.Height = uiHeight
+	ls.Width = uiWidth
 	ls.Overflow = "wrap"
 	ls.Y = 0
 	activeTicketShowList = ls
@@ -256,6 +265,9 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/<enter>", func(ui.Event) {
 		handleSelectKey()
 	})
+	ui.Handle("/sys/wnd/resize", func(ui.Event) {
+		handleResize()
+	})
 }
 
 func handleBackKey() {
@@ -270,6 +282,11 @@ func handleBackKey() {
 		previousPage = currentPage
 		currentPage = ticketList
 	}
+	changePage()
+}
+
+func handleResize() {
+	setTerminalSize()
 	changePage()
 }
 
@@ -318,7 +335,23 @@ var (
 	format = "%{color}%{time:2006-01-02T15:04:05.000Z07:00} %{level:-5s} [%{shortfile}]%{color:reset} %{message}"
 )
 
+func setTerminalSize() {
+	cmd := exec.Command("stty", "size")
+	cmd.Stdin = os.Stdin
+	if out, err := cmd.Output(); err == nil {
+		trimOut := strings.TrimSpace(string(out))
+		h, err1 := strconv.Atoi(strings.Split(trimOut, " ")[0])
+		w, err2 := strconv.Atoi(strings.Split(trimOut, " ")[1])
+		if err1 == nil && err2 == nil {
+			uiHeight = h
+			uiWidth = w
+		}
+	}
+}
+
 func main() {
+
+	setTerminalSize()
 
 	opts := getJiraOpts()
 
