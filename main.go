@@ -7,7 +7,6 @@ import (
 	"github.com/op/go-logging"
 	"os"
 	"strings"
-	"time"
 	//jira "github.com/mikepea/go-jira"
 	"jira"
 )
@@ -54,8 +53,8 @@ type Query struct {
 }
 
 var origQueries = []Query{
-	Query{"My Tickets", "project = OPS AND assignee = 'mikepea' AND resolution = Unresolved"},
-	Query{"My Watched Tickets", "project = OPS AND watcher = 'mikepea' AND resolution = Unresolved"},
+	Query{"My Tickets", "project = OPS AND assignee = currentUser() AND resolution = Unresolved"},
+	Query{"My Watched Tickets", "watcher = currentUser() AND resolution = Unresolved"},
 	Query{"unlabelled", "project = OPS AND labels IS EMPTY AND resolution = Unresolved"},
 	Query{"Ops Queue", "project = OPS AND resolution = Unresolved"},
 }
@@ -247,14 +246,10 @@ func main() {
 
 	c := jira.New(opts)
 
-	// TODO: make this quicker somehow
-	if _, err := runJiraQuery("assignee = 'mikepea' AND resolution = Unresolved"); err != nil {
+	// TODO: make this as quick as can be
+	if _, err := runJiraQuery("assignee = CurrentUser() AND resolution = Unresolved"); err != nil {
 		c.CmdLogin()
 	}
-
-	// debug pause
-	time.Sleep(2 * time.Millisecond)
-	//time.Sleep(5 * time.Second)
 
 	err := ui.Init()
 	if err != nil {
