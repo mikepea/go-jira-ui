@@ -185,7 +185,7 @@ func getJiraOpts() map[string]interface{} {
 
 	user := os.Getenv("USER")
 	home := os.Getenv("HOME")
-	defaultQueryFields := "summary,created,updated,priority,status,reporter,assignee"
+	defaultQueryFields := "summary,created,updated,priority,status,reporter,assignee,labels"
 	defaultSort := "priority asc, created"
 	defaultMaxResults := 500
 
