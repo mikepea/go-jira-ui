@@ -55,6 +55,11 @@ func updateTicketListPage(ls *ui.List) {
 	ui.Render(ls)
 }
 
+func displayQueryResults(query string) []string {
+	results := JiraQueryAsStrings(query)
+	return results
+}
+
 func handleTicketListPage() {
 	ui.Clear()
 	ticketListLineSelected = 0

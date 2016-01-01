@@ -36,11 +36,6 @@ func nextQuery(n int) {
 	}
 }
 
-func displayQueryResults(query string) []string {
-	results := JiraQueryAsStrings(query)
-	return results
-}
-
 func markActiveQuery() {
 	for i, v := range origQueries {
 		selected := ""
