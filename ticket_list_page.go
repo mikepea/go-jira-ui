@@ -63,8 +63,8 @@ func displayQueryResults(query string) []string {
 func handleTicketListPage() {
 	ui.Clear()
 	ticketListLineSelected = 0
-	queryName := origQueries[querySelected].Name
-	queryJQL := origQueries[querySelected].JQL
+	queryName := ticketQueryPage.SelectedQuery().Name
+	queryJQL := ticketQueryPage.SelectedQuery().JQL
 	currentTicketListCache = displayQueryResults(queryJQL)
 	displayTickets = make([]string, len(currentTicketListCache))
 	ls := ui.NewList()

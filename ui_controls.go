@@ -65,8 +65,8 @@ func handleSelectKey() {
 func handleUpKey() {
 	switch currentPage {
 	case ticketQuery:
-		prevQuery(1)
-		updateQueryPage(activeQueryList)
+		ticketQueryPage.PreviousLine(1)
+		ticketQueryPage.Update()
 	case ticketList:
 		prevTicket(1)
 		updateTicketListPage(activeTicketListList)
@@ -79,8 +79,8 @@ func handleUpKey() {
 func handleDownKey() {
 	switch currentPage {
 	case ticketQuery:
-		nextQuery(1)
-		updateQueryPage(activeQueryList)
+		ticketQueryPage.NextLine(1)
+		ticketQueryPage.Update()
 	case ticketList:
 		nextTicket(1)
 		updateTicketListPage(activeTicketListList)
@@ -93,8 +93,8 @@ func handleDownKey() {
 func handlePageUpKey() {
 	switch currentPage {
 	case ticketQuery:
-		prevQuery(1)
-		updateQueryPage(activeQueryList)
+		ticketQueryPage.PreviousLine(1)
+		ticketQueryPage.Update()
 	case ticketList:
 		prevTicket(activeTicketListList.Height - 3)
 		updateTicketListPage(activeTicketListList)
@@ -107,8 +107,8 @@ func handlePageUpKey() {
 func handlePageDownKey() {
 	switch currentPage {
 	case ticketQuery:
-		nextQuery(1)
-		updateQueryPage(activeQueryList)
+		ticketQueryPage.NextLine(1)
+		ticketQueryPage.Update()
 	case ticketList:
 		nextTicket(activeTicketListList.Height - 3)
 		updateTicketListPage(activeTicketListList)

@@ -10,8 +10,11 @@ type Query struct {
 	JQL  string
 }
 
-var querySelected = 0
-var activeQueryList *ui.List
+type QueryPage struct {
+	selectedLine int
+	uiList       *ui.List
+	displayLines []string
+}
 
 var origQueries = []Query{
 	Query{"My Assigned Tickets", "assignee = currentUser() AND resolution = Unresolved"},
@@ -21,48 +24,56 @@ var origQueries = []Query{
 	Query{"Ops Queue", "project = OPS AND resolution = Unresolved"},
 }
 
-var displayQueries []string
-
-func prevQuery(n int) {
-	querySelected = querySelected - n
-	if querySelected < 0 {
-		querySelected = 0
+func (p *QueryPage) PreviousLine(n int) {
+	p.selectedLine = p.selectedLine - n
+	if p.selectedLine < 0 {
+		p.selectedLine = 0
 	}
 }
 
-func nextQuery(n int) {
-	if querySelected < len(origQueries)-1 {
-		querySelected = querySelected + n
+func (p *QueryPage) NextLine(n int) {
+	if p.selectedLine < len(origQueries)-n {
+		p.selectedLine = p.selectedLine + n
 	}
 }
 
-func markActiveQuery() {
+func (p *QueryPage) markActiveLine() {
+	log.Noticef("markActiveLine: p = %s", &p)
 	for i, v := range origQueries {
+		log.Noticef("markActiveLine: displayLines = %s", p.displayLines)
 		selected := ""
-		if i == querySelected {
+		if i == p.selectedLine {
 			selected = "fg-white,bg-blue"
 		}
-		displayQueries[i] = fmt.Sprintf("[%s](%s)", v.Name, selected)
+		p.displayLines[i] = fmt.Sprintf("[%s](%s)", v.Name, selected)
 	}
 }
 
-func updateQueryPage(ls *ui.List) {
-	markActiveQuery()
-	ls.Items = displayQueries
+func (p *QueryPage) SelectedQuery() Query {
+	return origQueries[p.selectedLine]
+}
+
+func (p *QueryPage) Update() {
+	log.Noticef("Update: p = %s", &p)
+	log.Noticef("Update: displayLines = %s", p.displayLines)
+	ls := p.uiList
+	p.markActiveLine()
+	ls.Items = p.displayLines
 	ui.Render(ls)
 }
 
-func handleTicketQueryPage() {
+func (p *QueryPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
-	displayQueries = make([]string, len(origQueries))
-	ls.Items = displayQueries
+	p.selectedLine = 0
+	p.displayLines = make([]string, len(origQueries))
+	ls.Items = p.displayLines
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "List"
 	ls.Height = ui.TermHeight()
 	ls.Width = ui.TermWidth()
 	ls.Y = 0
-	activeQueryList = ls
-	markActiveQuery()
+	p.uiList = ls
+	p.markActiveLine()
 	ui.Render(ls)
 }

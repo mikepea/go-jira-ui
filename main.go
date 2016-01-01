@@ -28,10 +28,12 @@ var exitNow = false
 var currentPage = ticketQuery
 var previousPage = ticketQuery
 
+var ticketQueryPage QueryPage
+
 func changePage() {
 	switch currentPage {
 	case ticketQuery:
-		handleTicketQueryPage()
+		ticketQueryPage.Create()
 	case ticketList:
 		handleTicketListPage()
 	case ticketShow:
@@ -160,7 +162,7 @@ func main() {
 
 	for exitNow != true {
 
-		handleTicketQueryPage()
+		ticketQueryPage.Create()
 		ui.Loop()
 
 	}
