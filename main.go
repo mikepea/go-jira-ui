@@ -26,6 +26,14 @@ const (
 
 var exitNow = false
 
+type PagePager interface {
+	NextLine(int)
+	PreviousLine(int)
+	NextPage()
+	PreviousPage()
+	Update()
+}
+
 type Navigable interface {
 	Create()
 	Update()

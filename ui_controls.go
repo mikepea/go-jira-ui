@@ -78,69 +78,29 @@ func handleSelectKey() {
 }
 
 func handleUpKey() {
-	switch currentPage.(type) {
-	case *QueryPage:
-		currentPage.PreviousLine(1)
-		currentPage.Update()
-	case *TicketListPage:
-		currentPage.PreviousLine(1)
-		currentPage.Update()
-	case *LabelListPage:
-		currentPage.PreviousLine(1)
-		currentPage.Update()
-	case *TicketShowPage:
-		currentPage.PreviousLine(1)
-		currentPage.Update()
+	if obj, ok := currentPage.(PagePager); ok {
+		obj.PreviousLine(1)
+		obj.Update()
 	}
 }
 
 func handleDownKey() {
-	switch currentPage.(type) {
-	case *QueryPage:
-		currentPage.NextLine(1)
-		currentPage.Update()
-	case *TicketListPage:
-		currentPage.NextLine(1)
-		currentPage.Update()
-	case *LabelListPage:
-		currentPage.NextLine(1)
-		currentPage.Update()
-	case *TicketShowPage:
-		currentPage.NextLine(1)
-		currentPage.Update()
+	if obj, ok := currentPage.(PagePager); ok {
+		obj.NextLine(1)
+		obj.Update()
 	}
 }
 
 func handlePageUpKey() {
-	switch currentPage.(type) {
-	case *QueryPage:
-		currentPage.PreviousPage()
-		currentPage.Update()
-	case *TicketListPage:
-		currentPage.PreviousPage()
-		currentPage.Update()
-	case *LabelListPage:
-		currentPage.PreviousPage()
-		currentPage.Update()
-	case *TicketShowPage:
-		currentPage.PreviousPage()
-		currentPage.Update()
+	if obj, ok := currentPage.(PagePager); ok {
+		obj.PreviousPage()
+		obj.Update()
 	}
 }
 
 func handlePageDownKey() {
-	switch currentPage.(type) {
-	case *QueryPage:
-		currentPage.NextPage()
-		currentPage.Update()
-	case *TicketListPage:
-		currentPage.NextPage()
-		currentPage.Update()
-	case *LabelListPage:
-		currentPage.NextPage()
-		currentPage.Update()
-	case *TicketShowPage:
-		currentPage.NextPage()
-		currentPage.Update()
+	if obj, ok := currentPage.(PagePager); ok {
+		obj.NextPage()
+		obj.Update()
 	}
 }
