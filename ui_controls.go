@@ -14,6 +14,9 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/k", func(ui.Event) {
 		handleUpKey()
 	})
+	ui.Handle("/sys/kbd/L", func(ui.Event) {
+		handleLabelViewKey()
+	})
 	ui.Handle("/sys/kbd/<enter>", func(ui.Event) {
 		handleSelectKey()
 	})
@@ -31,6 +34,15 @@ func registerKeyboardHandlers() {
 	})
 }
 
+func handleLabelViewKey() {
+	switch currentPage {
+	case ticketList:
+		previousPage = currentPage
+		currentPage = labelList
+	}
+	changePage()
+}
+
 func handleBackKey() {
 	switch currentPage {
 	case ticketQuery:
@@ -39,6 +51,9 @@ func handleBackKey() {
 	case ticketList:
 		previousPage = currentPage
 		currentPage = ticketQuery
+	case labelList:
+		previousPage = currentPage
+		currentPage = ticketList
 	case ticketShow:
 		previousPage = currentPage
 		currentPage = ticketList
@@ -70,6 +85,9 @@ func handleUpKey() {
 	case ticketList:
 		ticketListPage.PreviousLine(1)
 		ticketListPage.Update()
+	case labelList:
+		labelListPage.PreviousLine(1)
+		labelListPage.Update()
 	case ticketShow:
 		ticketShowPage.PreviousLine(1)
 		ticketShowPage.Update()
@@ -84,6 +102,9 @@ func handleDownKey() {
 	case ticketList:
 		ticketListPage.NextLine(1)
 		ticketListPage.Update()
+	case labelList:
+		labelListPage.NextLine(1)
+		labelListPage.Update()
 	case ticketShow:
 		ticketShowPage.NextLine(1)
 		ticketShowPage.Update()
@@ -98,6 +119,9 @@ func handlePageUpKey() {
 	case ticketList:
 		ticketListPage.PreviousPage()
 		ticketListPage.Update()
+	case labelList:
+		labelListPage.PreviousPage()
+		labelListPage.Update()
 	case ticketShow:
 		ticketShowPage.PreviousPage()
 		ticketShowPage.Update()
@@ -112,6 +136,9 @@ func handlePageDownKey() {
 	case ticketList:
 		ticketListPage.NextPage()
 		ticketListPage.Update()
+	case labelList:
+		labelListPage.NextPage()
+		labelListPage.Update()
 	case ticketShow:
 		ticketShowPage.NextPage()
 		ticketShowPage.Update()

@@ -31,6 +31,7 @@ var previousPage = ticketQuery
 
 var ticketQueryPage QueryPage
 var ticketListPage TicketListPage
+var labelListPage LabelListPage
 var ticketShowPage TicketShowPage
 
 func changePage() {
@@ -39,6 +40,8 @@ func changePage() {
 		ticketQueryPage.Create()
 	case ticketList:
 		ticketListPage.Create()
+	case labelList:
+		labelListPage.Create()
 	case ticketShow:
 		ticketShowPage.Create()
 	}
@@ -75,6 +78,20 @@ func getJiraOpts() map[string]interface{} {
 		}
 	}
 	return opts
+}
+
+func countLabelsFromQuery(query string) map[string]int {
+	counts := make(map[string]int)
+	data, _ := runJiraQuery(query)
+	issues := data.(map[string]interface{})["issues"].([]interface{})
+	for _, issue := range issues {
+		issueLabels := issue.(map[string]interface{})["fields"].(map[string]interface{})["labels"]
+		for _, v := range issueLabels.([]interface{}) {
+			label := v.(string)
+			counts[label] = counts[label] + 1
+		}
+	}
+	return counts
 }
 
 func runJiraQuery(query string) (interface{}, error) {
