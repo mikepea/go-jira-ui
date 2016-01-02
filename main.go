@@ -13,9 +13,10 @@ import (
 )
 
 const (
-	ticketQuery = 1
-	ticketList  = 2
-	ticketShow  = 3
+	ticketQuery = iota
+	ticketList  = iota
+	labelList   = iota
+	ticketShow  = iota
 )
 
 const (
