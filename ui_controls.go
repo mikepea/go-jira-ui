@@ -71,8 +71,8 @@ func handleUpKey() {
 		ticketListPage.PreviousLine(1)
 		ticketListPage.Update()
 	case ticketShow:
-		prevTicketLine(1)
-		updateTicketShowPage(activeTicketShowList)
+		ticketShowPage.PreviousLine(1)
+		ticketShowPage.Update()
 	}
 }
 
@@ -85,8 +85,8 @@ func handleDownKey() {
 		ticketListPage.NextLine(1)
 		ticketListPage.Update()
 	case ticketShow:
-		nextTicketLine(1)
-		updateTicketShowPage(activeTicketShowList)
+		ticketShowPage.NextLine(1)
+		ticketShowPage.Update()
 	}
 }
 
@@ -99,8 +99,8 @@ func handlePageUpKey() {
 		ticketListPage.PreviousPage()
 		ticketListPage.Update()
 	case ticketShow:
-		prevTicketLine(activeTicketShowList.Height - 5)
-		updateTicketShowPage(activeTicketShowList)
+		ticketShowPage.PreviousPage()
+		ticketShowPage.Update()
 	}
 }
 
@@ -113,7 +113,7 @@ func handlePageDownKey() {
 		ticketListPage.NextPage()
 		ticketListPage.Update()
 	case ticketShow:
-		nextTicketLine(activeTicketShowList.Height - 5)
-		updateTicketShowPage(activeTicketShowList)
+		ticketShowPage.NextPage()
+		ticketShowPage.Update()
 	}
 }

@@ -5,66 +5,78 @@ import (
 	ui "github.com/gizak/termui"
 )
 
-var activeTicketShowList *ui.List
+type TicketShowPage struct {
+	selectedLine     int
+	uiList           *ui.List
+	displayLines     []string
+	cachedResults    []string
+	firstDisplayLine int
+}
 
-var currentTicketShowCache []string
-var displayTicketShow []string
-
-var ticketShowLineSelected = 0
-var displayTicketFirstLine = 0
-
-func prevTicketLine(n int) {
-	ticketShowLineSelected = ticketShowLineSelected - n
-	if ticketShowLineSelected < 0 {
-		ticketShowLineSelected = 0
+func (p *TicketShowPage) PreviousLine(n int) {
+	p.selectedLine = p.selectedLine - n
+	if p.selectedLine < 0 {
+		p.selectedLine = 0
 	}
-	if ticketShowLineSelected < displayTicketFirstLine {
-		displayTicketFirstLine = ticketShowLineSelected
+	if p.selectedLine < p.firstDisplayLine {
+		p.firstDisplayLine = p.selectedLine
 	}
 }
 
-func nextTicketLine(n int) {
-	if ticketShowLineSelected < len(currentTicketShowCache)-n {
-		ticketShowLineSelected = ticketShowLineSelected + n
+func (p *TicketShowPage) NextLine(n int) {
+	if p.selectedLine < len(p.cachedResults)-n {
+		p.selectedLine = p.selectedLine + n
 	} else {
-		ticketShowLineSelected = len(currentTicketShowCache) - 1
+		p.selectedLine = len(p.cachedResults) - 1
 	}
-	if ticketShowLineSelected > lastLineDisplayed(activeTicketShowList, displayTicketFirstLine, 5) {
-		displayTicketFirstLine = displayTicketFirstLine + n
+	if p.selectedLine > p.lastDisplayedLine() {
+		p.firstDisplayLine = p.firstDisplayLine + n
 	}
 }
 
-func markActiveTicketLine() {
-	for i, v := range currentTicketShowCache {
+func (p *TicketShowPage) PreviousPage() {
+	p.PreviousLine(p.uiList.Height - 5)
+}
+
+func (p *TicketShowPage) NextPage() {
+	p.NextLine(p.uiList.Height - 5)
+}
+
+func (p *TicketShowPage) lastDisplayedLine() int {
+	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 5)
+}
+
+func (p *TicketShowPage) markActiveLine() {
+	for i, v := range p.cachedResults {
 		selected := ""
-		if i == ticketShowLineSelected {
+		if i == p.selectedLine {
 			selected = "fg-white,bg-blue"
 		}
-		displayTicketShow[i] = fmt.Sprintf("[%s](%s)", v, selected)
+		p.displayLines[i] = fmt.Sprintf("[%s](%s)", v, selected)
 	}
 }
 
-func updateTicketShowPage(ls *ui.List) {
-	markActiveTicketLine()
-	ls.Items = displayTicketShow[displayTicketFirstLine:]
+func (p *TicketShowPage) Update() {
+	ls := p.uiList
+	p.markActiveLine()
+	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
 }
 
-func handleTicketShowPage() {
+func (p *TicketShowPage) Create() {
 	ui.Clear()
-	ticketId := ticketListPage.GetSelectedTicketId()
-	ticketShowLineSelected = 0
-	currentTicketShowCache = JiraTicketAsStrings(ticketId)
-	displayTicketShow = make([]string, len(currentTicketShowCache))
 	ls := ui.NewList()
-	ls.Items = displayTicketShow[displayTicketFirstLine:]
+	p.uiList = ls
+	p.selectedLine = 0
+	p.firstDisplayLine = 0
+	ticketId := ticketListPage.GetSelectedTicketId()
+	p.cachedResults = JiraTicketAsStrings(ticketId)
+	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
-	ls.Border = false
 	ls.Height = ui.TermHeight()
 	ls.Width = ui.TermWidth()
 	ls.Overflow = "wrap"
+	ls.Border = false
 	ls.Y = 0
-	activeTicketShowList = ls
-	markActiveTicketLine()
-	ui.Render(ls)
+	p.Update()
 }

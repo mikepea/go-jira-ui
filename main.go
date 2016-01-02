@@ -30,6 +30,7 @@ var previousPage = ticketQuery
 
 var ticketQueryPage QueryPage
 var ticketListPage TicketListPage
+var ticketShowPage TicketShowPage
 
 func changePage() {
 	switch currentPage {
@@ -38,7 +39,7 @@ func changePage() {
 	case ticketList:
 		ticketListPage.Create()
 	case ticketShow:
-		handleTicketShowPage()
+		ticketShowPage.Create()
 	}
 }
 
