@@ -11,11 +11,8 @@ type Query struct {
 }
 
 type QueryPage struct {
-	selectedLine     int
-	uiList           *ui.List
-	displayLines     []string
-	cachedResults    []Query
-	firstDisplayLine int
+	BaseListPage
+	cachedResults []Query
 }
 
 var origQueries = []Query{
@@ -26,51 +23,18 @@ var origQueries = []Query{
 	Query{"Ops Queue", "project = OPS AND resolution = Unresolved"},
 }
 
-func (p *QueryPage) PreviousLine(n int) {
-	p.selectedLine = p.selectedLine - n
-	if p.selectedLine < 0 {
-		p.selectedLine = 0
-	}
-	if p.selectedLine < p.firstDisplayLine {
-		p.firstDisplayLine = p.selectedLine
-	}
-}
-
-func (p *QueryPage) NextLine(n int) {
-	if p.selectedLine < len(p.cachedResults)-n {
-		p.selectedLine = p.selectedLine + n
-	} else {
-		p.selectedLine = len(p.cachedResults) - 1
-	}
-	if p.selectedLine > p.lastDisplayedLine() {
-		p.firstDisplayLine = p.firstDisplayLine + n
-	}
-}
-
-func (p *QueryPage) PreviousPage() {
-	p.PreviousLine(p.uiList.Height - 2)
-}
-
-func (p *QueryPage) NextPage() {
-	p.NextLine(p.uiList.Height - 2)
-}
-
-func (p *QueryPage) lastDisplayedLine() int {
-	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 3)
-}
-
 func (p *QueryPage) markActiveLine() {
-	for i, v := range origQueries {
+	for i, v := range p.cachedResults {
 		selected := ""
 		if i == p.selectedLine {
 			selected = "fg-white,bg-blue"
 		}
-		p.displayLines[i] = fmt.Sprintf("[%-20s %s](%s)", v.Name, v.JQL, selected)
+		p.displayLines[i] = fmt.Sprintf("[%-30s -- %s](%s)", v.Name, v.JQL, selected)
 	}
 }
 
 func (p *QueryPage) SelectedQuery() Query {
-	return origQueries[p.selectedLine]
+	return p.cachedResults[p.selectedLine]
 }
 
 func (p *QueryPage) Update() {
