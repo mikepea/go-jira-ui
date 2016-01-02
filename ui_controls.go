@@ -93,7 +93,7 @@ func handleDownKey() {
 func handlePageUpKey() {
 	switch currentPage {
 	case ticketQuery:
-		ticketQueryPage.PreviousLine(1)
+		ticketQueryPage.PreviousPage()
 		ticketQueryPage.Update()
 	case ticketList:
 		ticketListPage.PreviousPage()
@@ -107,7 +107,7 @@ func handlePageUpKey() {
 func handlePageDownKey() {
 	switch currentPage {
 	case ticketQuery:
-		ticketQueryPage.NextLine(1)
+		ticketQueryPage.NextPage()
 		ticketQueryPage.Update()
 	case ticketList:
 		ticketListPage.NextPage()

@@ -11,9 +11,11 @@ type Query struct {
 }
 
 type QueryPage struct {
-	selectedLine int
-	uiList       *ui.List
-	displayLines []string
+	selectedLine     int
+	uiList           *ui.List
+	displayLines     []string
+	cachedResults    []Query
+	firstDisplayLine int
 }
 
 var origQueries = []Query{
@@ -29,23 +31,41 @@ func (p *QueryPage) PreviousLine(n int) {
 	if p.selectedLine < 0 {
 		p.selectedLine = 0
 	}
-}
-
-func (p *QueryPage) NextLine(n int) {
-	if p.selectedLine < len(origQueries)-n {
-		p.selectedLine = p.selectedLine + n
+	if p.selectedLine < p.firstDisplayLine {
+		p.firstDisplayLine = p.selectedLine
 	}
 }
 
+func (p *QueryPage) NextLine(n int) {
+	if p.selectedLine < len(p.cachedResults)-n {
+		p.selectedLine = p.selectedLine + n
+	} else {
+		p.selectedLine = len(p.cachedResults) - 1
+	}
+	if p.selectedLine > p.lastDisplayedLine() {
+		p.firstDisplayLine = p.firstDisplayLine + n
+	}
+}
+
+func (p *QueryPage) PreviousPage() {
+	p.PreviousLine(p.uiList.Height - 2)
+}
+
+func (p *QueryPage) NextPage() {
+	p.NextLine(p.uiList.Height - 2)
+}
+
+func (p *QueryPage) lastDisplayedLine() int {
+	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 3)
+}
+
 func (p *QueryPage) markActiveLine() {
-	log.Noticef("markActiveLine: p = %s", &p)
 	for i, v := range origQueries {
-		log.Noticef("markActiveLine: displayLines = %s", p.displayLines)
 		selected := ""
 		if i == p.selectedLine {
 			selected = "fg-white,bg-blue"
 		}
-		p.displayLines[i] = fmt.Sprintf("[%s](%s)", v.Name, selected)
+		p.displayLines[i] = fmt.Sprintf("[%-20s %s](%s)", v.Name, v.JQL, selected)
 	}
 }
 
@@ -54,26 +74,24 @@ func (p *QueryPage) SelectedQuery() Query {
 }
 
 func (p *QueryPage) Update() {
-	log.Noticef("Update: p = %s", &p)
-	log.Noticef("Update: displayLines = %s", p.displayLines)
 	ls := p.uiList
 	p.markActiveLine()
-	ls.Items = p.displayLines
+	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
 }
 
 func (p *QueryPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
+	p.uiList = ls
 	p.selectedLine = 0
-	p.displayLines = make([]string, len(origQueries))
-	ls.Items = p.displayLines
+	p.firstDisplayLine = 0
+	p.cachedResults = origQueries
+	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = "List"
+	ls.BorderLabel = "Queries"
 	ls.Height = ui.TermHeight()
 	ls.Width = ui.TermWidth()
 	ls.Y = 0
-	p.uiList = ls
-	p.markActiveLine()
-	ui.Render(ls)
+	p.Update()
 }
