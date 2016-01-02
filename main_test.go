@@ -4,6 +4,7 @@ import (
 	"testing"
 )
 
+/*
 func TestGetTicketIdFromListLine(t *testing.T) {
 	type testCase struct {
 		in       string
@@ -22,3 +23,4 @@ func TestGetTicketIdFromListLine(t *testing.T) {
 		}
 	}
 }
+*/
