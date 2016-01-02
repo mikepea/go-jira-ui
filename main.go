@@ -29,13 +29,14 @@ var currentPage = ticketQuery
 var previousPage = ticketQuery
 
 var ticketQueryPage QueryPage
+var ticketListPage TicketListPage
 
 func changePage() {
 	switch currentPage {
 	case ticketQuery:
 		ticketQueryPage.Create()
 	case ticketList:
-		handleTicketListPage()
+		ticketListPage.Create()
 	case ticketShow:
 		handleTicketShowPage()
 	}

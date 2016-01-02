@@ -52,7 +52,7 @@ func updateTicketShowPage(ls *ui.List) {
 
 func handleTicketShowPage() {
 	ui.Clear()
-	ticketId := getTicketIdFromListLine(currentTicketListCache[ticketListLineSelected])
+	ticketId := ticketListPage.GetSelectedTicketId()
 	ticketShowLineSelected = 0
 	currentTicketShowCache = JiraTicketAsStrings(ticketId)
 	displayTicketShow = make([]string, len(currentTicketShowCache))

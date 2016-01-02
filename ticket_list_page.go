@@ -6,75 +6,82 @@ import (
 	"strings"
 )
 
-var activeTicketListList *ui.List
+type TicketListPage struct {
+	selectedLine     int
+	uiList           *ui.List
+	displayLines     []string
+	cachedResults    []string
+	firstDisplayLine int
+}
 
-var currentTicketListCache []string
-var displayTickets []string
-
-var ticketListLineSelected = 0
-var displayTicketListFirstLine = 0
-
-func prevTicket(n int) {
-	ticketListLineSelected = ticketListLineSelected - n
-	if ticketListLineSelected < 0 {
-		ticketListLineSelected = 0
+func (p *TicketListPage) PreviousLine(n int) {
+	p.selectedLine = p.selectedLine - n
+	if p.selectedLine < 0 {
+		p.selectedLine = 0
 	}
-	if ticketListLineSelected < displayTicketListFirstLine {
-		displayTicketListFirstLine = ticketListLineSelected
+	if p.selectedLine < p.firstDisplayLine {
+		p.firstDisplayLine = p.selectedLine
 	}
 }
 
-func nextTicket(n int) {
-	if ticketListLineSelected < len(currentTicketListCache)-n {
-		ticketListLineSelected = ticketListLineSelected + n
+func (p *TicketListPage) NextLine(n int) {
+	if p.selectedLine < len(p.cachedResults)-n {
+		p.selectedLine = p.selectedLine + n
 	} else {
-		ticketListLineSelected = len(currentTicketListCache) - 1
+		p.selectedLine = len(p.cachedResults) - 1
 	}
-	if ticketListLineSelected > lastLineDisplayed(activeTicketListList, displayTicketListFirstLine, 3) {
-		displayTicketListFirstLine = displayTicketListFirstLine + n
+	if p.selectedLine > p.lastDisplayedLine() {
+		p.firstDisplayLine = p.firstDisplayLine + n
 	}
 }
 
-func markActiveTicket() {
-	for i, v := range currentTicketListCache {
+func (p *TicketListPage) PreviousPage() {
+	p.PreviousLine(p.uiList.Height - 2)
+}
+
+func (p *TicketListPage) NextPage() {
+	p.NextLine(p.uiList.Height - 2)
+}
+
+func (p *TicketListPage) lastDisplayedLine() int {
+	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 3)
+}
+
+func (p *TicketListPage) markActiveLine() {
+	for i, v := range p.cachedResults {
 		selected := ""
-		if i == ticketListLineSelected {
+		if i == p.selectedLine {
 			selected = "fg-white,bg-blue"
 		}
-		displayTickets[i] = fmt.Sprintf("[%s](%s)", v, selected)
+		p.displayLines[i] = fmt.Sprintf("[%s](%s)", v, selected)
 	}
 }
 
-func getTicketIdFromListLine(line string) string {
-	return strings.Split(line, " ")[0]
+func (p *TicketListPage) GetSelectedTicketId() string {
+	return strings.Split(p.cachedResults[p.selectedLine], " ")[0]
 }
 
-func updateTicketListPage(ls *ui.List) {
-	markActiveTicket()
-	ls.Items = displayTickets[displayTicketListFirstLine:]
+func (p *TicketListPage) Update() {
+	ls := p.uiList
+	p.markActiveLine()
+	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
 }
 
-func displayQueryResults(query string) []string {
-	results := JiraQueryAsStrings(query)
-	return results
-}
-
-func handleTicketListPage() {
+func (p *TicketListPage) Create() {
 	ui.Clear()
-	ticketListLineSelected = 0
+	ls := ui.NewList()
+	p.uiList = ls
+	p.selectedLine = 0
+	p.firstDisplayLine = 0
 	queryName := ticketQueryPage.SelectedQuery().Name
 	queryJQL := ticketQueryPage.SelectedQuery().JQL
-	currentTicketListCache = displayQueryResults(queryJQL)
-	displayTickets = make([]string, len(currentTicketListCache))
-	ls := ui.NewList()
-	ls.Items = displayTickets[displayTicketListFirstLine:]
+	p.cachedResults = JiraQueryAsStrings(queryJQL)
+	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = fmt.Sprintf("%s: %s", queryName, queryJQL)
 	ls.Height = ui.TermHeight()
 	ls.Width = ui.TermWidth()
 	ls.Y = 0
-	activeTicketListList = ls
-	markActiveTicket()
-	ui.Render(ls)
+	p.Update()
 }

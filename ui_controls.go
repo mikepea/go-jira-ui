@@ -68,8 +68,8 @@ func handleUpKey() {
 		ticketQueryPage.PreviousLine(1)
 		ticketQueryPage.Update()
 	case ticketList:
-		prevTicket(1)
-		updateTicketListPage(activeTicketListList)
+		ticketListPage.PreviousLine(1)
+		ticketListPage.Update()
 	case ticketShow:
 		prevTicketLine(1)
 		updateTicketShowPage(activeTicketShowList)
@@ -82,8 +82,8 @@ func handleDownKey() {
 		ticketQueryPage.NextLine(1)
 		ticketQueryPage.Update()
 	case ticketList:
-		nextTicket(1)
-		updateTicketListPage(activeTicketListList)
+		ticketListPage.NextLine(1)
+		ticketListPage.Update()
 	case ticketShow:
 		nextTicketLine(1)
 		updateTicketShowPage(activeTicketShowList)
@@ -96,8 +96,8 @@ func handlePageUpKey() {
 		ticketQueryPage.PreviousLine(1)
 		ticketQueryPage.Update()
 	case ticketList:
-		prevTicket(activeTicketListList.Height - 3)
-		updateTicketListPage(activeTicketListList)
+		ticketListPage.PreviousPage()
+		ticketListPage.Update()
 	case ticketShow:
 		prevTicketLine(activeTicketShowList.Height - 5)
 		updateTicketShowPage(activeTicketShowList)
@@ -110,8 +110,8 @@ func handlePageDownKey() {
 		ticketQueryPage.NextLine(1)
 		ticketQueryPage.Update()
 	case ticketList:
-		nextTicket(activeTicketListList.Height - 3)
-		updateTicketListPage(activeTicketListList)
+		ticketListPage.NextPage()
+		ticketListPage.Update()
 	case ticketShow:
 		nextTicketLine(activeTicketShowList.Height - 5)
 		updateTicketShowPage(activeTicketShowList)
