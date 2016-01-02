@@ -35,28 +35,28 @@ func registerKeyboardHandlers() {
 }
 
 func handleLabelViewKey() {
-	switch currentPage {
-	case ticketList:
+	switch currentPage.(type) {
+	case *TicketListPage:
 		previousPage = currentPage
-		currentPage = labelList
+		currentPage = &labelListPage
 	}
 	changePage()
 }
 
 func handleBackKey() {
-	switch currentPage {
-	case ticketQuery:
+	switch currentPage.(type) {
+	case *QueryPage:
 		ui.StopLoop()
 		exitNow = true
-	case ticketList:
+	case *TicketListPage:
 		previousPage = currentPage
-		currentPage = ticketQuery
-	case labelList:
+		currentPage = &ticketQueryPage
+	case *LabelListPage:
 		previousPage = currentPage
-		currentPage = ticketList
-	case ticketShow:
+		currentPage = &ticketListPage
+	case *TicketShowPage:
 		previousPage = currentPage
-		currentPage = ticketList
+		currentPage = &ticketListPage
 	}
 	changePage()
 }
@@ -66,81 +66,81 @@ func handleResize() {
 }
 
 func handleSelectKey() {
-	switch currentPage {
-	case ticketQuery:
-		currentPage = ticketList
-		previousPage = ticketQuery
-	case ticketList:
-		currentPage = ticketShow
-		previousPage = ticketList
+	switch currentPage.(type) {
+	case *QueryPage:
+		previousPage = currentPage
+		currentPage = &ticketListPage
+	case *TicketListPage:
+		previousPage = currentPage
+		currentPage = &ticketShowPage
 	}
 	changePage()
 }
 
 func handleUpKey() {
-	switch currentPage {
-	case ticketQuery:
-		ticketQueryPage.PreviousLine(1)
-		ticketQueryPage.Update()
-	case ticketList:
-		ticketListPage.PreviousLine(1)
-		ticketListPage.Update()
-	case labelList:
-		labelListPage.PreviousLine(1)
-		labelListPage.Update()
-	case ticketShow:
-		ticketShowPage.PreviousLine(1)
-		ticketShowPage.Update()
+	switch currentPage.(type) {
+	case *QueryPage:
+		currentPage.PreviousLine(1)
+		currentPage.Update()
+	case *TicketListPage:
+		currentPage.PreviousLine(1)
+		currentPage.Update()
+	case *LabelListPage:
+		currentPage.PreviousLine(1)
+		currentPage.Update()
+	case *TicketShowPage:
+		currentPage.PreviousLine(1)
+		currentPage.Update()
 	}
 }
 
 func handleDownKey() {
-	switch currentPage {
-	case ticketQuery:
-		ticketQueryPage.NextLine(1)
-		ticketQueryPage.Update()
-	case ticketList:
-		ticketListPage.NextLine(1)
-		ticketListPage.Update()
-	case labelList:
-		labelListPage.NextLine(1)
-		labelListPage.Update()
-	case ticketShow:
-		ticketShowPage.NextLine(1)
-		ticketShowPage.Update()
+	switch currentPage.(type) {
+	case *QueryPage:
+		currentPage.NextLine(1)
+		currentPage.Update()
+	case *TicketListPage:
+		currentPage.NextLine(1)
+		currentPage.Update()
+	case *LabelListPage:
+		currentPage.NextLine(1)
+		currentPage.Update()
+	case *TicketShowPage:
+		currentPage.NextLine(1)
+		currentPage.Update()
 	}
 }
 
 func handlePageUpKey() {
-	switch currentPage {
-	case ticketQuery:
-		ticketQueryPage.PreviousPage()
-		ticketQueryPage.Update()
-	case ticketList:
-		ticketListPage.PreviousPage()
-		ticketListPage.Update()
-	case labelList:
-		labelListPage.PreviousPage()
-		labelListPage.Update()
-	case ticketShow:
-		ticketShowPage.PreviousPage()
-		ticketShowPage.Update()
+	switch currentPage.(type) {
+	case *QueryPage:
+		currentPage.PreviousPage()
+		currentPage.Update()
+	case *TicketListPage:
+		currentPage.PreviousPage()
+		currentPage.Update()
+	case *LabelListPage:
+		currentPage.PreviousPage()
+		currentPage.Update()
+	case *TicketShowPage:
+		currentPage.PreviousPage()
+		currentPage.Update()
 	}
 }
 
 func handlePageDownKey() {
-	switch currentPage {
-	case ticketQuery:
-		ticketQueryPage.NextPage()
-		ticketQueryPage.Update()
-	case ticketList:
-		ticketListPage.NextPage()
-		ticketListPage.Update()
-	case labelList:
-		labelListPage.NextPage()
-		labelListPage.Update()
-	case ticketShow:
-		ticketShowPage.NextPage()
-		ticketShowPage.Update()
+	switch currentPage.(type) {
+	case *QueryPage:
+		currentPage.NextPage()
+		currentPage.Update()
+	case *TicketListPage:
+		currentPage.NextPage()
+		currentPage.Update()
+	case *LabelListPage:
+		currentPage.NextPage()
+		currentPage.Update()
+	case *TicketShowPage:
+		currentPage.NextPage()
+		currentPage.Update()
 	}
 }

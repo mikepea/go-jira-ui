@@ -26,8 +26,17 @@ const (
 
 var exitNow = false
 
-var currentPage = ticketQuery
-var previousPage = ticketQuery
+type Navigable interface {
+	Create()
+	Update()
+	PreviousLine(int)
+	NextLine(int)
+	PreviousPage()
+	NextPage()
+}
+
+var currentPage Navigable
+var previousPage Navigable
 
 var ticketQueryPage QueryPage
 var ticketListPage TicketListPage
@@ -35,15 +44,15 @@ var labelListPage LabelListPage
 var ticketShowPage TicketShowPage
 
 func changePage() {
-	switch currentPage {
-	case ticketQuery:
-		ticketQueryPage.Create()
-	case ticketList:
-		ticketListPage.Create()
-	case labelList:
-		labelListPage.Create()
-	case ticketShow:
-		ticketShowPage.Create()
+	switch currentPage.(type) {
+	case *QueryPage:
+		currentPage.Create()
+	case *TicketListPage:
+		currentPage.Create()
+	case *LabelListPage:
+		currentPage.Create()
+	case *TicketShowPage:
+		currentPage.Create()
 	}
 }
 
@@ -180,9 +189,11 @@ func main() {
 
 	registerKeyboardHandlers()
 
+	currentPage = &ticketQueryPage
+
 	for exitNow != true {
 
-		ticketQueryPage.Create()
+		currentPage.Create()
 		ui.Loop()
 
 	}
