@@ -40,3 +40,19 @@ this same mechanism, so can be used to load per-project defaults. It also
 leverages the templating engine, so you can customise the view of both the
 query output (use 'jira_ui_list' template), and the issue 'view' template.
 
+go-jira-ui reads its own  `jira-ui-config.yml` file in these jira.d
+directories, as not to pollute the go-jira config. You can add additional
+queries to the top-level Query page:
+
+   $ cat ~/jira.d/jira-ui-config.yml:
+   queries:
+    - name: "alice assigned"
+      jql: "assignee = alice AND resolution = Unresolved"
+    - name: "bob assigned"
+      jql: "assignee = bob AND resolution = Unresolved"
+    - name: "unresolved must-do"
+      jql: "labels = 'must-do' AND resolution = Unresolved AND ( project = 'OPS' OR project = 'INFRA')"
+
+Learning JQL is highly recommended, the Atlassian [Advanced
+Searching](https://confluence.atlassian.com/jira/advanced-searching-179442050.html)
+page is a good place to start.
