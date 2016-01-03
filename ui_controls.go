@@ -14,6 +14,12 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/k", func(ui.Event) {
 		handleUpKey()
 	})
+	ui.Handle("/sys/kbd/<down>", func(ui.Event) {
+		handleDownKey()
+	})
+	ui.Handle("/sys/kbd/<up>", func(ui.Event) {
+		handleUpKey()
+	})
 	ui.Handle("/sys/kbd/L", func(ui.Event) {
 		handleLabelViewKey()
 	})
