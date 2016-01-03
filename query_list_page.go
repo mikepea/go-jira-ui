@@ -15,12 +15,32 @@ type QueryPage struct {
 	cachedResults []Query
 }
 
-var origQueries = []Query{
+var baseQueries = []Query{
 	Query{"My Assigned Tickets", "assignee = currentUser() AND resolution = Unresolved"},
 	Query{"My Reported Tickets", "reporter = currentUser() AND resolution = Unresolved"},
 	Query{"My Watched Tickets", "watcher = currentUser() AND resolution = Unresolved"},
-	Query{"OPS unlabelled", "project = OPS AND labels IS EMPTY AND resolution = Unresolved"},
-	Query{"Ops Queue", "project = OPS AND resolution = Unresolved"},
+}
+
+func getQueries() (queries []Query) {
+	opts := getJiraOpts()
+	if q := opts["queries"]; q != nil {
+		qList := q.([]interface{})
+		for _, v := range qList {
+			q1 := v.(map[interface{}]interface{})
+			q2 := make(map[string]string)
+			for k, v := range q1 {
+				switch k := k.(type) {
+				case string:
+					switch v := v.(type) {
+					case string:
+						q2[k] = v
+					}
+				}
+			}
+			queries = append(queries, Query{q2["name"], q2["jql"]})
+		}
+	}
+	return append(baseQueries, queries...)
 }
 
 func (p *QueryPage) markActiveLine() {
@@ -56,7 +76,7 @@ func (p *QueryPage) Create(opts ...interface{}) {
 	p.uiList = ls
 	p.selectedLine = 0
 	p.firstDisplayLine = 0
-	p.cachedResults = origQueries
+	p.cachedResults = getQueries()
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "Queries"
