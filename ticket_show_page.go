@@ -26,7 +26,7 @@ func (p *TicketShowPage) lastDisplayedLine() int {
 	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 5)
 }
 
-func (p *TicketShowPage) Create() {
+func (p *TicketShowPage) Create(opts ...interface{}) {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls

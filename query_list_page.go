@@ -50,7 +50,7 @@ func (p *QueryPage) Update() {
 	ui.Render(ls)
 }
 
-func (p *QueryPage) Create() {
+func (p *QueryPage) Create(opts ...interface{}) {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls

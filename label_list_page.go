@@ -23,6 +23,14 @@ func (p *LabelListPage) labelsAsSortedListWithCounts() []string {
 	return ret
 }
 
+func (p *LabelListPage) SelectItem() {
+	previousPage = currentPage
+	currentPage = &ticketListPage
+	opts := make(map[string]string)
+	opts["label"] = p.cachedResults[p.selectedLine]
+	changePage(opts)
+}
+
 func (p *LabelListPage) markActiveLine() {
 	for i, v := range p.cachedResults {
 		selected := ""
@@ -46,7 +54,7 @@ func (p *LabelListPage) Update() {
 	ui.Render(ls)
 }
 
-func (p *LabelListPage) Create() {
+func (p *LabelListPage) Create(opts ...interface{}) {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls

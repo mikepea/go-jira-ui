@@ -43,7 +43,7 @@ type PagePager interface {
 }
 
 type Navigable interface {
-	Create()
+	Create(...interface{})
 	Update()
 	PreviousLine(int)
 	NextLine(int)
@@ -59,16 +59,20 @@ var ticketListPage TicketListPage
 var labelListPage LabelListPage
 var ticketShowPage TicketShowPage
 
-func changePage() {
+func changePage(opts ...interface{}) {
+	newopts := make(map[string]string)
+	if len(opts) > 0 {
+		newopts = opts[0].(map[string]string)
+	}
 	switch currentPage.(type) {
 	case *QueryPage:
-		currentPage.Create()
+		currentPage.Create(newopts)
 	case *TicketListPage:
-		currentPage.Create()
+		currentPage.Create(newopts)
 	case *LabelListPage:
-		currentPage.Create()
+		currentPage.Create(newopts)
 	case *TicketShowPage:
-		currentPage.Create()
+		currentPage.Create(newopts)
 	}
 }
 
