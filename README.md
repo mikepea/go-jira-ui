@@ -44,14 +44,14 @@ go-jira-ui reads its own  `jira-ui-config.yml` file in these jira.d
 directories, as not to pollute the go-jira config. You can add additional
 queries to the top-level Query page:
 
-   $ cat ~/jira.d/jira-ui-config.yml:
-   queries:
-    - name: "alice assigned"
-      jql: "assignee = alice AND resolution = Unresolved"
-    - name: "bob assigned"
-      jql: "assignee = bob AND resolution = Unresolved"
-    - name: "unresolved must-do"
-      jql: "labels = 'must-do' AND resolution = Unresolved AND ( project = 'OPS' OR project = 'INFRA')"
+    $ cat ~/jira.d/jira-ui-config.yml:
+    queries:
+      - name: "alice assigned"
+        jql: "assignee = alice AND resolution = Unresolved"
+      - name: "bob assigned"
+        jql: "assignee = bob AND resolution = Unresolved"
+      - name: "unresolved must-do"
+        jql: "labels = 'must-do' AND resolution = Unresolved AND ( project = 'OPS' OR project = 'INFRA')"
 
 Learning JQL is highly recommended, the Atlassian [Advanced
 Searching](https://confluence.atlassian.com/jira/advanced-searching-179442050.html)
