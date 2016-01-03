@@ -44,21 +44,12 @@ func handleLabelViewKey() {
 }
 
 func handleBackKey() {
-	switch currentPage.(type) {
-	case *QueryPage:
+	if obj, ok := currentPage.(GoBacker); ok {
+		obj.GoBack()
+	} else {
 		ui.StopLoop()
 		exitNow = true
-	case *TicketListPage:
-		previousPage = currentPage
-		currentPage = &ticketQueryPage
-	case *LabelListPage:
-		previousPage = currentPage
-		currentPage = &ticketListPage
-	case *TicketShowPage:
-		previousPage = currentPage
-		currentPage = &ticketListPage
 	}
-	changePage()
 }
 
 func handleResize() {
@@ -66,15 +57,9 @@ func handleResize() {
 }
 
 func handleSelectKey() {
-	switch currentPage.(type) {
-	case *QueryPage:
-		previousPage = currentPage
-		currentPage = &ticketListPage
-	case *TicketListPage:
-		previousPage = currentPage
-		currentPage = &ticketShowPage
+	if obj, ok := currentPage.(ItemSelecter); ok {
+		obj.SelectItem()
 	}
-	changePage()
 }
 
 func handleUpKey() {

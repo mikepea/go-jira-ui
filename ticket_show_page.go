@@ -16,6 +16,12 @@ func (p *TicketShowPage) NextPage() {
 	p.NextLine(p.uiList.Height - 5)
 }
 
+func (p *TicketShowPage) GoBack() {
+	previousPage = currentPage
+	currentPage = &ticketListPage
+	changePage()
+}
+
 func (p *TicketShowPage) lastDisplayedLine() int {
 	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 5)
 }

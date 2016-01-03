@@ -14,6 +14,18 @@ func (p *TicketListPage) GetSelectedTicketId() string {
 	return strings.Split(p.cachedResults[p.selectedLine], " ")[0]
 }
 
+func (p *TicketListPage) SelectItem() {
+	previousPage = currentPage
+	currentPage = &ticketShowPage
+	changePage()
+}
+
+func (p *TicketListPage) GoBack() {
+	previousPage = currentPage
+	currentPage = &ticketQueryPage
+	changePage()
+}
+
 func (p *TicketListPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()

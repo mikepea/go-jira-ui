@@ -33,6 +33,12 @@ func (p *LabelListPage) markActiveLine() {
 	}
 }
 
+func (p *LabelListPage) GoBack() {
+	previousPage = currentPage
+	currentPage = &ticketListPage
+	changePage()
+}
+
 func (p *LabelListPage) Update() {
 	ls := p.uiList
 	p.markActiveLine()

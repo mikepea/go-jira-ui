@@ -37,6 +37,12 @@ func (p *QueryPage) SelectedQuery() Query {
 	return p.cachedResults[p.selectedLine]
 }
 
+func (p *QueryPage) SelectItem() {
+	previousPage = currentPage
+	currentPage = &ticketListPage
+	changePage()
+}
+
 func (p *QueryPage) Update() {
 	ls := p.uiList
 	p.markActiveLine()

@@ -26,6 +26,14 @@ const (
 
 var exitNow = false
 
+type GoBacker interface {
+	GoBack()
+}
+
+type ItemSelecter interface {
+	SelectItem()
+}
+
 type PagePager interface {
 	NextLine(int)
 	PreviousLine(int)
