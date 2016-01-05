@@ -32,7 +32,6 @@ func (p *TicketListPage) Create(opts ...interface{}) {
 	var queryJQL string
 	var queryName string
 	if len(opts) > 0 {
-		log.Noticef("TicketListPage.Create opts: %s", opts)
 		if d, ok := opts[0].(map[string]string); ok {
 			label = d["label"]
 		}
