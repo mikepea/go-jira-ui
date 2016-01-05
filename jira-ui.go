@@ -188,20 +188,40 @@ func loadConfigs(opts map[string]interface{}) {
 	}
 }
 
+func doLogin(opts map[string]interface{}) error {
+	c := jira.New(opts)
+	fmt.Printf("Logging in as %s:\n", opts["user"])
+	return c.CmdLogin()
+}
+
+func ensureLoggedIntoJira() error {
+	homeDir := os.Getenv("HOME")
+	opts := getJiraOpts()
+	testSessionQuery := fmt.Sprintf("reporter = %s", opts["user"])
+	if _, err := os.Stat(fmt.Sprintf("%s/.jira.d/cookies.js", homeDir)); err != nil {
+		return doLogin(opts)
+	} else if data, err := runJiraQuery(testSessionQuery); err != nil {
+		return doLogin(opts)
+	} else if val, ok := data.(map[string]interface{})["errorMessages"]; ok {
+		if len(val.([]interface{})) > 0 {
+			return doLogin(opts)
+		}
+	}
+	return nil
+}
+
 func main() {
 
-	opts := getJiraOpts()
-
+	var err error
 	logging.SetLevel(logging.NOTICE, "")
 
-	c := jira.New(opts)
-
-	// TODO: make this as quick as can be
-	if _, err := runJiraQuery("assignee = CurrentUser() AND resolution = Unresolved"); err != nil {
-		c.CmdLogin()
+	err = ensureLoggedIntoJira()
+	if err != nil {
+		log.Error("Login failed. Aborting")
+		os.Exit(2)
 	}
 
-	err := ui.Init()
+	err = ui.Init()
 	if err != nil {
 		panic(err)
 	}
