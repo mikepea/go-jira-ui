@@ -32,6 +32,10 @@ type TicketEditer interface {
 	EditTicket()
 }
 
+type TicketCommenter interface {
+	CommentTicket()
+}
+
 type PagePager interface {
 	NextLine(int)
 	PreviousLine(int)

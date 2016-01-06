@@ -27,6 +27,10 @@ func (p *TicketShowPage) EditTicket() {
 	runJiraCmdEdit(p.TicketId)
 }
 
+func (p *TicketShowPage) CommentTicket() {
+	runJiraCmdComment(p.TicketId)
+}
+
 func (p *TicketShowPage) lastDisplayedLine() int {
 	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 5)
 }

@@ -38,6 +38,9 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/E", func(ui.Event) {
 		handleEditKey()
 	})
+	ui.Handle("/sys/kbd/C", func(ui.Event) {
+		handleCommentKey()
+	})
 	ui.Handle("/sys/wnd/resize", func(ui.Event) {
 		handleResize()
 	})
@@ -55,6 +58,12 @@ func handleLabelViewKey() {
 func handleEditKey() {
 	if obj, ok := currentPage.(TicketEditer); ok {
 		obj.EditTicket()
+	}
+}
+
+func handleCommentKey() {
+	if obj, ok := currentPage.(TicketCommenter); ok {
+		obj.CommentTicket()
 	}
 }
 

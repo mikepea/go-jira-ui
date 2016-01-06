@@ -34,6 +34,15 @@ func runJiraCmdEdit(ticketId string) {
 	os.Exit(0)
 }
 
+func runJiraCmdComment(ticketId string) {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	ui.Close()
+	c.CmdComment(ticketId)
+	log.Notice("Regrettably, need to exit after comment. See https://github.com/mikepea/go-jira-ui/issues/8")
+	os.Exit(0)
+}
+
 func runJiraQuery(query string) (interface{}, error) {
 	opts := getJiraOpts()
 	opts["query"] = query
