@@ -30,6 +30,7 @@ This should be all that's needed to get going.
     <enter>      - select item
     q            - go back / quit
     L            - Label view (query results page only)
+    E            - Edit ticket
 
 ### Configuration
 

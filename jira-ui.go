@@ -28,6 +28,10 @@ type ItemSelecter interface {
 	SelectItem()
 }
 
+type TicketEditer interface {
+	EditTicket()
+}
+
 type PagePager interface {
 	NextLine(int)
 	PreviousLine(int)

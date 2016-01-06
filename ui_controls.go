@@ -35,6 +35,9 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/C-b", func(ui.Event) {
 		handlePageUpKey()
 	})
+	ui.Handle("/sys/kbd/E", func(ui.Event) {
+		handleEditKey()
+	})
 	ui.Handle("/sys/wnd/resize", func(ui.Event) {
 		handleResize()
 	})
@@ -47,6 +50,12 @@ func handleLabelViewKey() {
 		currentPage = &labelListPage
 	}
 	changePage()
+}
+
+func handleEditKey() {
+	if obj, ok := currentPage.(TicketEditer); ok {
+		obj.EditTicket()
+	}
 }
 
 func handleBackKey() {

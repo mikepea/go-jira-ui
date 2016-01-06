@@ -6,6 +6,7 @@ import (
 
 type TicketShowPage struct {
 	BaseListPage
+	TicketId string
 }
 
 func (p *TicketShowPage) PreviousPage() {
@@ -22,6 +23,10 @@ func (p *TicketShowPage) GoBack() {
 	changePage()
 }
 
+func (p *TicketShowPage) EditTicket() {
+	runJiraCmdEdit(p.TicketId)
+}
+
 func (p *TicketShowPage) lastDisplayedLine() int {
 	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 5)
 }
@@ -32,8 +37,8 @@ func (p *TicketShowPage) Create(opts ...interface{}) {
 	p.uiList = ls
 	p.selectedLine = 0
 	p.firstDisplayLine = 0
-	ticketId := ticketListPage.GetSelectedTicketId()
-	p.cachedResults = JiraTicketAsStrings(ticketId)
+	p.TicketId = ticketListPage.GetSelectedTicketId()
+	p.cachedResults = JiraTicketAsStrings(p.TicketId)
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.Height = ui.TermHeight()

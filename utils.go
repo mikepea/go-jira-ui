@@ -25,6 +25,15 @@ func countLabelsFromQuery(query string) map[string]int {
 	return counts
 }
 
+func runJiraCmdEdit(ticketId string) {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	ui.Close()
+	c.CmdEdit(ticketId)
+	log.Notice("Regrettably, need to exit after edit. See https://github.com/mikepea/go-jira-ui/issues/8")
+	os.Exit(0)
+}
+
 func runJiraQuery(query string) (interface{}, error) {
 	opts := getJiraOpts()
 	opts["query"] = query

@@ -26,6 +26,10 @@ func (p *TicketListPage) GoBack() {
 	changePage()
 }
 
+func (p *TicketListPage) EditTicket() {
+	runJiraCmdEdit(p.GetSelectedTicketId())
+}
+
 func (p *TicketListPage) Create(opts ...interface{}) {
 	ui.Clear()
 	var label string
