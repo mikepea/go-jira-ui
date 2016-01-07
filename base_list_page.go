@@ -56,6 +56,10 @@ func (p *BaseListPage) markActiveLine() {
 	}
 }
 
+func (p *BaseListPage) Id() string {
+	return "X"
+}
+
 func (p *BaseListPage) Update() {
 	ls := p.uiList
 	p.markActiveLine()

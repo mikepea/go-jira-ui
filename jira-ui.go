@@ -51,6 +51,7 @@ type Navigable interface {
 	NextLine(int)
 	PreviousPage()
 	NextPage()
+	Id() string
 }
 
 var currentPage Navigable
@@ -68,12 +69,16 @@ func changePage(opts ...interface{}) {
 	}
 	switch currentPage.(type) {
 	case *QueryPage:
+		log.Noticef("changePage: QueryPage %s", currentPage.Id())
 		currentPage.Create(newopts)
 	case *TicketListPage:
+		log.Noticef("changePage: TicketListPage %s", currentPage.Id())
 		currentPage.Create(newopts)
 	case *LabelListPage:
+		log.Noticef("changePage: LabelListPage %s", currentPage.Id())
 		currentPage.Create(newopts)
 	case *TicketShowPage:
+		log.Noticef("changePage: TicketShowPage %s", currentPage.Id())
 		currentPage.Create(newopts)
 	}
 }
