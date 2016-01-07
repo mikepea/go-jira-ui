@@ -2,11 +2,20 @@ package main
 
 import (
 	ui "github.com/gizak/termui"
+	"os"
 )
 
 func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/q", func(ui.Event) {
 		handleBackKey()
+	})
+	ui.Handle("/sys/kbd/C-c", func(ui.Event) {
+		ui.Close()
+		os.Exit(0)
+	})
+	ui.Handle("/sys/kbd/Q", func(ui.Event) {
+		ui.Close()
+		os.Exit(0)
 	})
 	ui.Handle("/sys/kbd/j", func(ui.Event) {
 		handleDownKey()

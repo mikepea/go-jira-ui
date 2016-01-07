@@ -8,6 +8,7 @@ import (
 	"gopkg.in/coryb/yaml.v2"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -41,6 +42,11 @@ func runJiraCmdComment(ticketId string) {
 	c.CmdComment(ticketId)
 	log.Notice("Regrettably, need to exit after comment. See https://github.com/mikepea/go-jira-ui/issues/8")
 	os.Exit(0)
+}
+
+func findTicketIdInString(line string) string {
+	re := regexp.MustCompile(`\s[A-Z]{3,12}-[0-9]{1,6}`) // no \s at end, need to match BLAH-123[Done]
+	return strings.TrimSpace(re.FindString(line))
 }
 
 func runJiraQuery(query string) (interface{}, error) {
