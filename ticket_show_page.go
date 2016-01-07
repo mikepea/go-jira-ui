@@ -17,6 +17,10 @@ func (p *TicketShowPage) NextPage() {
 	p.NextLine(p.uiList.Height - 5)
 }
 
+func (p *TicketShowPage) Id() string {
+	return p.TicketId
+}
+
 func (p *TicketShowPage) GoBack() {
 	previousPage = currentPage
 	currentPage = &ticketListPage
@@ -36,13 +40,17 @@ func (p *TicketShowPage) lastDisplayedLine() int {
 }
 
 func (p *TicketShowPage) Create(opts ...interface{}) {
+	if p.TicketId == "" {
+		p.TicketId = ticketListPage.GetSelectedTicketId()
+	}
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
 	p.selectedLine = 0
 	p.firstDisplayLine = 0
-	p.TicketId = ticketListPage.GetSelectedTicketId()
-	p.cachedResults = JiraTicketAsStrings(p.TicketId)
+	if len(p.cachedResults) == 0 {
+		p.cachedResults = JiraTicketAsStrings(p.TicketId)
+	}
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.Height = ui.TermHeight()

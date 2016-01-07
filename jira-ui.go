@@ -60,7 +60,6 @@ var previousPage Navigable
 var ticketQueryPage QueryPage
 var ticketListPage TicketListPage
 var labelListPage LabelListPage
-var ticketShowPage TicketShowPage
 
 func changePage(opts ...interface{}) {
 	newopts := make(map[string]string)
