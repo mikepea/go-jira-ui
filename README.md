@@ -6,18 +6,13 @@ go-jira-ui is an ncurses command line tool for accessing JIRA.
 It is built around the excellent [go-jira](https://github.com/Netflix-Skunkworks/go-jira) and
 [termui](https://github.com/gizak/termui) libraries.
 
-Currently it's focussed around browsing issues, supporting the following:
-
-* Custom queries, with both a ticket and per-label view.
-* Issue viewing
-* Templatable list and issue views
-
 In order to use this, you should configure an 'endpoint' as per the go-jira
-documentation, essentially:
+documentation:
 
     $ cat ~/.jira.d/config.yml
     ---
     endpoint: https://jira.example.com/
+    user: bob   # if not same as $USER
 
 This should be all that's needed to get going.
 
@@ -28,6 +23,9 @@ This should be all that's needed to get going.
 * View tickets from the query
 * Edit/Comment on tickets from both list and detail view
 * Drill into sub/blocker/related/mentioned tickets in details view
+
+At present, edit and comment will exit after the update. This is a workaround
+to an implementation issue, being tracked in #9
 
 ### Basic keys
 

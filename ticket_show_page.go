@@ -7,7 +7,8 @@ import (
 
 type TicketShowPage struct {
 	BaseListPage
-	TicketId string
+	TicketId    string
+	TicketTrail []*TicketShowPage // previously viewed tickets in drill-down
 }
 
 func (p *TicketShowPage) PreviousPage() {
@@ -20,7 +21,6 @@ func (p *TicketShowPage) NextPage() {
 
 func (p *TicketShowPage) SelectItem() {
 	newTicketId := findTicketIdInString(p.cachedResults[p.selectedLine])
-	log.Noticef("TicketShowPage: Found ticket %s", newTicketId)
 	if newTicketId == "" {
 		return
 	} else if newTicketId == p.TicketId {
@@ -28,6 +28,7 @@ func (p *TicketShowPage) SelectItem() {
 	}
 	q := new(TicketShowPage)
 	q.TicketId = newTicketId
+	q.TicketTrail = append(p.TicketTrail, p)
 	currentPage = q
 	changePage()
 }
@@ -37,8 +38,13 @@ func (p *TicketShowPage) Id() string {
 }
 
 func (p *TicketShowPage) GoBack() {
-	previousPage = currentPage
-	currentPage = &ticketListPage
+	if len(p.TicketTrail) == 0 {
+		previousPage = currentPage
+		currentPage = &ticketListPage
+	} else {
+		last := len(p.TicketTrail) - 1
+		currentPage = p.TicketTrail[last]
+	}
 	changePage()
 }
 
@@ -52,6 +58,14 @@ func (p *TicketShowPage) CommentTicket() {
 
 func (p *TicketShowPage) lastDisplayedLine() int {
 	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 5)
+}
+
+func (p *TicketShowPage) ticketTrailAsString() (trail string) {
+	for i := len(p.TicketTrail) - 1; i >= 0; i-- {
+		q := *p.TicketTrail[i]
+		trail = trail + " <- " + q.Id()
+	}
+	return trail
 }
 
 func (p *TicketShowPage) Create(opts ...interface{}) {
@@ -72,7 +86,7 @@ func (p *TicketShowPage) Create(opts ...interface{}) {
 	ls.Width = ui.TermWidth()
 	ls.Overflow = "wrap"
 	ls.Border = true
-	ls.BorderLabel = fmt.Sprintf("%s", p.TicketId)
+	ls.BorderLabel = fmt.Sprintf("%s %s", p.TicketId, p.ticketTrailAsString())
 	ls.Y = 0
 	p.Update()
 }
