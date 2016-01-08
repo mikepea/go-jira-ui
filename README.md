@@ -21,6 +21,14 @@ documentation, essentially:
 
 This should be all that's needed to get going.
 
+### Features
+
+* Supply your own JQL queries to view
+* Label view of a given query, to see categorisations easily
+* View tickets from the query
+* Edit/Comment on tickets from both list and detail view
+* Drill into sub/blocker/related/mentioned tickets in details view
+
 ### Basic keys
 
     up/k         - previous line

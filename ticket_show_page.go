@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	ui "github.com/gizak/termui"
 )
 
@@ -15,6 +16,20 @@ func (p *TicketShowPage) PreviousPage() {
 
 func (p *TicketShowPage) NextPage() {
 	p.NextLine(p.uiList.Height - 5)
+}
+
+func (p *TicketShowPage) SelectItem() {
+	newTicketId := findTicketIdInString(p.cachedResults[p.selectedLine])
+	log.Noticef("TicketShowPage: Found ticket %s", newTicketId)
+	if newTicketId == "" {
+		return
+	} else if newTicketId == p.TicketId {
+		return
+	}
+	q := new(TicketShowPage)
+	q.TicketId = newTicketId
+	currentPage = q
+	changePage()
 }
 
 func (p *TicketShowPage) Id() string {
@@ -56,7 +71,8 @@ func (p *TicketShowPage) Create(opts ...interface{}) {
 	ls.Height = ui.TermHeight()
 	ls.Width = ui.TermWidth()
 	ls.Overflow = "wrap"
-	ls.Border = false
+	ls.Border = true
+	ls.BorderLabel = fmt.Sprintf("%s", p.TicketId)
 	ls.Y = 0
 	p.Update()
 }
