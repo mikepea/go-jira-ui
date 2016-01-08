@@ -41,6 +41,8 @@ type PagePager interface {
 	PreviousLine(int)
 	NextPage()
 	PreviousPage()
+	TopOfPage()
+	BottomOfPage()
 	Update()
 }
 

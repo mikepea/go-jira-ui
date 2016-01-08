@@ -29,15 +29,24 @@ to an implementation issue, being tracked in #9
 
 ### Basic keys
 
+Actions:
+
+    <enter>      - select query/ticket
+    L            - Label view (query results page only)
+    E            - Edit ticket
+    C            - Comment on ticket
+
+Navigation:
+
     up/k         - previous line
     down/j       - next line
     C-f/<space>  - next page
     C-b          - previous page
-    <enter>      - select item
+    g            - go to top of page
+    G            - go to bottom of page
     q            - go back / quit
-    L            - Label view (query results page only)
-    E            - Edit ticket
-    C            - Comment on ticket
+    C-c/Q        - quit
+
 
 ### Configuration
 

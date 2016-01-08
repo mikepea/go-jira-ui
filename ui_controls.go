@@ -29,6 +29,12 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/<up>", func(ui.Event) {
 		handleUpKey()
 	})
+	ui.Handle("/sys/kbd/g", func(ui.Event) {
+		handleTopOfPageKey()
+	})
+	ui.Handle("/sys/kbd/G", func(ui.Event) {
+		handleBottomOfPageKey()
+	})
 	ui.Handle("/sys/kbd/L", func(ui.Event) {
 		handleLabelViewKey()
 	})
@@ -92,6 +98,20 @@ func handleResize() {
 func handleSelectKey() {
 	if obj, ok := currentPage.(ItemSelecter); ok {
 		obj.SelectItem()
+	}
+}
+
+func handleTopOfPageKey() {
+	if obj, ok := currentPage.(PagePager); ok {
+		obj.TopOfPage()
+		obj.Update()
+	}
+}
+
+func handleBottomOfPageKey() {
+	if obj, ok := currentPage.(PagePager); ok {
+		obj.BottomOfPage()
+		obj.Update()
 	}
 }
 

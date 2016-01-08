@@ -19,6 +19,16 @@ func (p *TicketShowPage) NextPage() {
 	p.NextLine(p.uiList.Height - 5)
 }
 
+func (p *TicketShowPage) BottomOfPage() {
+	p.selectedLine = len(p.cachedResults) - 1
+	firstLine := p.selectedLine - (p.uiList.Height - 10)
+	if firstLine > 0 {
+		p.firstDisplayLine = firstLine
+	} else {
+		p.firstDisplayLine = 0
+	}
+}
+
 func (p *TicketShowPage) SelectItem() {
 	newTicketId := findTicketIdInString(p.cachedResults[p.selectedLine])
 	if newTicketId == "" {

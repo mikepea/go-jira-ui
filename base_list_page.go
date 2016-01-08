@@ -42,6 +42,21 @@ func (p *BaseListPage) NextPage() {
 	p.NextLine(p.uiList.Height - 2)
 }
 
+func (p *BaseListPage) TopOfPage() {
+	p.selectedLine = 0
+	p.firstDisplayLine = 0
+}
+
+func (p *BaseListPage) BottomOfPage() {
+	p.selectedLine = len(p.cachedResults) - 1
+	firstLine := p.selectedLine - (p.uiList.Height - 3)
+	if firstLine > 0 {
+		p.firstDisplayLine = firstLine
+	} else {
+		p.firstDisplayLine = 0
+	}
+}
+
 func (p *BaseListPage) lastDisplayedLine() int {
 	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 3)
 }

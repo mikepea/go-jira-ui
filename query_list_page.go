@@ -53,6 +53,16 @@ func (p *QueryPage) markActiveLine() {
 	}
 }
 
+func (p *QueryPage) BottomOfPage() {
+	p.selectedLine = len(p.cachedResults) - 1
+	firstLine := p.selectedLine - (p.uiList.Height - 3)
+	if firstLine > 0 {
+		p.firstDisplayLine = firstLine
+	} else {
+		p.firstDisplayLine = 0
+	}
+}
+
 func (p *QueryPage) SelectedQuery() Query {
 	return p.cachedResults[p.selectedLine]
 }
