@@ -81,6 +81,34 @@ func JiraTicketAsStrings(id string) []string {
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
+func WrapText(lines []string, maxWidth int) []string {
+	out := make([]string, 0)
+	for _, line := range lines {
+		if len(line) < maxWidth {
+			out = append(out, line)
+			continue
+		}
+		if matched, _ := regexp.MatchString(`^[a-z]+:\s`, line); matched {
+			// don't futz with single line field+value.
+			// If they are too long, that's their fault.
+			out = append(out, line)
+			continue
+		}
+		chars := strings.Split(line, "")
+		total := len(chars)
+		for i := 0; i < total/maxWidth; i++ {
+			start := i * maxWidth
+			end := (i + 1) * maxWidth
+			out = append(out, strings.Join(chars[start:end], ""))
+		}
+		if total%maxWidth > 0 {
+			start := (total / maxWidth) * maxWidth // integer div :)
+			out = append(out, strings.Join(chars[start:], ""))
+		}
+	}
+	return out
+}
+
 func parseYaml(file string, v map[string]interface{}) {
 	if fh, err := ioutil.ReadFile(file); err == nil {
 		log.Debug("Parsing YAML file: %s", file)
