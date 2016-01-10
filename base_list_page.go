@@ -66,8 +66,10 @@ func (p *BaseListPage) markActiveLine() {
 		selected := ""
 		if i == p.selectedLine {
 			selected = "fg-white,bg-blue"
+			p.displayLines[i] = fmt.Sprintf("[%s](%s)", v, selected)
+		} else {
+			p.displayLines[i] = v
 		}
-		p.displayLines[i] = fmt.Sprintf("[%s](%s)", v, selected)
 	}
 }
 

@@ -19,6 +19,8 @@ var baseQueries = []Query{
 	Query{"My Assigned Tickets", "assignee = currentUser() AND resolution = Unresolved"},
 	Query{"My Reported Tickets", "reporter = currentUser() AND resolution = Unresolved"},
 	Query{"My Watched Tickets", "watcher = currentUser() AND resolution = Unresolved"},
+	Query{"My Voted Tickets", "voter = currentUser() AND resolution = Unresolved"},
+	Query{"---", ""}, // no-op line in UI
 }
 
 func getQueries() (queries []Query) {
@@ -48,8 +50,10 @@ func (p *QueryPage) markActiveLine() {
 		selected := ""
 		if i == p.selectedLine {
 			selected = "fg-white,bg-blue"
+			p.displayLines[i] = fmt.Sprintf("[%-30s -- %s](%s)", v.Name, v.JQL, selected)
+		} else {
+			p.displayLines[i] = fmt.Sprintf("%-30s -- %s", v.Name, v.JQL)
 		}
-		p.displayLines[i] = fmt.Sprintf("[%-30s -- %s](%s)", v.Name, v.JQL, selected)
 	}
 }
 
@@ -68,6 +72,9 @@ func (p *QueryPage) SelectedQuery() Query {
 }
 
 func (p *QueryPage) SelectItem() {
+	if p.SelectedQuery().JQL == "" {
+		return
+	}
 	previousPage = currentPage
 	currentPage = &ticketListPage
 	changePage()
