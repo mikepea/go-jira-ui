@@ -1,0 +1,33 @@
+[issue:](fg-green) {{ .key }}
+[summary:](fg-green) {{ .fields.summary }}
+
+priority: {{ .fields.priority.name }}
+status: {{ .fields.status.name }}
+created: {{ .fields.created }}
+updated: {{ .fields.updated }}
+assignee: {{ if .fields.assignee }}{{ .fields.assignee.name }}{{end}}
+reporter: {{ if .fields.reporter }}{{ .fields.reporter.name }}{{end}}
+issuetype: {{ .fields.issuetype.name }}
+
+components: {{ range .fields.components }}  - {{ .name }}
+{{end}}
+watchers: {{ range .fields.watchers }}  - {{ .name }}
+{{end}}
+blockers: {{ range .fields.issuelinks }}{{if .outwardIssue}}  - {{ .outwardIssue.key }}[{{.outwardIssue.fields.status.name}}]{{end}}
+{{end}}
+depends: {{ range .fields.issuelinks }}{{if .inwardIssue}}  - {{ .inwardIssue.key }}[{{.inwardIssue.fields.status.name}}]{{end}}
+{{end}}
+labels: {{ range .fields.labels }}  - {{ . }}
+{{end}}
+
+[description:](fg-green)
+
+  {{ or .fields.description "" | indent 2 }}
+
+[comments:](fg-green)
+
+{{ range .fields.comment.comments }}
+  - [{{.author.name}} at {{.created}}](fg-green)
+    {{ or .body "" | indent 4}}
+
+{{end}}
