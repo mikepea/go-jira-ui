@@ -85,8 +85,15 @@ func JiraTicketAsStrings(id string) []string {
 
 func WrapText(lines []string, maxWidth int) []string {
 	out := make([]string, 0)
+	insideNoformatBlock := false
+	insideCodeBlock := false
 	for _, line := range lines {
-		if len(line) < maxWidth {
+		if matched, _ := regexp.MatchString(`^\s+\{code`, line); matched {
+			insideCodeBlock = !insideCodeBlock
+		} else if strings.TrimSpace(line) == "{noformat}" {
+			insideNoformatBlock = !insideNoformatBlock
+		}
+		if len(line) < maxWidth || insideCodeBlock || insideNoformatBlock {
 			out = append(out, line)
 			continue
 		}
