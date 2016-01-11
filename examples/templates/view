@@ -1,5 +1,5 @@
-[issue:](fg-green) {{ .key }}
-[summary:](fg-green) {{ .fields.summary }}
+issue: [{{ .key }}](fg-red)
+summary: [{{ .fields.summary }}](fg-blue)
 
 priority: {{ .fields.priority.name }}
 status: {{ .fields.status.name }}
@@ -9,15 +9,20 @@ assignee: {{ if .fields.assignee }}{{ .fields.assignee.name }}{{end}}
 reporter: {{ if .fields.reporter }}{{ .fields.reporter.name }}{{end}}
 issuetype: {{ .fields.issuetype.name }}
 
-components: {{ range .fields.components }}  - {{ .name }}
+[components:](fg-green)
+{{ range .fields.components }}  - {{ .name }}
 {{end}}
-watchers: {{ range .fields.watchers }}  - {{ .name }}
+[watchers:](fg-green)
+{{ range .fields.customfield_10304 }}  - {{ .name }}
 {{end}}
-blockers: {{ range .fields.issuelinks }}{{if .outwardIssue}}  - {{ .outwardIssue.key }}[{{.outwardIssue.fields.status.name}}]{{end}}
+[blockers:](fg-green)
+{{ range .fields.issuelinks }}{{if .outwardIssue}}  - {{ .outwardIssue.key }}[{{.outwardIssue.fields.status.name}}]{{end}}
 {{end}}
-depends: {{ range .fields.issuelinks }}{{if .inwardIssue}}  - {{ .inwardIssue.key }}[{{.inwardIssue.fields.status.name}}]{{end}}
+[depends:](fg-green)
+{{ range .fields.issuelinks }}{{if .inwardIssue}}  - {{ .inwardIssue.key }}[{{.inwardIssue.fields.status.name}}]{{end}}
 {{end}}
-labels: {{ range .fields.labels }}  - {{ . }}
+[labels:](fg-green)
+{{ range .fields.labels }}  - {{ . }}
 {{end}}
 
 [description:](fg-green)
@@ -27,7 +32,7 @@ labels: {{ range .fields.labels }}  - {{ . }}
 [comments:](fg-green)
 
 {{ range .fields.comment.comments }}
-  - [{{.author.name}} at {{.created}}](fg-green)
+  - [{{.author.name}} at {{.created}}](fg-blue)
     {{ or .body "" | indent 4}}
 
 {{end}}
