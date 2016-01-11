@@ -62,8 +62,6 @@ func JiraQueryAsStrings(query string) []string {
 	c := jira.New(opts)
 	data, _ := c.FindIssues()
 	buf := new(bytes.Buffer)
-	// TODO: this is a nasty hack, make it less so
-	// template must start {key} and (for labels view) end with '-- labels()'
 	template := c.GetTemplate("jira_ui_list")
 	if template == "" {
 		template = default_list_template
