@@ -1,8 +1,37 @@
 package main
 
 import (
+	"encoding/json"
 	"testing"
 )
+
+func TestCountLabelsFromQueryData(t *testing.T) {
+	var data interface{}
+	inputJSON := []byte(`{
+		  "issues": [
+				{ "fields": { "labels": [ "wibble", "bibble" ] } },
+				{ "fields": { "labels": [ "wibble", "bibble" ] } },
+				{ "fields": { "labels": [ "bibble" ] } }
+			]
+		}`)
+
+	expected := make(map[string]int)
+	expected["wibble"] = 2
+	expected["bibble"] = 3
+
+	err := json.Unmarshal(inputJSON, &data)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	actual := countLabelsFromQueryData(data)
+	if expected["wibble"] != actual["wibble"] {
+		t.Fatalf("wibble: expected %q, got %q", expected, actual)
+	}
+	if expected["bibble"] != actual["bibble"] {
+		t.Fatalf("bibble: expected %q, got %q", expected, actual)
+	}
+}
 
 func TestFindTicketIdInString(t *testing.T) {
 	var match string

@@ -13,8 +13,12 @@ import (
 )
 
 func countLabelsFromQuery(query string) map[string]int {
-	counts := make(map[string]int)
 	data, _ := runJiraQuery(query)
+	return countLabelsFromQueryData(data)
+}
+
+func countLabelsFromQueryData(data interface{}) map[string]int {
+	counts := make(map[string]int)
 	issues := data.(map[string]interface{})["issues"].([]interface{})
 	for _, issue := range issues {
 		issueLabels := issue.(map[string]interface{})["fields"].(map[string]interface{})["labels"]
