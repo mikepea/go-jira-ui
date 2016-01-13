@@ -23,9 +23,19 @@ This should be all that's needed to get going.
 * View tickets from the query
 * Edit/Comment on tickets from both list and detail view
 * Drill into sub/blocker/related/mentioned tickets in details view
+* Basic compatibility with go-jira commandline and options loading
 
 At present, edit and comment will exit after the update. This is a workaround
 to an implementation issue, being tracked in #9
+
+### Usage
+
+`jira-ui` is intended to mirror the options of go-jira's `jira` tool, where
+useful:
+
+    jira-ui             # opens up in Query List page. Default interface.
+    jira-ui ISSUE       # opens up Ticket Show page, with ISSUE loaded
+    jira-ui ls -q JQL   # opens up Ticket List page, with results of JQL loaded.
 
 ### Basic keys
 

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"github.com/Netflix-Skunkworks/go-jira"
+	"github.com/coryb/optigo"
 	ui "github.com/gizak/termui"
 	"github.com/op/go-logging"
 	"os"
@@ -84,10 +87,99 @@ var (
 	format = "%{color}%{time:2006-01-02T15:04:05.000Z07:00} %{level:-5s} [%{shortfile}]%{color:reset} %{message}"
 )
 
+var cliOpts map[string]interface{}
+
 func main() {
 
 	var err error
 	logging.SetLevel(logging.NOTICE, "")
+
+	usage := func(ok bool) {
+		printer := fmt.Printf
+		if !ok {
+			printer = func(format string, args ...interface{}) (int, error) {
+				return fmt.Fprintf(os.Stderr, format, args...)
+			}
+			defer func() {
+				os.Exit(1)
+			}()
+		} else {
+			defer func() {
+				os.Exit(0)
+			}()
+		}
+		output := fmt.Sprintf(`
+Usage:
+  jira-ui ls <Query Options> 
+  jira-ui ISSUE
+  jira-ui
+
+General Options:
+  -e --endpoint=URI   URI to use for jira
+  -h --help           Show this usage
+  -t --template=FILE  Template file to use for output/editing
+  -u --user=USER      Username to use for authenticaion
+  -v --verbose        Increase output logging
+  --version           Print version
+
+Query Options:
+  -q --query=JQL            Jira Query Language expression for the search
+  -f --queryfields=FIELDS   Fields that are used in "list" view
+
+`)
+		printer(output)
+	}
+
+	jiraCommands := map[string]string{
+		"list": "list",
+		"ls":   "list",
+	}
+
+	cliOpts = make(map[string]interface{})
+	setopt := func(name string, value interface{}) {
+		cliOpts[name] = value
+	}
+
+	op := optigo.NewDirectAssignParser(map[string]interface{}{
+		"h|help": usage,
+		"version": func() {
+			fmt.Println(fmt.Sprintf("version: %s", jira.VERSION))
+			os.Exit(0)
+		},
+		"v|verbose+": func() {
+			logging.SetLevel(logging.GetLevel("")+1, "")
+		},
+		"u|user=s":        setopt,
+		"endpoint=s":      setopt,
+		"q|query=s":       setopt,
+		"f|queryfields=s": setopt,
+	})
+
+	if err := op.ProcessAll(os.Args[1:]); err != nil {
+		log.Error("%s", err)
+		usage(false)
+	}
+	args := op.Args
+
+	var command string
+	if len(args) > 0 {
+		if alias, ok := jiraCommands[args[0]]; ok {
+			command = alias
+			args = args[1:]
+		} else {
+			command = "view"
+			args = args[0:]
+		}
+	} else {
+		command = "toplevel"
+	}
+
+	requireArgs := func(count int) {
+		if len(args) < count {
+			log.Error("Not enough arguments. %d required, %d provided", count, len(args))
+			usage(false)
+		}
+	}
 
 	err = ensureLoggedIntoJira()
 	if err != nil {
@@ -104,7 +196,29 @@ func main() {
 	registerKeyboardHandlers()
 
 	ticketQueryPage = new(QueryPage)
-	currentPage = ticketQueryPage
+
+	switch command {
+	case "list":
+		ticketListPage = new(TicketListPage)
+		if query := cliOpts["query"]; query == nil {
+			log.Error("Must supply a --query option to %q", command)
+			os.Exit(1)
+		} else {
+			ticketListPage.ActiveQuery.JQL = query.(string)
+			ticketListPage.ActiveQuery.Name = "adhoc"
+			currentPage = ticketListPage
+		}
+	case "view":
+		requireArgs(1)
+		p := new(TicketShowPage)
+		p.TicketId = args[0]
+		currentPage = p
+	case "toplevel":
+		currentPage = ticketQueryPage
+	default:
+		log.Error("Unknown command %s", command)
+		os.Exit(1)
+	}
 
 	for exitNow != true {
 

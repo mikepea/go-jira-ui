@@ -36,7 +36,11 @@ func (p *TicketShowPage) Id() string {
 
 func (p *TicketShowPage) GoBack() {
 	if len(p.TicketTrail) == 0 {
-		currentPage = ticketListPage
+		if ticketListPage != nil {
+			currentPage = ticketListPage
+		} else {
+			currentPage = ticketQueryPage
+		}
 	} else {
 		last := len(p.TicketTrail) - 1
 		currentPage = p.TicketTrail[last]
