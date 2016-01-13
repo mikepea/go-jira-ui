@@ -8,6 +8,7 @@ import (
 
 type TicketListPage struct {
 	BaseListPage
+	ActiveQuery Query
 }
 
 func (p *TicketListPage) GetSelectedTicketId() string {
@@ -15,17 +16,15 @@ func (p *TicketListPage) GetSelectedTicketId() string {
 }
 
 func (p *TicketListPage) SelectItem() {
-	previousPage = currentPage
 	q := new(TicketShowPage)
 	q.TicketId = p.GetSelectedTicketId()
-	currentPage = q
 	q.Create()
+	currentPage = q
 	changePage()
 }
 
 func (p *TicketListPage) GoBack() {
-	previousPage = currentPage
-	currentPage = &ticketQueryPage
+	currentPage = ticketQueryPage
 	changePage()
 }
 
@@ -37,31 +36,18 @@ func (p *TicketListPage) CommentTicket() {
 	runJiraCmdComment(p.GetSelectedTicketId())
 }
 
-func (p *TicketListPage) Create(opts ...interface{}) {
+func (p *TicketListPage) Create() {
 	ui.Clear()
-	var label string
-	var queryJQL string
-	var queryName string
-	if len(opts) > 0 {
-		if d, ok := opts[0].(map[string]string); ok {
-			label = d["label"]
-		}
-	}
 	ls := ui.NewList()
 	p.uiList = ls
 	p.selectedLine = 0
 	p.firstDisplayLine = 0
-	if label != "" {
-		queryName = ticketQueryPage.SelectedQuery().Name + "+" + label
-		queryJQL = ticketQueryPage.SelectedQuery().JQL + " AND labels = " + label
-	} else {
-		queryName = ticketQueryPage.SelectedQuery().Name
-		queryJQL = ticketQueryPage.SelectedQuery().JQL
+	if len(p.cachedResults) == 0 {
+		p.cachedResults = JiraQueryAsStrings(p.ActiveQuery.JQL)
 	}
-	p.cachedResults = JiraQueryAsStrings(queryJQL)
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = fmt.Sprintf("%s: %s", queryName, queryJQL)
+	ls.BorderLabel = fmt.Sprintf("%s: %s", p.ActiveQuery.Name, p.ActiveQuery.JQL)
 	ls.Height = ui.TermHeight()
 	ls.Width = ui.TermWidth()
 	ls.Y = 0

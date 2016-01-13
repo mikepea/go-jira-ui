@@ -36,8 +36,7 @@ func (p *TicketShowPage) Id() string {
 
 func (p *TicketShowPage) GoBack() {
 	if len(p.TicketTrail) == 0 {
-		previousPage = currentPage
-		currentPage = &ticketListPage
+		currentPage = ticketListPage
 	} else {
 		last := len(p.TicketTrail) - 1
 		currentPage = p.TicketTrail[last]
@@ -61,7 +60,7 @@ func (p *TicketShowPage) ticketTrailAsString() (trail string) {
 	return trail
 }
 
-func (p *TicketShowPage) Create(opts ...interface{}) {
+func (p *TicketShowPage) Create() {
 	if p.TicketId == "" {
 		p.TicketId = ticketListPage.GetSelectedTicketId()
 	}

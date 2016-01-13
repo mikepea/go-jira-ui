@@ -8,6 +8,7 @@ import (
 type LabelListPage struct {
 	BaseListPage
 	labelCounts map[string]int
+	ActiveQuery Query
 }
 
 func (p *LabelListPage) labelsAsSortedList() []string {
@@ -24,11 +25,12 @@ func (p *LabelListPage) labelsAsSortedListWithCounts() []string {
 }
 
 func (p *LabelListPage) SelectItem() {
-	previousPage = currentPage
-	currentPage = &ticketListPage
-	opts := make(map[string]string)
-	opts["label"] = p.cachedResults[p.selectedLine]
-	changePage(opts)
+	label := p.cachedResults[p.selectedLine]
+	q := new(TicketListPage)
+	q.ActiveQuery.Name = ticketListPage.ActiveQuery.Name + "+" + label
+	q.ActiveQuery.JQL = ticketListPage.ActiveQuery.JQL + " AND labels = " + label
+	currentPage = q
+	changePage()
 }
 
 func (p *LabelListPage) markActiveLine() {
@@ -42,8 +44,7 @@ func (p *LabelListPage) markActiveLine() {
 }
 
 func (p *LabelListPage) GoBack() {
-	previousPage = currentPage
-	currentPage = &ticketListPage
+	currentPage = ticketListPage
 	changePage()
 }
 
@@ -54,14 +55,14 @@ func (p *LabelListPage) Update() {
 	ui.Render(ls)
 }
 
-func (p *LabelListPage) Create(opts ...interface{}) {
+func (p *LabelListPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
 	p.selectedLine = 0
 	p.firstDisplayLine = 0
-	queryName := ticketQueryPage.SelectedQuery().Name
-	queryJQL := ticketQueryPage.SelectedQuery().JQL
+	queryName := p.ActiveQuery.Name
+	queryJQL := p.ActiveQuery.JQL
 	p.labelCounts = countLabelsFromQuery(queryJQL)
 	p.cachedResults = p.labelsAsSortedList()
 	p.displayLines = make([]string, len(p.cachedResults))

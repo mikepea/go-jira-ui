@@ -62,12 +62,14 @@ func registerKeyboardHandlers() {
 }
 
 func handleLabelViewKey() {
-	switch currentPage.(type) {
+	switch page := currentPage.(type) {
 	case *TicketListPage:
-		previousPage = currentPage
-		currentPage = &labelListPage
+		q := new(LabelListPage)
+		q.ActiveQuery = page.ActiveQuery
+		currentPage = q
+		changePage()
 	}
-	changePage()
+	return
 }
 
 func handleEditKey() {

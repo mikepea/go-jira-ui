@@ -75,8 +75,10 @@ func (p *QueryPage) SelectItem() {
 	if p.SelectedQuery().JQL == "" {
 		return
 	}
-	previousPage = currentPage
-	currentPage = &ticketListPage
+	q := new(TicketListPage)
+	q.ActiveQuery = p.SelectedQuery()
+	ticketListPage = q
+	currentPage = ticketListPage
 	changePage()
 }
 
@@ -87,7 +89,7 @@ func (p *QueryPage) Update() {
 	ui.Render(ls)
 }
 
-func (p *QueryPage) Create(opts ...interface{}) {
+func (p *QueryPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls

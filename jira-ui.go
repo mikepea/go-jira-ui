@@ -47,7 +47,7 @@ type PagePager interface {
 }
 
 type Navigable interface {
-	Create(...interface{})
+	Create()
 	Update()
 	PreviousLine(int)
 	NextLine(int)
@@ -57,30 +57,25 @@ type Navigable interface {
 }
 
 var currentPage Navigable
-var previousPage Navigable
 
-var ticketQueryPage QueryPage
-var ticketListPage TicketListPage
-var labelListPage LabelListPage
+var ticketQueryPage *QueryPage
+var ticketListPage *TicketListPage
+var labelListPage *LabelListPage
 
-func changePage(opts ...interface{}) {
-	newopts := make(map[string]string)
-	if len(opts) > 0 {
-		newopts = opts[0].(map[string]string)
-	}
+func changePage() {
 	switch currentPage.(type) {
 	case *QueryPage:
-		log.Noticef("changePage: QueryPage %s", currentPage.Id())
-		currentPage.Create(newopts)
+		log.Debugf("changePage: QueryPage %s (%p)", currentPage.Id(), currentPage)
+		currentPage.Create()
 	case *TicketListPage:
-		log.Noticef("changePage: TicketListPage %s", currentPage.Id())
-		currentPage.Create(newopts)
+		log.Debugf("changePage: TicketListPage %s (%p)", currentPage.Id(), currentPage)
+		currentPage.Create()
 	case *LabelListPage:
-		log.Noticef("changePage: LabelListPage %s", currentPage.Id())
-		currentPage.Create(newopts)
+		log.Debugf("changePage: LabelListPage %s (%p)", currentPage.Id(), currentPage)
+		currentPage.Create()
 	case *TicketShowPage:
-		log.Noticef("changePage: TicketShowPage %s", currentPage.Id())
-		currentPage.Create(newopts)
+		log.Debugf("changePage: TicketShowPage %s (%p)", currentPage.Id(), currentPage)
+		currentPage.Create()
 	}
 }
 
@@ -108,7 +103,8 @@ func main() {
 
 	registerKeyboardHandlers()
 
-	currentPage = &ticketQueryPage
+	ticketQueryPage = new(QueryPage)
+	currentPage = ticketQueryPage
 
 	for exitNow != true {
 
