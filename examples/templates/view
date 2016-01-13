@@ -1,28 +1,26 @@
 issue: [{{ .key }}](fg-red)
 summary: [{{ .fields.summary }}](fg-blue)
 
+self: {{ .self }}
+browse: https://jira.example.com/browse/{{ .key }}
 priority: {{ .fields.priority.name }}
 status: {{ .fields.status.name }}
+votes: {{ .fields.votes.votes }}
 created: {{ .fields.created }}
 updated: {{ .fields.updated }}
 assignee: {{ if .fields.assignee }}{{ .fields.assignee.name }}{{end}}
 reporter: {{ if .fields.reporter }}{{ .fields.reporter.name }}{{end}}
 issuetype: {{ .fields.issuetype.name }}
+epic: {{ .fields.customfield_10001 }}
 
-[components:](fg-green)
-{{ range .fields.components }}  - {{ .name }}
-{{end}}
-[watchers:](fg-green)
-{{ range .fields.customfield_10304 }}  - {{ .name }}
-{{end}}
+[labels:](fg-green){{ range .fields.labels }} {{ . }}{{end}}
+[components:](fg-green){{ range .fields.components }} {{ .name }}{{end}}
+[watchers:](fg-green){{ range .fields.customfield_10304 }} {{ .name }}{{end}}
 [blockers:](fg-green)
 {{ range .fields.issuelinks }}{{if .outwardIssue}}  - {{ .outwardIssue.key }}[{{.outwardIssue.fields.status.name}}]{{end}}
 {{end}}
 [depends:](fg-green)
 {{ range .fields.issuelinks }}{{if .inwardIssue}}  - {{ .inwardIssue.key }}[{{.inwardIssue.fields.status.name}}]{{end}}
-{{end}}
-[labels:](fg-green)
-{{ range .fields.labels }}  - {{ . }}
 {{end}}
 
 [description:](fg-green)
