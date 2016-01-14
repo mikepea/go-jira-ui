@@ -49,7 +49,7 @@ func runJiraCmdComment(ticketId string) {
 }
 
 func findTicketIdInString(line string) string {
-	re := regexp.MustCompile(`\s[A-Z]{3,12}-[0-9]{1,6}`) // no \s at end, need to match BLAH-123[Done]
+	re := regexp.MustCompile(`[A-Z]{3,12}-[0-9]{1,6}`)
 	return strings.TrimSpace(re.FindString(line))
 }
 
