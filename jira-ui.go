@@ -42,6 +42,8 @@ type TicketCommenter interface {
 type PagePager interface {
 	NextLine(int)
 	PreviousLine(int)
+	NextPara()
+	PreviousPara()
 	NextPage()
 	PreviousPage()
 	TopOfPage()

@@ -57,6 +57,34 @@ func (p *QueryPage) markActiveLine() {
 	}
 }
 
+func (p *QueryPage) PreviousPara() {
+	newDisplayLine := 0
+	if p.selectedLine == 0 {
+		return
+	}
+	for i := p.selectedLine - 1; i > 0; i-- {
+		if p.cachedResults[i].JQL == "" {
+			newDisplayLine = i
+			break
+		}
+	}
+	p.PreviousLine(p.selectedLine - newDisplayLine)
+}
+
+func (p *QueryPage) NextPara() {
+	newDisplayLine := len(p.cachedResults) - 1
+	if p.selectedLine == newDisplayLine {
+		return
+	}
+	for i := p.selectedLine + 1; i < len(p.cachedResults); i++ {
+		if p.cachedResults[i].JQL == "" {
+			newDisplayLine = i
+			break
+		}
+	}
+	p.NextLine(newDisplayLine - p.selectedLine)
+}
+
 func (p *QueryPage) BottomOfPage() {
 	p.selectedLine = len(p.cachedResults) - 1
 	firstLine := p.selectedLine - (p.uiList.Height - 3)

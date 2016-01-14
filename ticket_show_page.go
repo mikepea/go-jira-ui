@@ -42,6 +42,34 @@ func (p *TicketShowPage) Id() string {
 	return p.TicketId
 }
 
+func (p *TicketShowPage) PreviousPara() {
+	newDisplayLine := 0
+	if p.selectedLine == 0 {
+		return
+	}
+	for i := p.selectedLine - 1; i > 0; i-- {
+		if ok, _ := regexp.MatchString(`^\s*$`, p.cachedResults[i]); ok {
+			newDisplayLine = i
+			break
+		}
+	}
+	p.PreviousLine(p.selectedLine - newDisplayLine)
+}
+
+func (p *TicketShowPage) NextPara() {
+	newDisplayLine := len(p.cachedResults) - 1
+	if p.selectedLine == newDisplayLine {
+		return
+	}
+	for i := p.selectedLine + 1; i < len(p.cachedResults); i++ {
+		if ok, _ := regexp.MatchString(`^\s*$`, p.cachedResults[i]); ok {
+			newDisplayLine = i
+			break
+		}
+	}
+	p.NextLine(newDisplayLine - p.selectedLine)
+}
+
 func (p *TicketShowPage) GoBack() {
 	if len(p.TicketTrail) == 0 {
 		if ticketListPage != nil {

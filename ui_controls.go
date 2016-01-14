@@ -17,6 +17,12 @@ func registerKeyboardHandlers() {
 		ui.Close()
 		os.Exit(0)
 	})
+	ui.Handle("/sys/kbd/}", func(ui.Event) {
+		handleParaDownKey()
+	})
+	ui.Handle("/sys/kbd/{", func(ui.Event) {
+		handleParaUpKey()
+	})
 	ui.Handle("/sys/kbd/j", func(ui.Event) {
 		handleDownKey()
 	})
@@ -141,6 +147,20 @@ func handlePageUpKey() {
 func handlePageDownKey() {
 	if obj, ok := currentPage.(PagePager); ok {
 		obj.NextPage()
+		obj.Update()
+	}
+}
+
+func handleParaUpKey() {
+	if obj, ok := currentPage.(PagePager); ok {
+		obj.PreviousPara()
+		obj.Update()
+	}
+}
+
+func handleParaDownKey() {
+	if obj, ok := currentPage.(PagePager); ok {
+		obj.NextPara()
 		obj.Update()
 	}
 }

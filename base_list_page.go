@@ -34,6 +34,14 @@ func (p *BaseListPage) NextLine(n int) {
 	}
 }
 
+func (p *BaseListPage) PreviousPara() {
+	p.PreviousLine(5)
+}
+
+func (p *BaseListPage) NextPara() {
+	p.NextLine(5)
+}
+
 func (p *BaseListPage) PreviousPage() {
 	p.PreviousLine(p.uiList.Height - 2)
 }
