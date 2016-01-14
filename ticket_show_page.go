@@ -78,7 +78,9 @@ func (p *TicketShowPage) Create() {
 		p.TicketId = ticketListPage.GetSelectedTicketId()
 	}
 	if p.MaxWrapWidth == 0 {
-		p.MaxWrapWidth = int(p.opts["max_wrap"].(int64))
+		if m := p.opts["max_wrap"]; m != nil {
+			p.MaxWrapWidth = int(m.(int64))
+		}
 	}
 	ui.Clear()
 	ls := ui.NewList()
