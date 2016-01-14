@@ -23,6 +23,7 @@ This should be all that's needed to get going.
 * View tickets from the query
 * Edit/Comment on tickets from both list and detail view
 * Drill into sub/blocker/related/mentioned tickets in details view
+* Show open tickets in an Epic.
 * Basic compatibility with [go-jira](https://github.com/Netflix-Skunkworks/go-jira) commandline and options loading
 
 At present, edit and comment will exit after the update. This is a workaround
