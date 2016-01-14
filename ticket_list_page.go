@@ -16,6 +16,9 @@ func (p *TicketListPage) GetSelectedTicketId() string {
 }
 
 func (p *TicketListPage) SelectItem() {
+	if len(p.cachedResults) == 0 {
+		return
+	}
 	q := new(TicketShowPage)
 	q.TicketId = p.GetSelectedTicketId()
 	q.Create()
