@@ -37,6 +37,7 @@ useful:
     jira-ui             # opens up in Query List page. Default interface.
     jira-ui ISSUE       # opens up Ticket Show page, with ISSUE loaded
     jira-ui ls -q JQL   # opens up Ticket List page, with results of JQL loaded.
+    jira-ui -h          # help page
 
 ### Basic keys
 

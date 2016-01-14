@@ -123,6 +123,7 @@ General Options:
 
 Ticket View Options:
   -t --template=FILE  Template file to use for viewing tickets
+  -m --max_wrap=VAL   Maximum word-wrap width when viewing ticket text (0 disables)
 
 Query Options:
   -q --query=JQL            Jira Query Language expression for the search
@@ -156,6 +157,7 @@ Query Options:
 		"q|query=s":       setopt,
 		"f|queryfields=s": setopt,
 		"t|template=s":    setopt,
+		"m|max_wrap=i":    setopt,
 	})
 
 	if err := op.ProcessAll(os.Args[1:]); err != nil {

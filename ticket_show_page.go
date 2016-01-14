@@ -6,16 +6,14 @@ import (
 	"regexp"
 )
 
-const (
-	MaxWrapWidth = 78
-)
-
 type TicketShowPage struct {
 	BaseListPage
-	TicketId    string
-	Template    string
-	TicketTrail []*TicketShowPage // previously viewed tickets in drill-down
-	WrapWidth   int
+	MaxWrapWidth int
+	TicketId     string
+	Template     string
+	TicketTrail  []*TicketShowPage // previously viewed tickets in drill-down
+	WrapWidth    int
+	opts         map[string]interface{}
 }
 
 func (p *TicketShowPage) SelectItem() {
@@ -79,6 +77,9 @@ func (p *TicketShowPage) Create() {
 	if p.TicketId == "" {
 		p.TicketId = ticketListPage.GetSelectedTicketId()
 	}
+	if p.MaxWrapWidth == 0 {
+		p.MaxWrapWidth = int(p.opts["max_wrap"].(int64))
+	}
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
@@ -91,10 +92,10 @@ func (p *TicketShowPage) Create() {
 			p.Template = templateOpt.(string)
 		}
 	}
-	if ui.TermWidth()-3 < MaxWrapWidth {
+	if ui.TermWidth()-3 < p.MaxWrapWidth {
 		p.WrapWidth = ui.TermWidth() - 3
 	} else {
-		p.WrapWidth = MaxWrapWidth
+		p.WrapWidth = p.MaxWrapWidth
 	}
 	if len(p.cachedResults) == 0 {
 		p.cachedResults = WrapText(JiraTicketAsStrings(p.TicketId, p.Template), p.WrapWidth)
