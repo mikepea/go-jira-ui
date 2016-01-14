@@ -117,6 +117,14 @@ func (p *QueryPage) Update() {
 	ui.Render(ls)
 }
 
+func (p *QueryPage) Refresh() {
+	pDeref := &p
+	q := *pDeref
+	q.cachedResults = make([]Query, 0)
+	q.Create()
+	changePage()
+}
+
 func (p *QueryPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()

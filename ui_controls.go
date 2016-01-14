@@ -9,6 +9,9 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/q", func(ui.Event) {
 		handleBackKey()
 	})
+	ui.Handle("/sys/kbd/C-r", func(ui.Event) {
+		handleRefreshKey()
+	})
 	ui.Handle("/sys/kbd/C-c", func(ui.Event) {
 		ui.Close()
 		os.Exit(0)
@@ -76,6 +79,12 @@ func handleLabelViewKey() {
 		changePage()
 	}
 	return
+}
+
+func handleRefreshKey() {
+	if obj, ok := currentPage.(Refresher); ok {
+		obj.Refresh()
+	}
 }
 
 func handleEditKey() {

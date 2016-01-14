@@ -95,6 +95,14 @@ func (p *BaseListPage) Update() {
 	ui.Render(ls)
 }
 
+func (p *BaseListPage) Refresh() {
+	pDeref := &p
+	q := *pDeref
+	q.cachedResults = make([]string, 0)
+	q.Create()
+	changePage()
+}
+
 func (p *BaseListPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
@@ -104,7 +112,7 @@ func (p *BaseListPage) Create() {
 	p.cachedResults = make([]string, 0)
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = "Base List -- Do Not Use"
+	ls.BorderLabel = "Updating, please wait"
 	ls.Height = ui.TermHeight()
 	ls.Width = ui.TermWidth()
 	ls.Y = 0

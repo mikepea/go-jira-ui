@@ -27,6 +27,10 @@ type GoBacker interface {
 	GoBack()
 }
 
+type Refresher interface {
+	Refresh()
+}
+
 type ItemSelecter interface {
 	SelectItem()
 }
