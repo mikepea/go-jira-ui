@@ -187,6 +187,13 @@ func getJiraOpts() map[string]interface{} {
 		"quiet":       true,
 	}
 
+	for k, v := range cliOpts {
+		if _, ok := opts[k]; !ok {
+			log.Debug("Setting %q to %#v from cli options", k, v)
+			opts[k] = v
+		}
+	}
+
 	loadConfigs(opts)
 	for k, v := range defaults {
 		if _, ok := opts[k]; !ok {

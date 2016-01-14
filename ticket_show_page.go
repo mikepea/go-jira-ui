@@ -75,6 +75,7 @@ func (p *TicketShowPage) ticketTrailAsString() (trail string) {
 }
 
 func (p *TicketShowPage) Create() {
+	p.opts = getJiraOpts()
 	if p.TicketId == "" {
 		p.TicketId = ticketListPage.GetSelectedTicketId()
 	}
@@ -84,7 +85,11 @@ func (p *TicketShowPage) Create() {
 	p.selectedLine = 0
 	p.firstDisplayLine = 0
 	if p.Template == "" {
-		p.Template = "view"
+		if templateOpt := p.opts["template"]; templateOpt == nil {
+			p.Template = "view"
+		} else {
+			p.Template = templateOpt.(string)
+		}
 	}
 	if ui.TermWidth()-3 < MaxWrapWidth {
 		p.WrapWidth = ui.TermWidth() - 3

@@ -117,10 +117,12 @@ Usage:
 General Options:
   -e --endpoint=URI   URI to use for jira
   -h --help           Show this usage
-  -t --template=FILE  Template file to use for output/editing
   -u --user=USER      Username to use for authenticaion
   -v --verbose        Increase output logging
   --version           Print version
+
+Ticket View Options:
+  -t --template=FILE  Template file to use for viewing tickets
 
 Query Options:
   -q --query=JQL            Jira Query Language expression for the search
@@ -153,6 +155,7 @@ Query Options:
 		"endpoint=s":      setopt,
 		"q|query=s":       setopt,
 		"f|queryfields=s": setopt,
+		"t|template=s":    setopt,
 	})
 
 	if err := op.ProcessAll(os.Args[1:]); err != nil {
