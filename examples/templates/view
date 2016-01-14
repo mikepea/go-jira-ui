@@ -11,21 +11,21 @@ updated: {{ .fields.updated }}
 assignee: {{ if .fields.assignee }}{{ .fields.assignee.name }}{{end}}
 reporter: {{ if .fields.reporter }}{{ .fields.reporter.name }}{{end}}
 issuetype: {{ .fields.issuetype.name }}
-{{if eq .fields.issuetype.name "Epic" }}epic_links: [<click here to show>](fg,red){{end}}
-{{if .fields.customfield_10001 }}epic: {{ .fields.customfield_10001 }}{{end}}
-parent: {{ .fields.parent.key }} {{ if .fields.parent.key }} -- {{ .fields.parent.fields.summary }}{{end}}
+{{if eq .fields.issuetype.name "Epic" }}epic_links: [<click here to show>](fg-red){{end}}
+{{if .fields.customfield_10001 }}epic: [{{ .fields.customfield_10001 }}](fg-red){{end}}
+{{if .fields.parent }}parent: {{ .fields.parent.key }} -- {{ .fields.parent.fields.summary }}{{end}}
 subtasks:
-{{ range .fields.subtasks }}  - {{ .key }}[{{.fields.status.name}}] -- {{.fields.summary}}
+{{ range .fields.subtasks }}  - [{{ .key }}](fg-red)[{{.fields.status.name}}] -- {{.fields.summary}}
 {{end}}
 
 [labels:](fg-green){{ range .fields.labels }} {{ . }}{{end}}
 [components:](fg-green){{ range .fields.components }} {{ .name }}{{end}}
 [watchers:](fg-green){{ range .fields.customfield_10304 }} {{ .name }}{{end}}
 [blockers:](fg-green)
-{{ range .fields.issuelinks }}{{if .outwardIssue}}  - [{{ .outwardIssue.key }}](fg-red)[{{.outwardIssue.fields.status.name}}]
+{{ range .fields.issuelinks }}{{if .outwardIssue}}  - [{{ .outwardIssue.key }}](fg-red)[{{.outwardIssue.fields.status.name}} -- {{.outwardIssue.fields.summary}}
 {{end}}{{end}}
 [depends:](fg-green)
-{{ range .fields.issuelinks }}{{if .inwardIssue}}  - {{ .inwardIssue.key }}[{{.inwardIssue.fields.status.name}}]
+{{ range .fields.issuelinks }}{{if .inwardIssue}}  - [{{ .inwardIssue.key }}](fg-red)[{{.inwardIssue.fields.status.name}}] -- {{.inwardIssue.fields.summary}}
 {{end}}{{end}}
 
 [description:](fg-green)
