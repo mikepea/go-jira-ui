@@ -11,17 +11,22 @@ updated: {{ .fields.updated }}
 assignee: {{ if .fields.assignee }}{{ .fields.assignee.name }}{{end}}
 reporter: {{ if .fields.reporter }}{{ .fields.reporter.name }}{{end}}
 issuetype: {{ .fields.issuetype.name }}
-epic: {{ .fields.customfield_10001 }}
+{{if eq .fields.issuetype.name "Epic" }}epic_links: [<click here to show>](fg,red){{end}}
+{{if .fields.customfield_10001 }}epic: {{ .fields.customfield_10001 }}{{end}}
+parent: {{ .fields.parent.key }} {{ if .fields.parent.key }} -- {{ .fields.parent.fields.summary }}{{end}}
+subtasks:
+{{ range .fields.subtasks }}  - {{ .key }}[{{.fields.status.name}}] -- {{.fields.summary}}
+{{end}}
 
 [labels:](fg-green){{ range .fields.labels }} {{ . }}{{end}}
 [components:](fg-green){{ range .fields.components }} {{ .name }}{{end}}
 [watchers:](fg-green){{ range .fields.customfield_10304 }} {{ .name }}{{end}}
 [blockers:](fg-green)
-{{ range .fields.issuelinks }}{{if .outwardIssue}}  - {{ .outwardIssue.key }}[{{.outwardIssue.fields.status.name}}]{{end}}
-{{end}}
+{{ range .fields.issuelinks }}{{if .outwardIssue}}  - [{{ .outwardIssue.key }}](fg-red)[{{.outwardIssue.fields.status.name}}]
+{{end}}{{end}}
 [depends:](fg-green)
-{{ range .fields.issuelinks }}{{if .inwardIssue}}  - {{ .inwardIssue.key }}[{{.inwardIssue.fields.status.name}}]{{end}}
-{{end}}
+{{ range .fields.issuelinks }}{{if .inwardIssue}}  - {{ .inwardIssue.key }}[{{.inwardIssue.fields.status.name}}]
+{{end}}{{end}}
 
 [description:](fg-green)
 
