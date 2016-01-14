@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	ui "github.com/gizak/termui"
+	"regexp"
 )
 
 const (
@@ -17,16 +18,24 @@ type TicketShowPage struct {
 }
 
 func (p *TicketShowPage) SelectItem() {
-	newTicketId := findTicketIdInString(p.cachedResults[p.selectedLine])
-	if newTicketId == "" {
-		return
-	} else if newTicketId == p.TicketId {
-		return
+	selected := p.cachedResults[p.selectedLine]
+	if ok, _ := regexp.MatchString(`^epic_links:`, selected); ok {
+		q := new(TicketListPage)
+		q.ActiveQuery.Name = fmt.Sprintf("Open Tasks in Epic %s", p.TicketId)
+		q.ActiveQuery.JQL = fmt.Sprintf("\"Epic Link\" = %s AND resolution = Unresolved", p.TicketId)
+		currentPage = q
+	} else {
+		newTicketId := findTicketIdInString(selected)
+		if newTicketId == "" {
+			return
+		} else if newTicketId == p.TicketId {
+			return
+		}
+		q := new(TicketShowPage)
+		q.TicketId = newTicketId
+		q.TicketTrail = append(p.TicketTrail, p)
+		currentPage = q
 	}
-	q := new(TicketShowPage)
-	q.TicketId = newTicketId
-	q.TicketTrail = append(p.TicketTrail, p)
-	currentPage = q
 	changePage()
 }
 
