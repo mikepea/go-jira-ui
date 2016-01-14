@@ -13,6 +13,7 @@ const (
 type TicketShowPage struct {
 	BaseListPage
 	TicketId    string
+	Template    string
 	TicketTrail []*TicketShowPage // previously viewed tickets in drill-down
 	WrapWidth   int
 }
@@ -82,13 +83,16 @@ func (p *TicketShowPage) Create() {
 	p.uiList = ls
 	p.selectedLine = 0
 	p.firstDisplayLine = 0
+	if p.Template == "" {
+		p.Template = "view"
+	}
 	if ui.TermWidth()-3 < MaxWrapWidth {
 		p.WrapWidth = ui.TermWidth() - 3
 	} else {
 		p.WrapWidth = MaxWrapWidth
 	}
 	if len(p.cachedResults) == 0 {
-		p.cachedResults = WrapText(JiraTicketAsStrings(p.TicketId), p.WrapWidth)
+		p.cachedResults = WrapText(JiraTicketAsStrings(p.TicketId, p.Template), p.WrapWidth)
 	}
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
