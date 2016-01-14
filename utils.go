@@ -93,7 +93,7 @@ func WrapText(lines []string, maxWidth int) []string {
 		} else if strings.TrimSpace(line) == "{noformat}" {
 			insideNoformatBlock = !insideNoformatBlock
 		}
-		if len(line) < maxWidth || insideCodeBlock || insideNoformatBlock {
+		if maxWidth == 0 || len(line) < maxWidth || insideCodeBlock || insideNoformatBlock {
 			out = append(out, line)
 			continue
 		}
