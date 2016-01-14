@@ -23,10 +23,10 @@ This should be all that's needed to get going.
 * View tickets from the query
 * Edit/Comment on tickets from both list and detail view
 * Drill into sub/blocker/related/mentioned tickets in details view
-* Basic compatibility with go-jira commandline and options loading
+* Basic compatibility with [go-jira](https://github.com/Netflix-Skunkworks/go-jira) commandline and options loading
 
 At present, edit and comment will exit after the update. This is a workaround
-to an implementation issue, being tracked in #9
+to an implementation issue, being tracked in [#8](https://github.com/mikepea/go-jira-ui/issues/8)
 
 ### Usage
 
