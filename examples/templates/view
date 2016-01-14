@@ -13,7 +13,7 @@ reporter: {{ if .fields.reporter }}{{ .fields.reporter.name }}{{end}}
 issuetype: {{ .fields.issuetype.name }}
 {{if eq .fields.issuetype.name "Epic" }}epic_links: [<click here to show>](fg-red){{end}}
 {{if .fields.customfield_10001 }}epic: [{{ .fields.customfield_10001 }}](fg-red){{end}}
-{{if .fields.parent }}parent: {{ .fields.parent.key }} -- {{ .fields.parent.fields.summary }}{{end}}
+{{if .fields.parent }}parent: [{{ .fields.parent.key }}](fg-red) -- {{ .fields.parent.fields.summary }}{{end}}
 subtasks:
 {{ range .fields.subtasks }}  - [{{ .key }}](fg-red)[{{.fields.status.name}}] -- {{.fields.summary}}
 {{end}}
