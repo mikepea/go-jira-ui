@@ -54,6 +54,8 @@ Navigation:
     down/j       - next line
     C-f/<space>  - next page
     C-b          - previous page
+    }            - next paragraph/section/fast-move
+    {            - previous paragraph/section/fast-move
     g            - go to top of page
     G            - go to bottom of page
     q            - go back / quit
