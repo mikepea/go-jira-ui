@@ -1,4 +1,6 @@
 jira-ui
 src/
+bin/
+pkg/
 .jira.d
 *.swp
