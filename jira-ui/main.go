@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mikepea/go-jira-ui/jiraui"
+	"github.com/mikepea/go-jira-ui"
 )
 
 func main() {
