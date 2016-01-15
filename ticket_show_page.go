@@ -6,6 +6,10 @@ import (
 	"regexp"
 )
 
+const (
+	defaultMaxWrapWidth = 100
+)
+
 type TicketShowPage struct {
 	BaseListPage
 	MaxWrapWidth int
@@ -108,6 +112,8 @@ func (p *TicketShowPage) Create() {
 	if p.MaxWrapWidth == 0 {
 		if m := p.opts["max_wrap"]; m != nil {
 			p.MaxWrapWidth = int(m.(int64))
+		} else {
+			p.MaxWrapWidth = defaultMaxWrapWidth
 		}
 	}
 	ui.Clear()
