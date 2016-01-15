@@ -1,4 +1,4 @@
-package main
+package jiraui
 
 import (
 	ui "github.com/gizak/termui"

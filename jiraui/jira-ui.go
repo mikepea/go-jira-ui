@@ -1,4 +1,4 @@
-package main
+package jiraui
 
 import (
 	"fmt"
@@ -95,7 +95,7 @@ var (
 
 var cliOpts map[string]interface{}
 
-func main() {
+func Run() {
 
 	var err error
 	logging.SetLevel(logging.NOTICE, "")
