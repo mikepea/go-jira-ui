@@ -3,6 +3,7 @@ package jiraui
 import (
 	"fmt"
 	ui "github.com/gizak/termui"
+	"regexp"
 )
 
 type BaseListPage struct {
@@ -76,6 +77,9 @@ func (p *BaseListPage) markActiveLine() {
 			selected = "fg-white,bg-blue"
 			if v == "" {
 				v = " "
+			} else if ok, _ := regexp.MatchString(`\[.+\]\((fg|bg)-[a-z]{1,6}\)`, v); ok {
+				r := regexp.MustCompile(`\[(.*?)\]\((fg|bg)-[a-z]{1,6}\)`)
+				v = r.ReplaceAllString(v, `$1`)
 			}
 			p.displayLines[i] = fmt.Sprintf("[%s](%s)", v, selected)
 		} else {
