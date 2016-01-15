@@ -74,12 +74,17 @@ func JiraQueryAsStrings(query string) []string {
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
-func JiraTicketAsStrings(id string, template string) []string {
+func JiraTicketAsStrings(id string, templateName string) []string {
 	opts := getJiraOpts()
 	c := jira.New(opts)
 	data, _ := c.ViewIssue(id)
 	buf := new(bytes.Buffer)
-	jira.RunTemplate(c.GetTemplate(template), data, buf)
+	template := c.GetTemplate(templateName)
+	log.Debug("JiraTicketsAsStrings: template = %q", template)
+	if template == "" {
+		template = strings.Replace(default_view_template, "ENDPOINT", opts["endpoint"].(string), 1)
+	}
+	jira.RunTemplate(template, data, buf)
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 

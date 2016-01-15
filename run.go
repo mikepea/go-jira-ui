@@ -16,11 +16,6 @@ const (
 	ticketShow  = iota
 )
 
-const (
-	default_list_template = `{{ range .issues }}{{ .key | printf "%-20s"}}  {{ dateFormat "2006-01-02" .fields.created }}/{{ dateFormat "2006-01-02T15:04" .fields.updated }}  {{ .fields.summary | printf "%-75s"}} -- labels({{ join "," .fields.labels }})
-{{ end }}`
-)
-
 var exitNow = false
 
 type GoBacker interface {

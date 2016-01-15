@@ -117,7 +117,7 @@ func (p *TicketShowPage) Create() {
 	p.firstDisplayLine = 0
 	if p.Template == "" {
 		if templateOpt := p.opts["template"]; templateOpt == nil {
-			p.Template = "view"
+			p.Template = "jira_ui_view"
 		} else {
 			p.Template = templateOpt.(string)
 		}
