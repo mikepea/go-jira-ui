@@ -6,8 +6,9 @@ import (
 )
 
 type Query struct {
-	Name string
-	JQL  string
+	Name     string
+	JQL      string
+	Template string
 }
 
 type QueryPage struct {
@@ -16,11 +17,11 @@ type QueryPage struct {
 }
 
 var baseQueries = []Query{
-	Query{"My Assigned Tickets", "assignee = currentUser() AND resolution = Unresolved"},
-	Query{"My Reported Tickets", "reporter = currentUser() AND resolution = Unresolved"},
-	Query{"My Watched Tickets", "watcher = currentUser() AND resolution = Unresolved"},
-	Query{"My Voted Tickets", "voter = currentUser() AND resolution = Unresolved"},
-	Query{"---", ""}, // no-op line in UI
+	Query{"My Assigned Tickets", "assignee = currentUser() AND resolution = Unresolved", ""},
+	Query{"My Reported Tickets", "reporter = currentUser() AND resolution = Unresolved", ""},
+	Query{"My Watched Tickets", "watcher = currentUser() AND resolution = Unresolved", ""},
+	Query{"My Voted Tickets", "voter = currentUser() AND resolution = Unresolved", ""},
+	Query{"---", "", ""}, // no-op line in UI
 }
 
 func getQueries() (queries []Query) {
@@ -39,7 +40,7 @@ func getQueries() (queries []Query) {
 					}
 				}
 			}
-			queries = append(queries, Query{q2["name"], q2["jql"]})
+			queries = append(queries, Query{q2["name"], q2["jql"], q2["template"]})
 		}
 	}
 	return append(baseQueries, queries...)

@@ -3,7 +3,6 @@ package jiraui
 import (
 	"fmt"
 	ui "github.com/gizak/termui"
-	"strings"
 )
 
 type TicketListPage struct {
@@ -12,7 +11,7 @@ type TicketListPage struct {
 }
 
 func (p *TicketListPage) GetSelectedTicketId() string {
-	return strings.Split(p.cachedResults[p.selectedLine], " ")[0]
+	return findTicketIdInString(p.cachedResults[p.selectedLine])
 }
 
 func (p *TicketListPage) SelectItem() {
@@ -46,7 +45,7 @@ func (p *TicketListPage) Create() {
 	p.selectedLine = 0
 	p.firstDisplayLine = 0
 	if len(p.cachedResults) == 0 {
-		p.cachedResults = JiraQueryAsStrings(p.ActiveQuery.JQL)
+		p.cachedResults = JiraQueryAsStrings(p.ActiveQuery.JQL, p.ActiveQuery.Template)
 	}
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow

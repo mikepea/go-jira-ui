@@ -60,13 +60,16 @@ func runJiraQuery(query string) (interface{}, error) {
 	return c.FindIssues()
 }
 
-func JiraQueryAsStrings(query string) []string {
+func JiraQueryAsStrings(query string, templateName string) []string {
 	opts := getJiraOpts()
 	opts["query"] = query
 	c := jira.New(opts)
 	data, _ := c.FindIssues()
 	buf := new(bytes.Buffer)
-	template := c.GetTemplate("jira_ui_list")
+	if templateName == "" {
+		templateName = "jira_ui_list"
+	}
+	template := c.GetTemplate(templateName)
 	if template == "" {
 		template = default_list_template
 	}

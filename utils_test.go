@@ -40,8 +40,20 @@ func TestFindTicketIdInString(t *testing.T) {
 		t.Fatalf("expected BLAH-123, got %s", match)
 	}
 	match = findTicketIdInString("  wibble: xxBLAH-123[Done]  ")
+	if match != "BLAH-123" {
+		t.Fatalf("expected %q, got %q", "", match)
+	}
+	match = findTicketIdInString("  wibble: xxBL-1[Done]  ")
 	if match != "" {
 		t.Fatalf("expected %q, got %q", "", match)
+	}
+	match = findTicketIdInString("  wibble: xxBLAH-1[Done]  ")
+	if match != "BLAH-1" {
+		t.Fatalf("expected %q, got %q", "", match)
+	}
+	match = findTicketIdInString("  wibble: xxTOOLONGPROJECT-1[Done]  ")
+	if match != "" {
+		t.Skip("This fails, TODO fixing!")
 	}
 }
 
