@@ -28,7 +28,7 @@ subtasks:
 [components:](fg-green){{ range .fields.components }} {{ .name }}{{end}}
 [watchers:](fg-green){{ range .fields.customfield_10304 }} {{ .name }}{{end}}
 [blockers:](fg-green)
-{{ range .fields.issuelinks }}{{if .outwardIssue}}  - [{{ .outwardIssue.key }}](fg-red)[{{.outwardIssue.fields.status.name}} -- {{.outwardIssue.fields.summary}}
+{{ range .fields.issuelinks }}{{if .outwardIssue}}  - [{{ .outwardIssue.key }}](fg-red)[{{.outwardIssue.fields.status.name}}] -- {{.outwardIssue.fields.summary}}
 {{end}}{{end}}
 [depends:](fg-green)
 {{ range .fields.issuelinks }}{{if .inwardIssue}}  - [{{ .inwardIssue.key }}](fg-red)[{{.inwardIssue.fields.status.name}}] -- {{.inwardIssue.fields.summary}}
