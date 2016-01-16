@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Netflix-Skunkworks/go-jira"
 	ui "github.com/gizak/termui"
+	"github.com/mitchellh/go-wordwrap"
 	"gopkg.in/coryb/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -91,7 +92,7 @@ func JiraTicketAsStrings(id string, templateName string) []string {
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
-func WrapText(lines []string, maxWidth int) []string {
+func WrapText(lines []string, maxWidth uint) []string {
 	out := make([]string, 0)
 	insideNoformatBlock := false
 	insideCodeBlock := false
@@ -101,27 +102,30 @@ func WrapText(lines []string, maxWidth int) []string {
 		} else if strings.TrimSpace(line) == "{noformat}" {
 			insideNoformatBlock = !insideNoformatBlock
 		}
-		if maxWidth == 0 || len(line) < maxWidth || insideCodeBlock || insideNoformatBlock {
+		if maxWidth == 0 || uint(len(line)) < maxWidth || insideCodeBlock || insideNoformatBlock {
 			out = append(out, line)
 			continue
 		}
-		if matched, _ := regexp.MatchString(`^[a-z]+:\s`, line); matched {
+		if matched, _ := regexp.MatchString(`^[a-z_]+:\s`, line); matched {
 			// don't futz with single line field+value.
 			// If they are too long, that's their fault.
 			out = append(out, line)
 			continue
 		}
-		chars := strings.Split(line, "")
-		total := len(chars)
-		for i := 0; i < total/maxWidth; i++ {
-			start := i * maxWidth
-			end := (i + 1) * maxWidth
-			out = append(out, strings.Join(chars[start:end], ""))
+		// wrap text, but preserve indenting
+		re := regexp.MustCompile(`^\s*`)
+		indenting := re.FindString(line)
+		wrappedLines := strings.Split(wordwrap.WrapString(line, maxWidth-uint(len(indenting))), "\n")
+		indentedWrappedLines := make([]string, len(wrappedLines))
+		for i, wl := range wrappedLines {
+			if i == 0 {
+				// first line already has the indent
+				indentedWrappedLines[i] = wl
+			} else {
+				indentedWrappedLines[i] = indenting + wl
+			}
 		}
-		if total%maxWidth > 0 {
-			start := (total / maxWidth) * maxWidth // integer div :)
-			out = append(out, strings.Join(chars[start:], ""))
-		}
+		out = append(out, indentedWrappedLines...)
 	}
 	return out
 }

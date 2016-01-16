@@ -12,11 +12,11 @@ const (
 
 type TicketShowPage struct {
 	BaseListPage
-	MaxWrapWidth int
+	MaxWrapWidth uint
 	TicketId     string
 	Template     string
 	TicketTrail  []*TicketShowPage // previously viewed tickets in drill-down
-	WrapWidth    int
+	WrapWidth    uint
 	opts         map[string]interface{}
 }
 
@@ -111,7 +111,7 @@ func (p *TicketShowPage) Create() {
 	}
 	if p.MaxWrapWidth == 0 {
 		if m := p.opts["max_wrap"]; m != nil {
-			p.MaxWrapWidth = int(m.(int64))
+			p.MaxWrapWidth = uint(m.(int64))
 		} else {
 			p.MaxWrapWidth = defaultMaxWrapWidth
 		}
@@ -128,8 +128,9 @@ func (p *TicketShowPage) Create() {
 			p.Template = templateOpt.(string)
 		}
 	}
-	if ui.TermWidth()-3 < p.MaxWrapWidth {
-		p.WrapWidth = ui.TermWidth() - 3
+	innerWidth := uint(ui.TermWidth()) - 3
+	if innerWidth < p.MaxWrapWidth {
+		p.WrapWidth = innerWidth
 	} else {
 		p.WrapWidth = p.MaxWrapWidth
 	}
