@@ -16,6 +16,16 @@ documentation:
 
 This should be all that's needed to get going.
 
+### Installation
+
+    # Make sure you have GOPATH and GOBIN set appropriately first:
+    # eg:
+    #   export GOPATH=$HOME/go
+    #   export GOBIN=$GOPATH/bin
+    #   mkdir -p $GOPATH
+    #   export PATH=$PATH:$GOBIN
+    go get -v github.com/mikepea/go-jira-ui/jira-ui
+
 ### Features
 
 * Supply your own JQL queries to view
