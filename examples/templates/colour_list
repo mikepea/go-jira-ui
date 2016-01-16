@@ -1,0 +1,2 @@
+{{ range .issues }}[{{ .key | printf "%-12s"}}](fg-red)  [{{ dateFormat "2006-01-02" .fields.created }}](fg-blue)/[{{ dateFormat "2006-01-02T15:04" .fields.updated }}](fg-green)   {{ .fields.summary | printf "%-75s"}}
+{{ end }}

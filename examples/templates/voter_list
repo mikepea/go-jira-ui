@@ -1,0 +1,2 @@
+{{ range .issues }}{{ .key | printf "%-12s"}}  votes:{{.fields.votes.votes}}  {{ dateFormat "2006-01-02" .fields.created }} {{ .fields.summary | printf "%-75s"}}
+{{ end }}
