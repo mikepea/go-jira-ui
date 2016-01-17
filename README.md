@@ -30,6 +30,7 @@ This should be all that's needed to get going.
 
 * Supply your own JQL queries to view
 * Label view of a given query, to see categorisations easily
+* Sorting of queries; supply your own custom sorts
 * View tickets from the query
 * Edit/Comment on tickets from both list and detail view
 * Drill into sub/blocker/related/mentioned tickets in details view
@@ -57,6 +58,7 @@ Actions:
     L            - Label view (query results page only)
     E            - Edit ticket
     C            - Comment on ticket
+    S            - Select sort order (query results page only)
 
 Navigation:
 
@@ -83,16 +85,19 @@ query output (use 'jira_ui_list' template), and the issue 'view' template.
 
 go-jira-ui reads its own  `jira-ui-config.yml` file in these jira.d
 directories, as not to pollute the go-jira config. You can add additional
-queries to the top-level Query page:
+queries & sort orderings to the top-level Query page:
 
     $ cat ~/jira.d/jira-ui-config.yml:
+    sorts:
+      - name: "sort by vote count"
+        jql:  "ORDER BY votes DESC"
     queries:
       - name: "alice assigned"
-        jql: "assignee = alice AND resolution = Unresolved"
+        jql:  "assignee = alice AND resolution = Unresolved"
       - name: "bob assigned"
-        jql: "assignee = bob AND resolution = Unresolved"
+        jql:  "assignee = bob AND resolution = Unresolved"
       - name: "unresolved must-do"
-        jql: "labels = 'must-do' AND resolution = Unresolved AND ( project = 'OPS' OR project = 'INFRA')"
+        jql:  "labels = 'must-do' AND resolution = Unresolved AND ( project = 'OPS' OR project = 'INFRA')"
 
 Learning JQL is highly recommended, the Atlassian [Advanced
 Searching](https://confluence.atlassian.com/jira/advanced-searching-179442050.html)

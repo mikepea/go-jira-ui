@@ -47,6 +47,9 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/L", func(ui.Event) {
 		handleLabelViewKey()
 	})
+	ui.Handle("/sys/kbd/S", func(ui.Event) {
+		handleSortOrderKey()
+	})
 	ui.Handle("/sys/kbd/<enter>", func(ui.Event) {
 		handleSelectKey()
 	})
@@ -75,6 +78,16 @@ func handleLabelViewKey() {
 	case *TicketListPage:
 		q := new(LabelListPage)
 		q.ActiveQuery = page.ActiveQuery
+		currentPage = q
+		changePage()
+	}
+	return
+}
+
+func handleSortOrderKey() {
+	switch currentPage.(type) {
+	case *TicketListPage:
+		q := new(SortOrderPage)
 		currentPage = q
 		changePage()
 	}

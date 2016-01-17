@@ -3,11 +3,13 @@ package jiraui
 import (
 	"fmt"
 	ui "github.com/gizak/termui"
+	"regexp"
 )
 
 type TicketListPage struct {
 	BaseListPage
 	ActiveQuery Query
+	ActiveSort  Sort
 }
 
 func (p *TicketListPage) GetSelectedTicketId() string {
@@ -44,8 +46,13 @@ func (p *TicketListPage) Create() {
 	p.uiList = ls
 	p.selectedLine = 0
 	p.firstDisplayLine = 0
+	query := p.ActiveQuery.JQL
+	if sort := p.ActiveSort.JQL; sort != "" {
+		re := regexp.MustCompile(`(?i)\s+ORDER\s+BY.+$`)
+		query = re.ReplaceAllString(query, ``) + " " + sort
+	}
 	if len(p.cachedResults) == 0 {
-		p.cachedResults = JiraQueryAsStrings(p.ActiveQuery.JQL, p.ActiveQuery.Template)
+		p.cachedResults = JiraQueryAsStrings(query, p.ActiveQuery.Template)
 	}
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow

@@ -65,6 +65,7 @@ var currentPage Navigable
 var ticketQueryPage *QueryPage
 var ticketListPage *TicketListPage
 var labelListPage *LabelListPage
+var sortOrderPage *SortOrderPage
 
 func changePage() {
 	switch currentPage.(type) {
@@ -73,6 +74,9 @@ func changePage() {
 		currentPage.Create()
 	case *TicketListPage:
 		log.Debugf("changePage: TicketListPage %s (%p)", currentPage.Id(), currentPage)
+		currentPage.Create()
+	case *SortOrderPage:
+		log.Debugf("changePage: SortOrderPage %s (%p)", currentPage.Id(), currentPage)
 		currentPage.Create()
 	case *LabelListPage:
 		log.Debugf("changePage: LabelListPage %s (%p)", currentPage.Id(), currentPage)
