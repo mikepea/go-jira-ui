@@ -84,8 +84,7 @@ func TestWrapText(t *testing.T) {
 		"wibble:        hello",
 		"longfield:     1234567890123456789012345678901234567890",
 		"1234567890123456789012345678901234567890",
-		"1234567890123456789012345678901234567890",
-		"1234567890",
+		"12345678901234567890123456789012345678901234567890",
 		"      {code}   ",
 		"      # This is code it should not be wrapped at all herpdy derp",
 		"      # weoijwefoi wpeifjwoiejf pwjefoijwefij wefjowiejf wefwefwefijwe",
@@ -99,8 +98,8 @@ func TestWrapText(t *testing.T) {
 		"      # weoijwefoi wpeifjwoiejf pwjefoijwefij wefjowiejf wefwefwefijwe",
 		"      {noformat}   ",
 		"body: |",
-		"   hello there I am a line that is longe",
-		"r than 40 chars yes I am oh aye.",
+		"   hello there I am a line that is",
+		"   longer than 40 chars yes I am oh aye.",
 	}
 	match := WrapText(input, 40)
 	for i, _ := range expected {
