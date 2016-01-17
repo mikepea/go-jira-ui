@@ -15,6 +15,7 @@ type TicketShowPage struct {
 	MaxWrapWidth uint
 	TicketId     string
 	Template     string
+	apiBody      interface{}
 	TicketTrail  []*TicketShowPage // previously viewed tickets in drill-down
 	WrapWidth    uint
 	opts         map[string]interface{}
@@ -104,6 +105,15 @@ func (p *TicketShowPage) ticketTrailAsString() (trail string) {
 	return trail
 }
 
+func (p *TicketShowPage) Refresh() {
+	pDeref := &p
+	q := *pDeref
+	q.cachedResults = make([]string, 0)
+	q.apiBody = nil
+	q.Create()
+	changePage()
+}
+
 func (p *TicketShowPage) Create() {
 	p.opts = getJiraOpts()
 	if p.TicketId == "" {
@@ -119,8 +129,6 @@ func (p *TicketShowPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
-	p.selectedLine = 0
-	p.firstDisplayLine = 0
 	if p.Template == "" {
 		if templateOpt := p.opts["template"]; templateOpt == nil {
 			p.Template = "jira_ui_view"
@@ -134,9 +142,10 @@ func (p *TicketShowPage) Create() {
 	} else {
 		p.WrapWidth = p.MaxWrapWidth
 	}
-	if len(p.cachedResults) == 0 {
-		p.cachedResults = WrapText(JiraTicketAsStrings(p.TicketId, p.Template), p.WrapWidth)
+	if p.apiBody == nil {
+		p.apiBody, _ = FetchJiraTicket(p.TicketId)
 	}
+	p.cachedResults = WrapText(JiraTicketAsStrings(p.apiBody, p.Template), p.WrapWidth)
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.Height = ui.TermHeight()

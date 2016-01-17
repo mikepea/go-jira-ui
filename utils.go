@@ -78,10 +78,15 @@ func JiraQueryAsStrings(query string, templateName string) []string {
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
-func JiraTicketAsStrings(id string, templateName string) []string {
+func FetchJiraTicket(id string) (interface{}, error) {
 	opts := getJiraOpts()
 	c := jira.New(opts)
-	data, _ := c.ViewIssue(id)
+	return c.ViewIssue(id)
+}
+
+func JiraTicketAsStrings(data interface{}, templateName string) []string {
+	opts := getJiraOpts()
+	c := jira.New(opts)
 	buf := new(bytes.Buffer)
 	template := c.GetTemplate(templateName)
 	log.Debug("JiraTicketsAsStrings: template = %q", template)
