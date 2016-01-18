@@ -18,6 +18,13 @@ const (
 
 var exitNow = false
 
+type EditPager interface {
+	DeleteRuneBackward()
+	InsertRune(r rune)
+	Update()
+	Create()
+}
+
 type GoBacker interface {
 	GoBack()
 }
