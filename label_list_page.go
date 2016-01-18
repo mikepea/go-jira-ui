@@ -59,8 +59,6 @@ func (p *LabelListPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
-	p.selectedLine = 0
-	p.firstDisplayLine = 0
 	queryName := p.ActiveQuery.Name
 	queryJQL := p.ActiveQuery.JQL
 	p.labelCounts = countLabelsFromQuery(queryJQL)

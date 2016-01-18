@@ -111,8 +111,6 @@ func (p *BaseListPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
-	p.selectedLine = 0
-	p.firstDisplayLine = 0
 	p.cachedResults = make([]string, 0)
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow

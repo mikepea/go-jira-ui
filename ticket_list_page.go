@@ -44,8 +44,6 @@ func (p *TicketListPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
-	p.selectedLine = 0
-	p.firstDisplayLine = 0
 	query := p.ActiveQuery.JQL
 	if sort := p.ActiveSort.JQL; sort != "" {
 		re := regexp.MustCompile(`(?i)\s+ORDER\s+BY.+$`)
