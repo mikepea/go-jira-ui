@@ -11,7 +11,7 @@ type PasswordInputBox struct {
 
 func (p *PasswordInputBox) Update() {
 	ls := p.uiList
-	ls.Items = strings.Split(string(p.eb.text), "\n")
+	ls.Items = strings.Split(string(p.text), "\n")
 	ui.Render(ls)
 }
 
@@ -23,7 +23,7 @@ func (p *PasswordInputBox) Create() {
 	ls.ItemFgColor = ui.ColorGreen
 	ls.BorderLabel = "Enter Password:"
 	ls.BorderFg = ui.ColorRed
-	ls.Height = 1
+	ls.Height = 3
 	ls.Width = 30
 	ls.X = ui.TermWidth()/2 - ls.Width/2
 	ls.Y = ui.TermHeight()/2 - ls.Height/2

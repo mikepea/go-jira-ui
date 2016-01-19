@@ -60,10 +60,6 @@ type PagePager interface {
 type Navigable interface {
 	Create()
 	Update()
-	PreviousLine(int)
-	NextLine(int)
-	PreviousPage()
-	NextPage()
 	Id() string
 }
 
@@ -73,6 +69,7 @@ var ticketQueryPage *QueryPage
 var ticketListPage *TicketListPage
 var labelListPage *LabelListPage
 var sortOrderPage *SortOrderPage
+var passwordInputBox *PasswordInputBox
 
 func changePage() {
 	switch currentPage.(type) {
@@ -146,8 +143,10 @@ Query Options:
 	}
 
 	jiraCommands := map[string]string{
-		"list": "list",
-		"ls":   "list",
+		"list":     "list",
+		"ls":       "list",
+		"password": "password",
+		"passwd":   "password",
 	}
 
 	cliOpts = make(map[string]interface{})
@@ -213,6 +212,7 @@ Query Options:
 	registerKeyboardHandlers()
 
 	ticketQueryPage = new(QueryPage)
+	passwordInputBox = new(PasswordInputBox)
 
 	switch command {
 	case "list":
@@ -232,6 +232,8 @@ Query Options:
 		currentPage = p
 	case "toplevel":
 		currentPage = ticketQueryPage
+	case "password":
+		currentPage = passwordInputBox
 	default:
 		log.Error("Unknown command %s", command)
 		os.Exit(1)

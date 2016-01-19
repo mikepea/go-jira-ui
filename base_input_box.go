@@ -2,25 +2,26 @@ package jiraui
 
 import (
 	ui "github.com/gizak/termui"
-	"strings"
 )
 
 type BaseInputBox struct {
-	eb     *EditBox
+	EditBox
 	uiList *ui.List
 }
 
 func (p *BaseInputBox) Update() {
 	ls := p.uiList
-	ls.Items = strings.Split(string(p.eb.text), "\n")
 	ui.Render(ls)
+}
+
+func (p *BaseInputBox) Id() string {
+	return ""
 }
 
 func (p *BaseInputBox) Create() {
 	ls := ui.NewList()
 	var strs []string
 	p.uiList = ls
-	p.eb = new(EditBox)
 	ls.Items = strs
 	ls.ItemFgColor = ui.ColorGreen
 	ls.BorderFg = ui.ColorRed
