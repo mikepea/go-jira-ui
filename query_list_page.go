@@ -14,6 +14,7 @@ type Query struct {
 type QueryPage struct {
 	BaseListPage
 	cachedResults []Query
+	statusBar     *StatusBar
 }
 
 var baseQueries = []Query{
@@ -116,6 +117,7 @@ func (p *QueryPage) Update() {
 	p.markActiveLine()
 	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
+	p.statusBar.Update()
 }
 
 func (p *QueryPage) Refresh() {
@@ -130,12 +132,14 @@ func (p *QueryPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
+	p.statusBar = new(StatusBar)
 	p.cachedResults = getQueries()
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "Queries"
-	ls.Height = ui.TermHeight()
+	ls.Height = ui.TermHeight() - 2
 	ls.Width = ui.TermWidth()
 	ls.Y = 0
+	p.statusBar.Create()
 	p.Update()
 }
