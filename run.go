@@ -9,13 +9,6 @@ import (
 	"os"
 )
 
-const (
-	ticketQuery = iota
-	ticketList  = iota
-	labelList   = iota
-	ticketShow  = iota
-)
-
 var exitNow = false
 
 type GoBacker interface {
