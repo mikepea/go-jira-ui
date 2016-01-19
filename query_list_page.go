@@ -15,6 +15,7 @@ type QueryPage struct {
 	BaseListPage
 	cachedResults []Query
 	statusBar     *StatusBar
+	commandBar    *CommandBar
 }
 
 var baseQueries = []Query{
@@ -133,6 +134,7 @@ func (p *QueryPage) Create() {
 	ls := ui.NewList()
 	p.uiList = ls
 	p.statusBar = new(StatusBar)
+	p.commandBar = new(CommandBar)
 	p.cachedResults = getQueries()
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
@@ -141,5 +143,6 @@ func (p *QueryPage) Create() {
 	ls.Width = ui.TermWidth()
 	ls.Y = 0
 	p.statusBar.Create()
+	p.commandBar.Create()
 	p.Update()
 }
