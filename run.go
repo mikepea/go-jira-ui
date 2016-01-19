@@ -46,10 +46,6 @@ type PagePager interface {
 type Navigable interface {
 	Create()
 	Update()
-	PreviousLine(int)
-	NextLine(int)
-	PreviousPage()
-	NextPage()
 	Id() string
 }
 
