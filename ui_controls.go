@@ -191,6 +191,29 @@ func handleCommandKey(e ui.Event) {
 	}
 }
 
+func handleEditBoxKey(obj EditPager, key string) {
+	var str string
+	switch {
+	case len(key) == 1:
+		str = key
+	case key == "<space>":
+		str = ` `
+	case key == "<enter>":
+		str = "\n"
+	case key == "<backspace>" || key == "C-8":
+		// C-8 == ^? == backspace on a UK macbook
+		obj.DeleteRuneBackward()
+		obj.Update()
+		return
+	default:
+		return
+	}
+	r := decodeTermuiKbdStringToRune(str)
+	obj.InsertRune(r)
+	obj.Update()
+	return
+}
+
 func handleAnyKey(e ui.Event) {
 	key := e.Data.(ui.EvtKbd).KeyStr
 	if obj, ok := currentPage.(PagePager); ok {
@@ -206,51 +229,17 @@ func handleAnyKey(e ui.Event) {
 	}
 
 	if obj, ok := currentPage.(EditPager); ok {
-		var str string
-		switch {
-		case len(key) == 1:
-			str = key
-		case key == "<enter>":
-			str = "\n"
-		case key == "<space>":
-			str = ` `
-		case key == "<backspace>" || key == "C-8":
-			// C-8 == ^? == backspace on a UK macbook
-			obj.DeleteRuneBackward()
-			obj.Update()
-			return
-		default:
-			return
-		}
-		r := decodeTermuiKbdStringToRune(str)
-		obj.InsertRune(r)
-		obj.Update()
+		handleEditBoxKey(obj, key)
 		return
 	}
 
-	if obj, ok := currentPage.(CommandBoxer); ok {
-		if obj.CommandMode() {
-			key := e.Data.(ui.EvtKbd).KeyStr
-			var str string
-			switch {
-			case len(key) == 1:
-				str = key
-			case key == "<enter>":
-				obj.CommandBar().Submit()
-				return
-			case key == "<space>":
-				str = ` `
-			case key == "<backspace>" || key == "C-8":
-				// C-8 == ^? == backspace on a UK macbook
-				obj.CommandBar().DeleteRuneBackward()
-				obj.CommandBar().Update()
-				return
-			default:
-				return
-			}
-			r := decodeTermuiKbdStringToRune(str)
-			obj.CommandBar().InsertRune(r)
-			obj.CommandBar().Update()
+	if obj, ok := currentPage.(CommandBoxer); ok && obj.CommandMode() {
+		cb := obj.CommandBar()
+		if key == "<enter>" {
+			cb.Submit()
+			return
+		} else {
+			handleEditBoxKey(cb, key)
 			return
 		}
 	}
