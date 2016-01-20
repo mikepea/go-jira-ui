@@ -12,6 +12,8 @@ const (
 
 type TicketShowPage struct {
 	BaseListPage
+	CommandBarFragment
+	StatusBarFragment
 	MaxWrapWidth uint
 	TicketId     string
 	Template     string
@@ -114,6 +116,15 @@ func (p *TicketShowPage) Refresh() {
 	changePage()
 }
 
+func (p *TicketShowPage) Update() {
+	ls := p.uiList
+	p.markActiveLine()
+	ls.Items = p.displayLines[p.firstDisplayLine:]
+	ui.Render(ls)
+	p.statusBar.Update()
+	p.commandBar.Update()
+}
+
 func (p *TicketShowPage) Create() {
 	p.opts = getJiraOpts()
 	if p.TicketId == "" {
@@ -128,6 +139,12 @@ func (p *TicketShowPage) Create() {
 	}
 	ui.Clear()
 	ls := ui.NewList()
+	if p.statusBar == nil {
+		p.statusBar = new(StatusBar)
+	}
+	if p.commandBar == nil {
+		p.commandBar = new(CommandBar)
+	}
 	p.uiList = ls
 	if p.Template == "" {
 		if templateOpt := p.opts["template"]; templateOpt == nil {
@@ -148,10 +165,12 @@ func (p *TicketShowPage) Create() {
 	p.cachedResults = WrapText(JiraTicketAsStrings(p.apiBody, p.Template), p.WrapWidth)
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
-	ls.Height = ui.TermHeight()
+	ls.Height = ui.TermHeight() - 2
 	ls.Width = ui.TermWidth()
 	ls.Border = true
 	ls.BorderLabel = fmt.Sprintf("%s %s", p.TicketId, p.ticketTrailAsString())
 	ls.Y = 0
+	p.statusBar.Create()
+	p.commandBar.Create()
 	p.Update()
 }

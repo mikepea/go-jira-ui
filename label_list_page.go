@@ -7,6 +7,8 @@ import (
 
 type LabelListPage struct {
 	BaseListPage
+	CommandBarFragment
+	StatusBarFragment
 	labelCounts map[string]int
 	ActiveQuery Query
 }
@@ -53,12 +55,20 @@ func (p *LabelListPage) Update() {
 	p.markActiveLine()
 	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
+	p.statusBar.Update()
+	p.commandBar.Update()
 }
 
 func (p *LabelListPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
+	if p.statusBar == nil {
+		p.statusBar = new(StatusBar)
+	}
+	if p.commandBar == nil {
+		p.commandBar = new(CommandBar)
+	}
 	queryName := p.ActiveQuery.Name
 	queryJQL := p.ActiveQuery.JQL
 	p.labelCounts = countLabelsFromQuery(queryJQL)
@@ -66,8 +76,10 @@ func (p *LabelListPage) Create() {
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = fmt.Sprintf("Label view -- %s: %s", queryName, queryJQL)
-	ls.Height = ui.TermHeight()
+	ls.Height = ui.TermHeight() - 2
 	ls.Width = ui.TermWidth()
 	ls.Y = 0
+	p.statusBar.Create()
+	p.commandBar.Create()
 	p.Update()
 }

@@ -8,6 +8,8 @@ import (
 
 type TicketListPage struct {
 	BaseListPage
+	CommandBarFragment
+	StatusBarFragment
 	ActiveQuery Query
 	ActiveSort  Sort
 }
@@ -40,10 +42,25 @@ func (p *TicketListPage) CommentTicket() {
 	runJiraCmdComment(p.GetSelectedTicketId())
 }
 
+func (p *TicketListPage) Update() {
+	ls := p.uiList
+	p.markActiveLine()
+	ls.Items = p.displayLines[p.firstDisplayLine:]
+	ui.Render(ls)
+	p.statusBar.Update()
+	p.commandBar.Update()
+}
+
 func (p *TicketListPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls
+	if p.statusBar == nil {
+		p.statusBar = new(StatusBar)
+	}
+	if p.commandBar == nil {
+		p.commandBar = new(CommandBar)
+	}
 	query := p.ActiveQuery.JQL
 	if sort := p.ActiveSort.JQL; sort != "" {
 		re := regexp.MustCompile(`(?i)\s+ORDER\s+BY.+$`)
@@ -55,8 +72,10 @@ func (p *TicketListPage) Create() {
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = fmt.Sprintf("%s: %s", p.ActiveQuery.Name, p.ActiveQuery.JQL)
-	ls.Height = ui.TermHeight()
+	ls.Height = ui.TermHeight() - 2
 	ls.Width = ui.TermWidth()
 	ls.Y = 0
+	p.statusBar.Create()
+	p.commandBar.Create()
 	p.Update()
 }

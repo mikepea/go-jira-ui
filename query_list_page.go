@@ -13,10 +13,9 @@ type Query struct {
 
 type QueryPage struct {
 	BaseListPage
+	CommandBarFragment
+	StatusBarFragment
 	cachedResults []Query
-	statusBar     *StatusBar
-	commandBar    *CommandBar
-	commandMode   bool
 }
 
 var baseQueries = []Query{
@@ -49,36 +48,7 @@ func getQueries() (queries []Query) {
 	return append(baseQueries, queries...)
 }
 
-func (p *QueryPage) ExecuteCommand() {
-	command := string(p.commandBar.text)
-	commandMode := string([]rune(command)[0])
-	switch commandMode {
-	case "/":
-		log.Debugf("Search down: %q", command)
-	case "?":
-		log.Debugf("Search up: %q", command)
-	case ":":
-		log.Debugf("Search up: %q", command)
-		switch command {
-		case ":q":
-			handleQuit()
-		}
-	default:
-		log.Errorf("Unknown Command: %q - bailing", command)
-		handleQuit()
 	}
-}
-
-func (p *QueryPage) SetCommandMode(mode bool) {
-	p.commandMode = mode
-}
-
-func (p *QueryPage) CommandMode() bool {
-	return p.commandMode
-}
-
-func (p *QueryPage) CommandBar() *CommandBar {
-	return p.commandBar
 }
 
 func (p *QueryPage) markActiveLine() {
