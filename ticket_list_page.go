@@ -6,12 +6,49 @@ import (
 	"regexp"
 )
 
+type Search struct {
+	command     string
+	directionUp bool
+	re          *regexp.Regexp
+}
+
 type TicketListPage struct {
 	BaseListPage
 	CommandBarFragment
 	StatusBarFragment
-	ActiveQuery Query
-	ActiveSort  Sort
+	ActiveQuery  Query
+	ActiveSort   Sort
+	ActiveSearch Search
+}
+
+func (p *TicketListPage) SetSearch(searchCommand string) {
+	if len(searchCommand) < 2 {
+		// must be '/a' minimum
+		return
+	}
+	direction := []byte(searchCommand)[0]
+	regex := string([]byte(searchCommand)[1:])
+	s := new(Search)
+	s.command = searchCommand
+	if direction == '?' {
+		s.directionUp = true
+	} else if direction == '/' {
+		s.directionUp = false
+	} else {
+		// bad command
+		return
+	}
+	if re, err := regexp.Compile(regex); err != nil {
+		// bad regex
+		return
+	} else {
+		s.re = re
+		p.ActiveSearch = *s
+	}
+}
+
+func (p *TicketListPage) Search() {
+	return
 }
 
 func (p *TicketListPage) GetSelectedTicketId() string {

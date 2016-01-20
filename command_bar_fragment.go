@@ -1,5 +1,9 @@
 package jiraui
 
+import (
+	"strings"
+)
+
 type CommandBarFragment struct {
 	commandBar  *CommandBar
 	commandMode bool
@@ -14,13 +18,15 @@ func (p *CommandBarFragment) ExecuteCommand() {
 	switch commandMode {
 	case "/":
 		log.Debugf("Search down: %q", command)
+		if obj, ok := currentPage.(Searcher); ok {
+			obj.SetSearch(command)
+			obj.Search()
+		}
 	case "?":
 		log.Debugf("Search up: %q", command)
-	case ":":
-		log.Debugf("Search up: %q", command)
-		switch command {
-		case ":q":
-			handleQuit()
+		if obj, ok := currentPage.(Searcher); ok {
+			obj.SetSearch(command)
+			obj.Search()
 		}
 	}
 }

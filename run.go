@@ -18,6 +18,11 @@ type EditPager interface {
 	Create()
 }
 
+type Searcher interface {
+	SetSearch(string)
+	Search()
+}
+
 type CommandBoxer interface {
 	SetCommandMode(bool)
 	ExecuteCommand()
