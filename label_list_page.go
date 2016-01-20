@@ -73,6 +73,7 @@ func (p *LabelListPage) Create() {
 	queryJQL := p.ActiveQuery.JQL
 	p.labelCounts = countLabelsFromQuery(queryJQL)
 	p.cachedResults = p.labelsAsSortedList()
+	p.isPopulated = true
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = fmt.Sprintf("Label view -- %s: %s", queryName, queryJQL)

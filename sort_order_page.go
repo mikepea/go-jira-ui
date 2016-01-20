@@ -45,6 +45,14 @@ func getSorts() (sorts []Sort) {
 	return append(baseSorts, sorts...)
 }
 
+func (p *SortOrderPage) IsPopulated() bool {
+	if len(p.cachedResults) > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (p *SortOrderPage) markActiveLine() {
 	for i, v := range p.cachedResults {
 		selected := ""
@@ -122,8 +130,8 @@ func (p *SortOrderPage) Refresh() {
 	pDeref := &p
 	q := *pDeref
 	q.cachedResults = make([]Sort, 0)
-	q.Create()
 	changePage()
+	q.Create()
 }
 
 func (p *SortOrderPage) Create() {

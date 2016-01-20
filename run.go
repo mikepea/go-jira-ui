@@ -55,6 +55,7 @@ type PagePager interface {
 	PreviousPage()
 	TopOfPage()
 	BottomOfPage()
+	IsPopulated() bool
 	Update()
 }
 

@@ -112,8 +112,9 @@ func (p *TicketShowPage) Refresh() {
 	q := *pDeref
 	q.cachedResults = make([]string, 0)
 	q.apiBody = nil
-	q.Create()
+	currentPage = q
 	changePage()
+	q.Create()
 }
 
 func (p *TicketShowPage) Update() {

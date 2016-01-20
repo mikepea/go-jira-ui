@@ -24,8 +24,8 @@ func (p *TicketListPage) SelectItem() {
 	}
 	q := new(TicketShowPage)
 	q.TicketId = p.GetSelectedTicketId()
-	q.Create()
 	currentPage = q
+	q.Create()
 	changePage()
 }
 

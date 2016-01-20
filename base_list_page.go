@@ -12,6 +12,15 @@ type BaseListPage struct {
 	displayLines     []string
 	cachedResults    []string
 	firstDisplayLine int
+	isPopulated      bool
+}
+
+func (p *BaseListPage) IsPopulated() bool {
+	if len(p.cachedResults) > 0 || p.isPopulated {
+		return true
+	} else {
+		return false
+	}
 }
 
 func (p *BaseListPage) PreviousLine(n int) {
@@ -103,8 +112,8 @@ func (p *BaseListPage) Refresh() {
 	pDeref := &p
 	q := *pDeref
 	q.cachedResults = make([]string, 0)
-	q.Create()
 	changePage()
+	q.Create()
 }
 
 func (p *BaseListPage) Create() {

@@ -48,6 +48,11 @@ func getQueries() (queries []Query) {
 	return append(baseQueries, queries...)
 }
 
+func (p *QueryPage) IsPopulated() bool {
+	if len(p.cachedResults) > 0 {
+		return true
+	} else {
+		return false
 	}
 }
 
@@ -129,8 +134,8 @@ func (p *QueryPage) Refresh() {
 	pDeref := &p
 	q := *pDeref
 	q.cachedResults = make([]Query, 0)
-	q.Create()
 	changePage()
+	q.Create()
 }
 
 func (p *QueryPage) Create() {

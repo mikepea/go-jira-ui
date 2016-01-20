@@ -216,7 +216,7 @@ func handleEditBoxKey(obj EditPager, key string) {
 
 func handleAnyKey(e ui.Event) {
 	key := e.Data.(ui.EvtKbd).KeyStr
-	if obj, ok := currentPage.(PagePager); ok {
+	if obj, ok := currentPage.(PagePager); ok && obj.IsPopulated() {
 		if obj, ok := obj.(CommandBoxer); ok {
 			if !obj.CommandMode() {
 				handleNavigateKey(e)
