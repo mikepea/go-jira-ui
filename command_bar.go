@@ -6,11 +6,29 @@ import (
 
 type CommandBar struct {
 	uiList *ui.List
-	text   []byte
+	EditBox
+}
+
+func (p *CommandBar) Submit() {
+	if obj, ok := currentPage.(CommandBoxer); ok {
+		obj.SetCommandMode(false)
+		obj.ExecuteCommand()
+		obj.Update()
+	}
+}
+
+func (p *CommandBar) Reset() {
+	p.text = []byte(``)
+	p.line_voffset = 0
+	p.cursor_boffset = 0
+	p.cursor_voffset = 0
+	p.cursor_coffset = 0
 }
 
 func (p *CommandBar) Update() {
 	ls := p.uiList
+	strs := []string{string(p.text)}
+	ls.Items = strs
 	ui.Render(ls)
 }
 

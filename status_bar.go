@@ -22,7 +22,6 @@ func (p *StatusBar) Update() {
 func (p *StatusBar) Create() {
 	ls := ui.NewList()
 	p.uiList = ls
-	p.lines = append(p.lines, "STATUS BAR... STATUS BAR... STATUS BAR...")
 	ls.ItemFgColor = ui.ColorWhite
 	ls.ItemBgColor = ui.ColorRed
 	ls.Bg = ui.ColorRed

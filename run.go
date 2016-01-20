@@ -18,6 +18,14 @@ type EditPager interface {
 	Create()
 }
 
+type CommandBoxer interface {
+	SetCommandMode(bool)
+	ExecuteCommand()
+	CommandMode() bool
+	CommandBar() *CommandBar
+	Update()
+}
+
 type GoBacker interface {
 	GoBack()
 }

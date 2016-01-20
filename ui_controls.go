@@ -9,119 +9,8 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/kbd/", func(ev ui.Event) {
 		handleAnyKey(ev)
 	})
-	ui.Handle("/sys/kbd/q", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleBackKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/C-r", func(ui.Event) {
-		handleRefreshKey()
-	})
 	ui.Handle("/sys/kbd/C-c", func(ui.Event) {
-		ui.Close()
-		os.Exit(0)
-	})
-	ui.Handle("/sys/kbd/Q", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			ui.Close()
-			os.Exit(0)
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/}", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleParaDownKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/{", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleParaUpKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/j", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleDownKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/k", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleUpKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/<down>", func(ui.Event) {
-		handleDownKey()
-	})
-	ui.Handle("/sys/kbd/<up>", func(ui.Event) {
-		handleUpKey()
-	})
-	ui.Handle("/sys/kbd/g", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleTopOfPageKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/G", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleBottomOfPageKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/L", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleLabelViewKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/S", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleSortOrderKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/<enter>", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleSelectKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/<space>", func(ui.Event) {
-		handlePageDownKey()
-	})
-	ui.Handle("/sys/kbd/C-f", func(ui.Event) {
-		handlePageDownKey()
-	})
-	ui.Handle("/sys/kbd/C-b", func(ui.Event) {
-		handlePageUpKey()
-	})
-	ui.Handle("/sys/kbd/E", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleEditKey()
-		} else {
-			handleAnyKey(ev)
-		}
-	})
-	ui.Handle("/sys/kbd/C", func(ev ui.Event) {
-		if _, ok := currentPage.(PagePager); ok {
-			handleCommentKey()
-		} else {
-			handleAnyKey(ev)
-		}
+		handleQuit()
 	})
 	ui.Handle("/sys/wnd/resize", func(ui.Event) {
 		handleResize()
@@ -136,7 +25,10 @@ func handleLabelViewKey() {
 		currentPage = q
 		changePage()
 	}
-	return
+}
+func handleQuit() {
+	ui.Close()
+	os.Exit(0)
 }
 
 func handleSortOrderKey() {
@@ -146,7 +38,6 @@ func handleSortOrderKey() {
 		currentPage = q
 		changePage()
 	}
-	return
 }
 
 func handleRefreshKey() {
@@ -242,9 +133,79 @@ func handleParaDownKey() {
 	}
 }
 
+func handleNavigateKey(e ui.Event) {
+	key := e.Data.(ui.EvtKbd).KeyStr
+	switch key {
+	case "L":
+		handleLabelViewKey()
+	case "S":
+		handleSortOrderKey()
+	case "C-r":
+		handleRefreshKey()
+	case "E":
+		handleEditKey()
+	case "C":
+		handleCommentKey()
+	case "q":
+		handleBackKey()
+	case "<enter>":
+		handleSelectKey()
+	case "g":
+		handleTopOfPageKey()
+	case "G":
+		handleBottomOfPageKey()
+	case "<space>":
+		handlePageDownKey()
+	case "C-f":
+		handlePageDownKey()
+	case "C-b":
+		handlePageUpKey()
+	case "}":
+		handleParaDownKey()
+	case "{":
+		handleParaUpKey()
+	case "<down>":
+		handleDownKey()
+	case "<up>":
+		handleUpKey()
+	case "j":
+		handleDownKey()
+	case "k":
+		handleUpKey()
+	case ":":
+		handleCommandKey(e)
+	case "/":
+		handleCommandKey(e)
+	case "?":
+		handleCommandKey(e)
+	}
+}
+
+func handleCommandKey(e ui.Event) {
+	if obj, ok := currentPage.(PagePager); ok {
+		if obj, ok := obj.(CommandBoxer); ok {
+			obj.SetCommandMode(true)
+			obj.CommandBar().Reset()
+			handleAnyKey(e)
+		}
+	}
+}
+
 func handleAnyKey(e ui.Event) {
+	key := e.Data.(ui.EvtKbd).KeyStr
+	if obj, ok := currentPage.(PagePager); ok {
+		if obj, ok := obj.(CommandBoxer); ok {
+			if !obj.CommandMode() {
+				handleNavigateKey(e)
+				return
+			}
+		} else {
+			handleNavigateKey(e)
+			return
+		}
+	}
+
 	if obj, ok := currentPage.(EditPager); ok {
-		key := e.Data.(ui.EvtKbd).KeyStr
 		var str string
 		switch {
 		case len(key) == 1:
@@ -252,10 +213,9 @@ func handleAnyKey(e ui.Event) {
 		case key == "<enter>":
 			str = "\n"
 		case key == "<space>":
-			log.Noticef("space!")
 			str = ` `
 		case key == "<backspace>" || key == "C-8":
-			log.Noticef("backspace!")
+			// C-8 == ^? == backspace on a UK macbook
 			obj.DeleteRuneBackward()
 			obj.Update()
 			return
@@ -265,5 +225,34 @@ func handleAnyKey(e ui.Event) {
 		r := decodeTermuiKbdStringToRune(str)
 		obj.InsertRune(r)
 		obj.Update()
+		return
 	}
+
+	if obj, ok := currentPage.(CommandBoxer); ok {
+		if obj.CommandMode() {
+			key := e.Data.(ui.EvtKbd).KeyStr
+			var str string
+			switch {
+			case len(key) == 1:
+				str = key
+			case key == "<enter>":
+				obj.CommandBar().Submit()
+				return
+			case key == "<space>":
+				str = ` `
+			case key == "<backspace>" || key == "C-8":
+				// C-8 == ^? == backspace on a UK macbook
+				obj.CommandBar().DeleteRuneBackward()
+				obj.CommandBar().Update()
+				return
+			default:
+				return
+			}
+			r := decodeTermuiKbdStringToRune(str)
+			obj.CommandBar().InsertRune(r)
+			obj.CommandBar().Update()
+			return
+		}
+	}
+
 }
