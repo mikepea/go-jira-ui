@@ -99,6 +99,10 @@ func (p *TicketShowPage) CommentTicket() {
 	runJiraCmdComment(p.TicketId)
 }
 
+func (p *TicketShowPage) ActiveTicketId() string {
+	return p.TicketId
+}
+
 func (p *TicketShowPage) ticketTrailAsString() (trail string) {
 	for i := len(p.TicketTrail) - 1; i >= 0; i-- {
 		q := *p.TicketTrail[i]

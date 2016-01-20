@@ -18,6 +18,10 @@ type EditPager interface {
 	Create()
 }
 
+type ActiveTicketIder interface {
+	ActiveTicketId() string
+}
+
 type Searcher interface {
 	SetSearch(string)
 	Search()

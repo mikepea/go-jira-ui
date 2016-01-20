@@ -1,6 +1,7 @@
 package jiraui
 
 import (
+	"github.com/Netflix-Skunkworks/go-jira"
 	"strings"
 )
 
@@ -27,6 +28,62 @@ func (p *CommandBarFragment) ExecuteCommand() {
 		if obj, ok := currentPage.(Searcher); ok {
 			obj.SetSearch(command)
 			obj.Search()
+		}
+	case ":":
+		log.Debugf("Command: %q", command)
+		handleCommand(command)
+	}
+}
+
+func handleCommand(command string) {
+	if len(command) < 2 {
+		// must be :something
+		return
+	}
+	fields := strings.Fields(string(command[1:]))
+	action := fields[0]
+	var args []string
+	if len(fields) > 1 {
+		args = fields[1:]
+	}
+	log.Debugf("handleCommand: action %q, args %s", action, args)
+	switch {
+	case action == "q" || action == "quit":
+		handleQuit()
+	case action == "label" || action == "labels":
+		handleLabelCommand(args)
+	}
+}
+
+func handleLabelCommand(args []string) {
+	log.Debugf("handleLabelCommand: args %s", args)
+	if obj, ok := currentPage.(ActiveTicketIder); ok {
+		opts := getJiraOpts()
+		ticketId := obj.ActiveTicketId()
+		if ticketId == "" || args == nil {
+			return
+		}
+		action := "add"
+		var labels []string
+		switch args[0] {
+		case "add":
+			action = "add"
+			if len(args) > 1 {
+				labels = args[1:]
+			}
+		case "remove":
+			action = "remove"
+			if len(args) > 1 {
+				labels = args[1:]
+			}
+		default:
+			labels = args
+		}
+		log.Noticef("handleLabelCommand: CmdLabels(%q, %q, %s)", action, ticketId, labels)
+		c := jira.New(opts)
+		err := c.CmdLabels(action, ticketId, labels)
+		if err != nil {
+			log.Errorf("Error writing labels: %q", err)
 		}
 	}
 }
