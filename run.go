@@ -210,7 +210,7 @@ Query Options:
 		}
 	}
 
-	if !cliOpts["skip_login"].(bool) {
+	if val, ok := cliOpts["skip_login"]; !ok || !val.(bool) {
 		err = ensureLoggedIntoJira()
 		if err != nil {
 			log.Error("Login failed. Aborting")
