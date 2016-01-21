@@ -61,9 +61,9 @@ func (p *QueryPage) markActiveLine() {
 		selected := ""
 		if i == p.selectedLine {
 			selected = "fg-white,bg-blue"
-			p.displayLines[i] = fmt.Sprintf("[%-30s -- %s](%s)", v.Name, v.JQL, selected)
+			p.displayLines[i] = fmt.Sprintf("[%-50s | %s](%s)", v.Name, v.JQL, selected)
 		} else {
-			p.displayLines[i] = fmt.Sprintf("%-30s -- %s", v.Name, v.JQL)
+			p.displayLines[i] = fmt.Sprintf("%-50s [|](fg-blue) [%s](fg-green)", v.Name, v.JQL)
 		}
 	}
 }
