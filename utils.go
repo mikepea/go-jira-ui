@@ -56,6 +56,12 @@ func runJiraCmdCommentNoEditor(ticketId string, comment string) {
 	c.CmdComment(ticketId)
 }
 
+func runJiraCmdAssign(ticketId string, user string) {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	c.CmdAssign(ticketId, user)
+}
+
 func runJiraCmdLabels(ticketId string, action string, labels []string) {
 	opts := getJiraOpts()
 	c := jira.New(opts)
