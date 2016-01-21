@@ -7,12 +7,24 @@ import (
 type CommandBar struct {
 	uiList *ui.List
 	EditBox
+	previousCommands []string
 }
 
 func (p *CommandBar) Submit() {
 	if obj, ok := currentPage.(CommandBoxer); ok {
 		obj.SetCommandMode(false)
 		obj.ExecuteCommand()
+		obj.Update()
+		p.previousCommands = append(p.previousCommands, string(p.text))
+	}
+}
+
+func (p *CommandBar) PreviousCommand() {
+	if len(p.previousCommands) == 0 {
+		return
+	}
+	if obj, ok := currentPage.(CommandBoxer); ok {
+		p.text = []byte(p.previousCommands[len(p.previousCommands)-1])
 		obj.Update()
 	}
 }

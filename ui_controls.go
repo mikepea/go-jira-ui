@@ -238,6 +238,9 @@ func handleAnyKey(e ui.Event) {
 		if key == "<enter>" {
 			cb.Submit()
 			return
+		} else if key == "<up>" {
+			cb.PreviousCommand()
+			return
 		} else {
 			handleEditBoxKey(cb, key)
 			return
