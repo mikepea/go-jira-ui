@@ -51,6 +51,10 @@ func (p *TicketListPage) Search() {
 	return
 }
 
+func (p *TicketListPage) ActiveTicketId() string {
+	return p.GetSelectedTicketId()
+}
+
 func (p *TicketListPage) GetSelectedTicketId() string {
 	return findTicketIdInString(p.cachedResults[p.selectedLine])
 }
