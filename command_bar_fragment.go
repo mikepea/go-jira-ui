@@ -51,6 +51,8 @@ func handleCommand(command string) {
 		handleQuit()
 	case action == "label" || action == "labels":
 		handleLabelCommand(args)
+	case action == "comment":
+		handleCommentCommand(string(command[9:]))
 	}
 }
 
@@ -79,7 +81,19 @@ func handleLabelCommand(args []string) {
 		}
 		runJiraCmdLabels(ticketId, action, labels)
 		obj.Refresh()
+	}
+}
 
+func handleCommentCommand(comment string) {
+	log.Debugf("handleCommentCommand: comment %s", comment)
+	if obj, ok := currentPage.(TicketCommander); ok {
+		ticketId := obj.ActiveTicketId()
+		if ticketId == "" || comment == "" {
+			return
+		}
+		log.Debugf("handleCommentCommand: ticket: %s, comment %s", ticketId, comment)
+		runJiraCmdCommentNoEditor(ticketId, comment)
+		obj.Refresh()
 	}
 }
 
