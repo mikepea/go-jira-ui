@@ -18,8 +18,9 @@ type EditPager interface {
 	Create()
 }
 
-type ActiveTicketIder interface {
+type TicketCommander interface {
 	ActiveTicketId() string
+	Refresh()
 }
 
 type Searcher interface {

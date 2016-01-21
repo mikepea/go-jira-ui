@@ -49,6 +49,15 @@ func runJiraCmdComment(ticketId string) {
 	os.Exit(0)
 }
 
+func runJiraCmdLabels(ticketId string, action string, labels []string) {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	err := c.CmdLabels(action, ticketId, labels)
+	if err != nil {
+		log.Errorf("Error writing labels: %q", err)
+	}
+}
+
 func findTicketIdInString(line string) string {
 	re := regexp.MustCompile(`[A-Z]{3,12}-[0-9]{1,6}`)
 	return strings.TrimSpace(re.FindString(line))

@@ -1,7 +1,6 @@
 package jiraui
 
 import (
-	"github.com/Netflix-Skunkworks/go-jira"
 	"strings"
 )
 
@@ -57,8 +56,7 @@ func handleCommand(command string) {
 
 func handleLabelCommand(args []string) {
 	log.Debugf("handleLabelCommand: args %s", args)
-	if obj, ok := currentPage.(ActiveTicketIder); ok {
-		opts := getJiraOpts()
+	if obj, ok := currentPage.(TicketCommander); ok {
 		ticketId := obj.ActiveTicketId()
 		if ticketId == "" || args == nil {
 			return
@@ -79,12 +77,9 @@ func handleLabelCommand(args []string) {
 		default:
 			labels = args
 		}
-		log.Noticef("handleLabelCommand: CmdLabels(%q, %q, %s)", action, ticketId, labels)
-		c := jira.New(opts)
-		err := c.CmdLabels(action, ticketId, labels)
-		if err != nil {
-			log.Errorf("Error writing labels: %q", err)
-		}
+		runJiraCmdLabels(ticketId, action, labels)
+		obj.Refresh()
+
 	}
 }
 
