@@ -88,6 +88,15 @@ func (p *TicketListPage) Update() {
 	p.commandBar.Update()
 }
 
+func (p *TicketListPage) Refresh() {
+	pDeref := &p
+	q := *pDeref
+	q.cachedResults = make([]string, 0)
+	ticketListPage = q
+	changePage()
+	q.Create()
+}
+
 func (p *TicketListPage) Create() {
 	ui.Clear()
 	ls := ui.NewList()
