@@ -51,6 +51,8 @@ func handleCommand(command string) {
 		handleQuit()
 	case action == "label" || action == "labels":
 		handleLabelCommand(args)
+	case action == "watch":
+		handleWatchCommand(true)
 	case action == "assign":
 		handleAssignCommand(args[0])
 	case action == "unassign":
@@ -113,6 +115,22 @@ func handleAssignCommand(user string) {
 		}
 		log.Debugf("handleAssignCommand: ticket: %s, user %s", ticketId, user)
 		runJiraCmdAssign(ticketId, user)
+		obj.Refresh()
+	}
+}
+
+func handleWatchCommand(mode bool) {
+	log.Debugf("handleWatchCommand: mode %q", mode)
+	if obj, ok := currentPage.(TicketCommander); ok {
+		ticketId := obj.ActiveTicketId()
+		if ticketId == "" {
+			return
+		} else if !mode {
+			log.Errorf("handleAssignCommand: watch == false not yet supported.")
+			return
+		}
+		log.Debugf("handleWatchCommand: ticket: %s, mode %s", ticketId)
+		runJiraCmdWatch(ticketId)
 		obj.Refresh()
 	}
 }
