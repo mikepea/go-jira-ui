@@ -6,6 +6,8 @@ go-jira-ui is an ncurses command line tool for accessing JIRA.
 It is built around the excellent [go-jira](https://github.com/Netflix-Skunkworks/go-jira) and
 [termui](https://github.com/gizak/termui) libraries.
 
+It aims to be similar to familiar tools like vim, tig, and less.
+
 In order to use this, you should configure an 'endpoint' as per the go-jira
 documentation:
 
@@ -32,12 +34,13 @@ This should be all that's needed to get going.
 * Label view of a given query, to see categorisations easily
 * Sorting of queries; supply your own custom sorts
 * View tickets from the query
-* Edit/Comment on tickets from both list and detail view
 * Drill into sub/blocker/related/mentioned tickets in details view
 * Show open tickets in an Epic.
 * Basic compatibility with [go-jira](https://github.com/Netflix-Skunkworks/go-jira) commandline and options loading
+* Label adding/removing
+* Comment, watch, assign and take implemented via :-mode commands
 
-At present, edit and comment will exit after the update. This is a workaround
+At present, edit will exit after the update. This is a workaround
 to an implementation issue, being tracked in [#8](https://github.com/mikepea/go-jira-ui/issues/8)
 
 ### Usage
@@ -60,6 +63,23 @@ Actions:
     C            - Comment on ticket
     S            - Select sort order (query results page only)
 
+Commands (like vim/tig/less):
+
+    :comment {single-line-comment} - add a short comment to ticket
+    :label {labels}                - add labels to selected ticket
+    :label add/remove {labels}     - add/remove labels to selected ticket
+    :take                          - assign ticket to self
+    :assign {user}                 - assign ticket to {user}
+    :unassign                      - unassign ticket
+    :watch                         - watch ticket
+    :<up>                          - select previous command
+    :quit or :q                    - quit
+
+Searching:
+
+    /{regex}                       - search down
+    ?{regex}                       - search up
+
 Navigation:
 
     up/k         - previous line
@@ -68,6 +88,7 @@ Navigation:
     C-b          - previous page
     }            - next paragraph/section/fast-move
     {            - previous paragraph/section/fast-move
+    n            - next search match
     g            - go to top of page
     G            - go to bottom of page
     q            - go back / quit
