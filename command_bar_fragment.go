@@ -61,7 +61,9 @@ func handleCommand(command string) {
 		opts := getJiraOpts()
 		handleAssignCommand(opts["user"].(string))
 	case action == "comment":
-		handleCommentCommand(string(command[9:]))
+		if len(command) > 10 {
+			handleCommentCommand(string(command[9:]))
+		}
 	}
 }
 
