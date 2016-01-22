@@ -133,6 +133,12 @@ func handleNextSearchKey() {
 	}
 }
 
+func handleHelp() {
+	previousPage = currentPage
+	currentPage = helpPage
+	changePage()
+}
+
 func handleNavigateKey(e ui.Event) {
 	key := e.Data.(ui.EvtKbd).KeyStr
 	switch key {
@@ -178,6 +184,8 @@ func handleNavigateKey(e ui.Event) {
 		handleCommandKey(e)
 	case "n":
 		handleNextSearchKey()
+	case "h":
+		handleHelp()
 	}
 }
 

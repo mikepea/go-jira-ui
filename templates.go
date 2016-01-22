@@ -46,4 +46,70 @@ subtasks:
 
 {{end}}
 `
+	default_help_template = `
+[Quick reference for jira-ui](fg-white)
+
+[Actions:](fg-blue)
+
+    <enter>      - select query/ticket
+    L            - Label view (query results page only)
+    E            - Edit ticket
+    S            - Select sort order (query results page only)
+
+[Commands (a'la vim/tig):](fg-blue)
+
+    :comment {single-line-comment} - add a short comment to ticket
+    :label {labels}                - add labels to selected ticket
+    :label add/remove {labels}     - add/remove labels to selected ticket
+    :take                          - assign ticket to self
+    :assign {user}                 - assign ticket to {user}
+    :unassign                      - unassign ticket
+    :watch                         - watch ticket
+    :<up>                          - select previous command
+    :quit or :q                    - quit
+
+[Navigation:](fg-blue)
+
+    up/k         - previous line
+    down/j       - next line
+    C-f/<space>  - next page
+    C-b          - previous page
+    }            - next paragraph/section/fast-move
+    {            - previous paragraph/section/fast-move
+    n            - next search match
+    g            - go to top of page
+    G            - go to bottom of page
+    q            - go back / quit
+    C-c/Q        - quit
+
+[Configuration:](fg-blue)
+
+  It is very much recommended to read the go-jira documentation,
+  particularly surrounding the .jira.d configuration directories.
+
+  go-jira-ui uses this same mechanism, so can be used to load per-project
+  defaults. It also leverages the templating engine, so you can customise
+  the view of both the query output (use 'jira_ui_list' template), and the
+  issue 'view' template.
+
+  go-jira-ui reads its own [jira-ui-config.yml](fg-green) file in these
+  jira.d directories, as not to pollute the go-jira config. You can add
+  additional queries & sort orderings to the top-level Query page:
+
+    $ cat ~/jira.d/jira-ui-config.yml:
+    sorts:
+      - name: "sort by vote count"
+            jql:  "ORDER BY votes DESC"
+    queries:
+      - name: "alice assigned"
+        jql:  "assignee = alice AND resolution = Unresolved"
+      - name: "bob assigned"
+        jql:  "assignee = bob AND resolution = Unresolved"
+      - name: "unresolved must-do"
+        jql:  "labels = 'must-do' AND resolution = Unresolved AND ( project = 'OPS' OR project = 'INFRA')"
+
+  Learning JQL is highly recommended, the Atlassian Advanced Searching
+  page is a good place to start.
+
+`
 )

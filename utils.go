@@ -116,6 +116,19 @@ func JiraTicketAsStrings(data interface{}, templateName string) []string {
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
+func HelpTextAsStrings(data interface{}, templateName string) []string {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	buf := new(bytes.Buffer)
+	template := c.GetTemplate(templateName)
+	if template == "" {
+		template = default_help_template
+	}
+	log.Debug("HelpTextAsStrings: template = %q", template)
+	jira.RunTemplate(template, data, buf)
+	return strings.Split(strings.TrimSpace(buf.String()), "\n")
+}
+
 func WrapText(lines []string, maxWidth uint) []string {
 	out := make([]string, 0)
 	insideNoformatBlock := false

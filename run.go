@@ -76,8 +76,10 @@ type Navigable interface {
 }
 
 var currentPage Navigable
+var previousPage Navigable
 
 var ticketQueryPage *QueryPage
+var helpPage *HelpPage
 var ticketListPage *TicketListPage
 var labelListPage *LabelListPage
 var sortOrderPage *SortOrderPage
@@ -99,6 +101,9 @@ func changePage() {
 		currentPage.Create()
 	case *TicketShowPage:
 		log.Debugf("changePage: TicketShowPage %s (%p)", currentPage.Id(), currentPage)
+		currentPage.Create()
+	case *HelpPage:
+		log.Debugf("changePage: HelpPage %s (%p)", currentPage.Id(), currentPage)
 		currentPage.Create()
 	}
 }
@@ -229,6 +234,7 @@ Query Options:
 
 	ticketQueryPage = new(QueryPage)
 	passwordInputBox = new(PasswordInputBox)
+	helpPage = new(HelpPage)
 
 	switch command {
 	case "list":
