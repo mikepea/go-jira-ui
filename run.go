@@ -9,14 +9,32 @@ import (
 	"os"
 )
 
-const (
-	ticketQuery = iota
-	ticketList  = iota
-	labelList   = iota
-	ticketShow  = iota
-)
-
 var exitNow = false
+
+type EditPager interface {
+	DeleteRuneBackward()
+	InsertRune(r rune)
+	Update()
+	Create()
+}
+
+type TicketCommander interface {
+	ActiveTicketId() string
+	Refresh()
+}
+
+type Searcher interface {
+	SetSearch(string)
+	Search()
+}
+
+type CommandBoxer interface {
+	SetCommandMode(bool)
+	ExecuteCommand()
+	CommandMode() bool
+	CommandBar() *CommandBar
+	Update()
+}
 
 type GoBacker interface {
 	GoBack()
@@ -47,16 +65,13 @@ type PagePager interface {
 	PreviousPage()
 	TopOfPage()
 	BottomOfPage()
+	IsPopulated() bool
 	Update()
 }
 
 type Navigable interface {
 	Create()
 	Update()
-	PreviousLine(int)
-	NextLine(int)
-	PreviousPage()
-	NextPage()
 	Id() string
 }
 
@@ -66,6 +81,7 @@ var ticketQueryPage *QueryPage
 var ticketListPage *TicketListPage
 var labelListPage *LabelListPage
 var sortOrderPage *SortOrderPage
+var passwordInputBox *PasswordInputBox
 
 func changePage() {
 	switch currentPage.(type) {
@@ -124,6 +140,7 @@ General Options:
   -h --help           Show this usage
   -u --user=USER      Username to use for authenticaion
   -v --verbose        Increase output logging
+  --skiplogin         Skip the login check. You must have a valid session token (eg via 'jira login')
   --version           Print version
 
 Ticket View Options:
@@ -139,8 +156,10 @@ Query Options:
 	}
 
 	jiraCommands := map[string]string{
-		"list": "list",
-		"ls":   "list",
+		"list":     "list",
+		"ls":       "list",
+		"password": "password",
+		"passwd":   "password",
 	}
 
 	cliOpts = make(map[string]interface{})
@@ -163,6 +182,7 @@ Query Options:
 		"f|queryfields=s": setopt,
 		"t|template=s":    setopt,
 		"m|max_wrap=i":    setopt,
+		"skip_login":      setopt,
 	})
 
 	if err := op.ProcessAll(os.Args[1:]); err != nil {
@@ -191,10 +211,12 @@ Query Options:
 		}
 	}
 
-	err = ensureLoggedIntoJira()
-	if err != nil {
-		log.Error("Login failed. Aborting")
-		os.Exit(2)
+	if val, ok := cliOpts["skip_login"]; !ok || !val.(bool) {
+		err = ensureLoggedIntoJira()
+		if err != nil {
+			log.Error("Login failed. Aborting")
+			os.Exit(2)
+		}
 	}
 
 	err = ui.Init()
@@ -206,6 +228,7 @@ Query Options:
 	registerKeyboardHandlers()
 
 	ticketQueryPage = new(QueryPage)
+	passwordInputBox = new(PasswordInputBox)
 
 	switch command {
 	case "list":
@@ -225,6 +248,8 @@ Query Options:
 		currentPage = p
 	case "toplevel":
 		currentPage = ticketQueryPage
+	case "password":
+		currentPage = passwordInputBox
 	default:
 		log.Error("Unknown command %s", command)
 		os.Exit(1)

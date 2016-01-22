@@ -40,13 +40,32 @@ func runJiraCmdEdit(ticketId string) {
 	os.Exit(0)
 }
 
-func runJiraCmdComment(ticketId string) {
+func runJiraCmdCommentNoEditor(ticketId string, comment string) {
+	opts := getJiraOpts()
+	opts["comment"] = comment
+	c := jira.New(opts)
+	c.CmdComment(ticketId)
+}
+
+func runJiraCmdAssign(ticketId string, user string) {
 	opts := getJiraOpts()
 	c := jira.New(opts)
-	ui.Close()
-	c.CmdComment(ticketId)
-	log.Notice("Regrettably, need to exit after comment. See https://github.com/mikepea/go-jira-ui/issues/8")
-	os.Exit(0)
+	c.CmdAssign(ticketId, user)
+}
+
+func runJiraCmdWatch(ticketId string) {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	c.CmdWatch(ticketId)
+}
+
+func runJiraCmdLabels(ticketId string, action string, labels []string) {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	err := c.CmdLabels(action, ticketId, labels)
+	if err != nil {
+		log.Errorf("Error writing labels: %q", err)
+	}
 }
 
 func findTicketIdInString(line string) string {

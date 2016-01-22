@@ -12,6 +12,8 @@ const (
 
 type TicketShowPage struct {
 	BaseListPage
+	CommandBarFragment
+	StatusBarFragment
 	MaxWrapWidth uint
 	TicketId     string
 	Template     string
@@ -19,6 +21,28 @@ type TicketShowPage struct {
 	TicketTrail  []*TicketShowPage // previously viewed tickets in drill-down
 	WrapWidth    uint
 	opts         map[string]interface{}
+}
+
+func (p *TicketShowPage) Search() {
+	s := p.ActiveSearch
+	n := len(p.cachedResults)
+	if s.command == "" {
+		return
+	}
+	increment := 1
+	if s.directionUp {
+		increment = -1
+	}
+	// we use modulo here so we can loop through every line.
+	// adding 'n' means we never have '-1 % n'.
+	startLine := (p.selectedLine + n + increment) % n
+	for i := startLine; i != p.selectedLine; i = (i + increment + n) % n {
+		if s.re.MatchString(p.cachedResults[i]) {
+			p.SetSelectedLine(i)
+			p.Update()
+			break
+		}
+	}
 }
 
 func (p *TicketShowPage) SelectItem() {
@@ -93,8 +117,8 @@ func (p *TicketShowPage) EditTicket() {
 	runJiraCmdEdit(p.TicketId)
 }
 
-func (p *TicketShowPage) CommentTicket() {
-	runJiraCmdComment(p.TicketId)
+func (p *TicketShowPage) ActiveTicketId() string {
+	return p.TicketId
 }
 
 func (p *TicketShowPage) ticketTrailAsString() (trail string) {
@@ -110,8 +134,18 @@ func (p *TicketShowPage) Refresh() {
 	q := *pDeref
 	q.cachedResults = make([]string, 0)
 	q.apiBody = nil
-	q.Create()
+	currentPage = q
 	changePage()
+	q.Create()
+}
+
+func (p *TicketShowPage) Update() {
+	ls := p.uiList
+	p.markActiveLine()
+	ls.Items = p.displayLines[p.firstDisplayLine:]
+	ui.Render(ls)
+	p.statusBar.Update()
+	p.commandBar.Update()
 }
 
 func (p *TicketShowPage) Create() {
@@ -128,6 +162,12 @@ func (p *TicketShowPage) Create() {
 	}
 	ui.Clear()
 	ls := ui.NewList()
+	if p.statusBar == nil {
+		p.statusBar = new(StatusBar)
+	}
+	if p.commandBar == nil {
+		p.commandBar = new(CommandBar)
+	}
 	p.uiList = ls
 	if p.Template == "" {
 		if templateOpt := p.opts["template"]; templateOpt == nil {
@@ -148,10 +188,12 @@ func (p *TicketShowPage) Create() {
 	p.cachedResults = WrapText(JiraTicketAsStrings(p.apiBody, p.Template), p.WrapWidth)
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
-	ls.Height = ui.TermHeight()
+	ls.Height = ui.TermHeight() - 2
 	ls.Width = ui.TermWidth()
 	ls.Border = true
 	ls.BorderLabel = fmt.Sprintf("%s %s", p.TicketId, p.ticketTrailAsString())
 	ls.Y = 0
+	p.statusBar.Create()
+	p.commandBar.Create()
 	p.Update()
 }
