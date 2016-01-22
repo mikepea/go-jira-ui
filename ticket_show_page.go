@@ -117,10 +117,6 @@ func (p *TicketShowPage) EditTicket() {
 	runJiraCmdEdit(p.TicketId)
 }
 
-func (p *TicketShowPage) CommentTicket() {
-	runJiraCmdComment(p.TicketId)
-}
-
 func (p *TicketShowPage) ActiveTicketId() string {
 	return p.TicketId
 }

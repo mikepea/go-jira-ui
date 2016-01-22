@@ -52,12 +52,6 @@ func handleEditKey() {
 	}
 }
 
-func handleCommentKey() {
-	if obj, ok := currentPage.(TicketCommenter); ok {
-		obj.CommentTicket()
-	}
-}
-
 func handleBackKey() {
 	if obj, ok := currentPage.(GoBacker); ok {
 		obj.GoBack()
@@ -150,8 +144,6 @@ func handleNavigateKey(e ui.Event) {
 		handleRefreshKey()
 	case "E":
 		handleEditKey()
-	case "C":
-		handleCommentKey()
 	case "q":
 		handleBackKey()
 	case "<enter>":

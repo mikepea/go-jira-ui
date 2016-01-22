@@ -60,7 +60,6 @@ Actions:
     <enter>      - select query/ticket
     L            - Label view (query results page only)
     E            - Edit ticket
-    C            - Comment on ticket
     S            - Select sort order (query results page only)
 
 Commands (like vim/tig/less):

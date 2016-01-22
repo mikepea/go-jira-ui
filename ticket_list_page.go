@@ -64,10 +64,6 @@ func (p *TicketListPage) EditTicket() {
 	runJiraCmdEdit(p.GetSelectedTicketId())
 }
 
-func (p *TicketListPage) CommentTicket() {
-	runJiraCmdComment(p.GetSelectedTicketId())
-}
-
 func (p *TicketListPage) Update() {
 	ls := p.uiList
 	p.markActiveLine()
