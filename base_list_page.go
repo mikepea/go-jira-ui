@@ -6,6 +6,12 @@ import (
 	"regexp"
 )
 
+type Search struct {
+	command     string
+	directionUp bool
+	re          *regexp.Regexp
+}
+
 type BaseListPage struct {
 	selectedLine     int
 	uiList           *ui.List
@@ -13,6 +19,33 @@ type BaseListPage struct {
 	cachedResults    []string
 	firstDisplayLine int
 	isPopulated      bool
+	ActiveSearch     Search
+}
+
+func (p *BaseListPage) SetSearch(searchCommand string) {
+	if len(searchCommand) < 2 {
+		// must be '/a' minimum
+		return
+	}
+	direction := []byte(searchCommand)[0]
+	regex := "(?i)" + string([]byte(searchCommand)[1:])
+	s := new(Search)
+	s.command = searchCommand
+	if direction == '?' {
+		s.directionUp = true
+	} else if direction == '/' {
+		s.directionUp = false
+	} else {
+		// bad command
+		return
+	}
+	if re, err := regexp.Compile(regex); err != nil {
+		// bad regex
+		return
+	} else {
+		s.re = re
+		p.ActiveSearch = *s
+	}
 }
 
 func (p *BaseListPage) IsPopulated() bool {
@@ -23,14 +56,20 @@ func (p *BaseListPage) IsPopulated() bool {
 	}
 }
 
+func (p *BaseListPage) FixFirstDisplayLine(n int) {
+	if p.selectedLine < p.firstDisplayLine {
+		p.firstDisplayLine = p.selectedLine
+	} else if p.selectedLine > p.lastDisplayedLine() {
+		p.firstDisplayLine = p.selectedLine - (p.PageLines() - 1)
+	}
+}
+
 func (p *BaseListPage) PreviousLine(n int) {
 	p.selectedLine = p.selectedLine - n
 	if p.selectedLine < 0 {
 		p.selectedLine = 0
 	}
-	if p.selectedLine < p.firstDisplayLine {
-		p.firstDisplayLine = p.selectedLine
-	}
+	p.FixFirstDisplayLine(n)
 }
 
 func (p *BaseListPage) NextLine(n int) {
@@ -39,9 +78,7 @@ func (p *BaseListPage) NextLine(n int) {
 	} else {
 		p.selectedLine = len(p.displayLines) - 1
 	}
-	if p.selectedLine > p.lastDisplayedLine() {
-		p.firstDisplayLine = p.firstDisplayLine + n
-	}
+	p.FixFirstDisplayLine(n)
 }
 
 func (p *BaseListPage) PreviousPara() {
@@ -53,11 +90,15 @@ func (p *BaseListPage) NextPara() {
 }
 
 func (p *BaseListPage) PreviousPage() {
-	p.PreviousLine(p.uiList.Height - 2)
+	p.PreviousLine(p.PageLines())
 }
 
 func (p *BaseListPage) NextPage() {
-	p.NextLine(p.uiList.Height - 2)
+	p.NextLine(p.PageLines())
+}
+
+func (p *BaseListPage) PageLines() int {
+	return p.uiList.Height - 2
 }
 
 func (p *BaseListPage) TopOfPage() {
@@ -77,6 +118,13 @@ func (p *BaseListPage) BottomOfPage() {
 
 func (p *BaseListPage) lastDisplayedLine() int {
 	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 3)
+}
+
+func (p *BaseListPage) SetSelectedLine(line int) {
+	if line > 0 && line < len(p.cachedResults) {
+		p.selectedLine = line
+		p.FixFirstDisplayLine(0)
+	}
 }
 
 func (p *BaseListPage) markActiveLine() {

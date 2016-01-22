@@ -13,6 +13,28 @@ type LabelListPage struct {
 	ActiveQuery Query
 }
 
+func (p *LabelListPage) Search() {
+	s := p.ActiveSearch
+	n := len(p.cachedResults)
+	if s.command == "" {
+		return
+	}
+	increment := 1
+	if s.directionUp {
+		increment = -1
+	}
+	// we use modulo here so we can loop through every line.
+	// adding 'n' means we never have '-1 % n'.
+	startLine := (p.selectedLine + n + increment) % n
+	for i := startLine; i != p.selectedLine; i = (i + increment + n) % n {
+		if s.re.MatchString(p.cachedResults[i]) {
+			p.SetSelectedLine(i)
+			p.Update()
+			break
+		}
+	}
+}
+
 func (p *LabelListPage) labelsAsSortedList() []string {
 	return sortedKeys(p.labelCounts)
 }

@@ -48,11 +48,42 @@ func getQueries() (queries []Query) {
 	return append(baseQueries, queries...)
 }
 
+func (p *QueryPage) Search() {
+	s := p.ActiveSearch
+	log.Noticef("QueryPage: search! %q", s.command)
+	n := len(p.cachedResults)
+	if s.command == "" {
+		return
+	}
+	increment := 1
+	if s.directionUp {
+		increment = -1
+	}
+	// we use modulo here so we can loop through every line.
+	// adding 'n' means we never have '-1 % n'.
+	startLine := (p.selectedLine + n + increment) % n
+	for i := startLine; i != p.selectedLine; i = (i + increment + n) % n {
+		if s.re.MatchString(p.cachedResults[i].Name) {
+			log.Noticef("Match found, line %d", i)
+			p.SetSelectedLine(i)
+			p.Update()
+			break
+		}
+	}
+}
+
 func (p *QueryPage) IsPopulated() bool {
 	if len(p.cachedResults) > 0 {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (p *QueryPage) SetSelectedLine(line int) {
+	if line > 0 && line < len(p.cachedResults) {
+		p.selectedLine = line
+		p.FixFirstDisplayLine(0)
 	}
 }
 

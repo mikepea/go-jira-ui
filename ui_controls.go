@@ -133,6 +133,12 @@ func handleParaDownKey() {
 	}
 }
 
+func handleNextSearchKey() {
+	if obj, ok := currentPage.(Searcher); ok {
+		obj.Search()
+	}
+}
+
 func handleNavigateKey(e ui.Event) {
 	key := e.Data.(ui.EvtKbd).KeyStr
 	switch key {
@@ -178,6 +184,8 @@ func handleNavigateKey(e ui.Event) {
 		handleCommandKey(e)
 	case "?":
 		handleCommandKey(e)
+	case "n":
+		handleNextSearchKey()
 	}
 }
 
