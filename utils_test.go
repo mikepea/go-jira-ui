@@ -11,13 +11,16 @@ func TestCountLabelsFromQueryData(t *testing.T) {
 		  "issues": [
 				{ "fields": { "labels": [ "wibble", "bibble" ] } },
 				{ "fields": { "labels": [ "wibble", "bibble" ] } },
-				{ "fields": { "labels": [ "bibble" ] } }
+				{ "fields": { "labels": [ "bibble" ] } },
+				{ "fields": { "labels": [] } },
+				{ "fields": { "labels": [] } }
 			]
 		}`)
 
 	expected := make(map[string]int)
 	expected["wibble"] = 2
 	expected["bibble"] = 3
+	expected["NOT LABELLED"] = 2
 
 	err := json.Unmarshal(inputJSON, &data)
 	if err != nil {
@@ -25,11 +28,10 @@ func TestCountLabelsFromQueryData(t *testing.T) {
 	}
 
 	actual := countLabelsFromQueryData(data)
-	if expected["wibble"] != actual["wibble"] {
-		t.Fatalf("wibble: expected %q, got %q", expected, actual)
-	}
-	if expected["bibble"] != actual["bibble"] {
-		t.Fatalf("bibble: expected %q, got %q", expected, actual)
+	for k, v := range expected {
+		if v != actual[k] {
+			t.Fatalf("%s: expected %d, got %d", k, v, actual[k])
+		}
 	}
 }
 

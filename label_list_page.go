@@ -51,8 +51,13 @@ func (p *LabelListPage) labelsAsSortedListWithCounts() []string {
 func (p *LabelListPage) SelectItem() {
 	label := p.cachedResults[p.selectedLine]
 	q := new(TicketListPage)
-	q.ActiveQuery.Name = ticketListPage.ActiveQuery.Name + "+" + label
-	q.ActiveQuery.JQL = ticketListPage.ActiveQuery.JQL + " AND labels = " + label
+	if label == "NOT LABELLED" {
+		q.ActiveQuery.Name = ticketListPage.ActiveQuery.Name + " (unlabelled)"
+		q.ActiveQuery.JQL = ticketListPage.ActiveQuery.JQL + " AND labels IS EMPTY"
+	} else {
+		q.ActiveQuery.Name = ticketListPage.ActiveQuery.Name + "+" + label
+		q.ActiveQuery.JQL = ticketListPage.ActiveQuery.JQL + " AND labels = " + label
+	}
 	currentPage = q
 	changePage()
 }

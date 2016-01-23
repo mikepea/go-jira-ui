@@ -23,9 +23,15 @@ func countLabelsFromQueryData(data interface{}) map[string]int {
 	issues := data.(map[string]interface{})["issues"].([]interface{})
 	for _, issue := range issues {
 		issueLabels := issue.(map[string]interface{})["fields"].(map[string]interface{})["labels"]
-		for _, v := range issueLabels.([]interface{}) {
-			label := v.(string)
-			counts[label] = counts[label] + 1
+		labels := issueLabels.([]interface{})
+		if len(labels) == 0 {
+			// "NOT LABELLED" isn't a valid label, so no possible conflict here.
+			counts["NOT LABELLED"] = counts["NOT LABELLED"] + 1
+		} else {
+			for _, v := range labels {
+				label := v.(string)
+				counts[label] = counts[label] + 1
+			}
 		}
 	}
 	return counts
