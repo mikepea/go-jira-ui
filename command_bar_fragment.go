@@ -52,7 +52,7 @@ func handleCommand(command string) {
 	case action == "label" || action == "labels":
 		handleLabelCommand(args)
 	case action == "watch":
-		handleWatchCommand(true)
+		handleWatchCommand(args)
 	case action == "assign":
 		handleAssignCommand(args[0])
 	case action == "unassign":
@@ -121,18 +121,31 @@ func handleAssignCommand(user string) {
 	}
 }
 
-func handleWatchCommand(mode bool) {
-	log.Debugf("handleWatchCommand: mode %q", mode)
+func handleWatchCommand(args []string) {
+	log.Debugf("handleWatchCommand: args %s", args)
 	if obj, ok := currentPage.(TicketCommander); ok {
 		ticketId := obj.ActiveTicketId()
 		if ticketId == "" {
 			return
-		} else if !mode {
-			log.Errorf("handleAssignCommand: watch == false not yet supported.")
+		}
+		log.Debugf("handleWatchCommand: ticket: %s, args %s", ticketId, args)
+		if len(args) == 0 {
+			runJiraCmdWatch(ticketId, "", false) // watch issue
+		} else if args[0] == "add" {
+			if len(args) > 1 {
+				runJiraCmdWatch(ticketId, args[1], false) // add any user as watcher
+			} else {
+				runJiraCmdWatch(ticketId, "", false) // add self as watcher
+			}
+		} else if args[0] == "remove" {
+			if len(args) > 1 {
+				runJiraCmdWatch(ticketId, args[1], true) // remove any user as watcher
+			} else {
+				runJiraCmdWatch(ticketId, "", true) // remove self as watcher
+			}
+		} else {
 			return
 		}
-		log.Debugf("handleWatchCommand: ticket: %s, mode %s", ticketId)
-		runJiraCmdWatch(ticketId)
 		obj.Refresh()
 	}
 }

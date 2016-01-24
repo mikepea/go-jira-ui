@@ -150,6 +150,12 @@ func handleNavigateKey(e ui.Event) {
 		handleRefreshKey()
 	case "E":
 		handleEditKey()
+	case "w":
+		args := []string{"add"}
+		handleWatchCommand(args)
+	case "W":
+		args := []string{"remove"}
+		handleWatchCommand(args)
 	case "q":
 		handleBackKey()
 	case "<enter>":

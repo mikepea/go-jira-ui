@@ -59,10 +59,13 @@ func runJiraCmdAssign(ticketId string, user string) {
 	c.CmdAssign(ticketId, user)
 }
 
-func runJiraCmdWatch(ticketId string) {
+func runJiraCmdWatch(ticketId string, watcher string, remove bool) {
 	opts := getJiraOpts()
 	c := jira.New(opts)
-	c.CmdWatch(ticketId)
+	if watcher == "" {
+		watcher = opts["user"].(string)
+	}
+	c.CmdWatch(ticketId, watcher, remove)
 }
 
 func runJiraCmdLabels(ticketId string, action string, labels []string) {

@@ -61,6 +61,8 @@ Actions:
     L            - Label view (query results page only)
     E            - Edit ticket
     S            - Select sort order (query results page only)
+    w            - Watch the selected ticket
+    W            - Unwatch the selected ticket
 
 Commands (like vim/tig/less):
 
@@ -70,7 +72,7 @@ Commands (like vim/tig/less):
     :take                          - assign ticket to self
     :assign {user}                 - assign ticket to {user}
     :unassign                      - unassign ticket
-    :watch                         - watch ticket
+    :watch [add/remove] [watcher]  - watch ticket (optionally as a different user)
     :<up>                          - select previous command
     :quit or :q                    - quit
 
