@@ -57,6 +57,8 @@ subtasks:
     S            - Select sort order (query results page only)
     v            - Vote for the selected ticket
     V            - Remove vote on the selected ticket
+    w            - Watch the selected ticket
+    W            - Unwatch the selected ticket
 
 [Commands (a'la vim/tig):](fg-blue)
 
@@ -66,9 +68,9 @@ subtasks:
     :take                          - assign ticket to self
     :assign {user}                 - assign ticket to {user}
     :unassign                      - unassign ticket
-    :watch                         - watch ticket
     :vote                          - vote for the selected ticket
     :unvote                        - remove vote for the selected ticket
+    :watch [add/remove] [watcher]  - watch ticket (optionally as a different user)
     :<up>                          - select previous command
     :quit or :q                    - quit
 
