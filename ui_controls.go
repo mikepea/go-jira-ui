@@ -156,6 +156,10 @@ func handleNavigateKey(e ui.Event) {
 	case "W":
 		args := []string{"remove"}
 		handleWatchCommand(args)
+	case "v":
+		handleVoteCommand(true)
+	case "V":
+		handleVoteCommand(false)
 	case "q":
 		handleBackKey()
 	case "<enter>":

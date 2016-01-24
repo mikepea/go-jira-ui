@@ -55,6 +55,8 @@ subtasks:
     L            - Label view (query results page only)
     E            - Edit ticket
     S            - Select sort order (query results page only)
+    v            - Vote for the selected ticket
+    V            - Remove vote on the selected ticket
 
 [Commands (a'la vim/tig):](fg-blue)
 
@@ -65,6 +67,8 @@ subtasks:
     :assign {user}                 - assign ticket to {user}
     :unassign                      - unassign ticket
     :watch                         - watch ticket
+    :vote                          - vote for the selected ticket
+    :unvote                        - remove vote for the selected ticket
     :<up>                          - select previous command
     :quit or :q                    - quit
 

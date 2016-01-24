@@ -53,6 +53,10 @@ func handleCommand(command string) {
 		handleLabelCommand(args)
 	case action == "watch":
 		handleWatchCommand(args)
+	case action == "vote":
+		handleVoteCommand(true)
+	case action == "unvote":
+		handleVoteCommand(false)
 	case action == "assign":
 		handleAssignCommand(args[0])
 	case action == "unassign":
@@ -117,6 +121,18 @@ func handleAssignCommand(user string) {
 		}
 		log.Debugf("handleAssignCommand: ticket: %s, user %s", ticketId, user)
 		runJiraCmdAssign(ticketId, user)
+		obj.Refresh()
+	}
+}
+
+func handleVoteCommand(up bool) {
+	log.Debugf("handleVoteCommand: up %q", up)
+	if obj, ok := currentPage.(TicketCommander); ok {
+		ticketId := obj.ActiveTicketId()
+		if ticketId == "" {
+			return
+		}
+		runJiraCmdVote(ticketId, up)
 		obj.Refresh()
 	}
 }

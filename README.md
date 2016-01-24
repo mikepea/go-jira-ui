@@ -63,6 +63,8 @@ Actions:
     S            - Select sort order (query results page only)
     w            - Watch the selected ticket
     W            - Unwatch the selected ticket
+    v            - Vote for the selected ticket
+    V            - Remove vote on the selected ticket
 
 Commands (like vim/tig/less):
 
@@ -73,6 +75,8 @@ Commands (like vim/tig/less):
     :assign {user}                 - assign ticket to {user}
     :unassign                      - unassign ticket
     :watch [add/remove] [watcher]  - watch ticket (optionally as a different user)
+    :vote                          - vote for the selected ticket
+    :unvote                        - remove vote for the selected ticket
     :<up>                          - select previous command
     :quit or :q                    - quit
 

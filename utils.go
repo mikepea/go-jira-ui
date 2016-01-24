@@ -68,6 +68,12 @@ func runJiraCmdWatch(ticketId string, watcher string, remove bool) {
 	c.CmdWatch(ticketId, watcher, remove)
 }
 
+func runJiraCmdVote(ticketId string, up bool) {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	c.CmdVote(ticketId, up)
+}
+
 func runJiraCmdLabels(ticketId string, action string, labels []string) {
 	opts := getJiraOpts()
 	c := jira.New(opts)
