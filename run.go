@@ -2,7 +2,6 @@ package jiraui
 
 import (
 	"fmt"
-	"github.com/Netflix-Skunkworks/go-jira"
 	"github.com/coryb/optigo"
 	ui "github.com/gizak/termui"
 	"github.com/op/go-logging"
@@ -109,7 +108,7 @@ func changePage() {
 }
 
 var (
-	log    = logging.MustGetLogger("jira")
+	log    = logging.MustGetLogger("jiraui")
 	format = "%{color}%{time:2006-01-02T15:04:05.000Z07:00} %{level:-5s} [%{shortfile}]%{color:reset} %{message}"
 )
 
@@ -175,7 +174,7 @@ Query Options:
 	op := optigo.NewDirectAssignParser(map[string]interface{}{
 		"h|help": usage,
 		"version": func() {
-			fmt.Println(fmt.Sprintf("version: %s", jira.VERSION))
+			fmt.Println(fmt.Sprintf("version: %s", VERSION))
 			os.Exit(0)
 		},
 		"v|verbose+": func() {
