@@ -66,6 +66,7 @@ func (p *TicketListPage) EditTicket() {
 
 func (p *TicketListPage) Update() {
 	ls := p.uiList
+	log.Debugf("TicketListPage.Update(): self:        %s (%p), ls: (%p)", p.Id(), p, ls)
 	p.markActiveLine()
 	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
@@ -83,6 +84,8 @@ func (p *TicketListPage) Refresh() {
 }
 
 func (p *TicketListPage) Create() {
+	log.Debugf("TicketListPage.Create(): self:        %s (%p)", p.Id(), p)
+	log.Debugf("TicketListPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls

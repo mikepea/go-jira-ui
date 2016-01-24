@@ -14,8 +14,11 @@ func (p *CommandBar) Submit() {
 	if obj, ok := currentPage.(CommandBoxer); ok {
 		obj.SetCommandMode(false)
 		obj.ExecuteCommand()
-		obj.Update()
 		p.previousCommands = append(p.previousCommands, string(p.text))
+	}
+	// currentPage may have changed
+	if obj, ok := currentPage.(CommandBoxer); ok {
+		obj.Update()
 	}
 }
 

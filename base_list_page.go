@@ -146,7 +146,7 @@ func (p *BaseListPage) markActiveLine() {
 }
 
 func (p *BaseListPage) Id() string {
-	return "X"
+	return fmt.Sprintf("BaseListPage(%p)", p)
 }
 
 func (p *BaseListPage) Update() {

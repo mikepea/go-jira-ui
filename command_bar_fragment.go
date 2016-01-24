@@ -51,6 +51,8 @@ func handleCommand(command string) {
 		handleQuit()
 	case action == "label" || action == "labels":
 		handleLabelCommand(args)
+	case action == "help":
+		handleHelp()
 	case action == "watch":
 		handleWatchCommand(args)
 	case action == "vote":
@@ -67,6 +69,15 @@ func handleCommand(command string) {
 	case action == "comment":
 		if len(command) > 10 {
 			handleCommentCommand(string(command[9:]))
+		}
+	case action == "query":
+		n := len(":query ")
+		if len(command) > n {
+			handleQueryCommand(string(command[(n - 1):]))
+		}
+	case action == "view":
+		if len(args) > 0 {
+			handleViewCommand(args[0])
 		}
 	}
 }
@@ -123,6 +134,29 @@ func handleAssignCommand(user string) {
 		runJiraCmdAssign(ticketId, user)
 		obj.Refresh()
 	}
+}
+
+func handleViewCommand(ticket string) {
+	log.Debugf("handleViewCommand: ticket %s", ticket)
+	if ticket == "" {
+		return
+	}
+	q := new(TicketShowPage)
+	q.TicketId = ticket
+	currentPage = q
+	changePage()
+}
+
+func handleQueryCommand(query string) {
+	log.Debugf("handleQueryCommand: query %q", query)
+	if query == "" {
+		return
+	}
+	q := new(TicketListPage)
+	q.ActiveQuery.Name = "adhoc query"
+	q.ActiveQuery.JQL = query
+	currentPage = q
+	changePage()
 }
 
 func handleVoteCommand(up bool) {

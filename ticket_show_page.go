@@ -141,6 +141,7 @@ func (p *TicketShowPage) Refresh() {
 
 func (p *TicketShowPage) Update() {
 	ls := p.uiList
+	log.Debugf("TicketShowPage.Update(): self:        %s (%p), ls: (%p)", p.Id(), p, ls)
 	p.markActiveLine()
 	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
@@ -149,6 +150,8 @@ func (p *TicketShowPage) Update() {
 }
 
 func (p *TicketShowPage) Create() {
+	log.Debugf("TicketShowPage.Create(): self:        %s (%p)", p.Id(), p)
+	log.Debugf("TicketShowPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	p.opts = getJiraOpts()
 	if p.TicketId == "" {
 		p.TicketId = ticketListPage.GetSelectedTicketId()
