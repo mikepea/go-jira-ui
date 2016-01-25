@@ -154,6 +154,7 @@ func (p *QueryPage) SelectItem() {
 
 func (p *QueryPage) Update() {
 	ls := p.uiList
+	log.Debugf("QueryPage.Update(): self:        %s (%p), ls: (%p)", p.Id(), p, ls)
 	p.markActiveLine()
 	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
@@ -170,6 +171,8 @@ func (p *QueryPage) Refresh() {
 }
 
 func (p *QueryPage) Create() {
+	log.Debugf("QueryPage.Create(): self:        %s (%p)", p.Id(), p)
+	log.Debugf("QueryPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
 	ls := ui.NewList()
 	p.uiList = ls

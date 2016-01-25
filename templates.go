@@ -59,6 +59,7 @@ subtasks:
     V            - Remove vote on the selected ticket
     w            - Watch the selected ticket
     W            - Unwatch the selected ticket
+    h            - show help page
 
 [Commands (a'la vim/tig):](fg-blue)
 
@@ -71,6 +72,9 @@ subtasks:
     :vote                          - vote for the selected ticket
     :unvote                        - remove vote for the selected ticket
     :watch [add/remove] [watcher]  - watch ticket (optionally as a different user)
+    :view {ticket}                 - display {ticket}
+    :query {JQL}                   - display results of JQL
+    :help                          - show help page
     :<up>                          - select previous command
     :quit or :q                    - quit
 

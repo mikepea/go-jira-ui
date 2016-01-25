@@ -65,6 +65,7 @@ Actions:
     W            - Unwatch the selected ticket
     v            - Vote for the selected ticket
     V            - Remove vote on the selected ticket
+    h            - show help page
 
 Commands (like vim/tig/less):
 
@@ -77,6 +78,9 @@ Commands (like vim/tig/less):
     :watch [add/remove] [watcher]  - watch ticket (optionally as a different user)
     :vote                          - vote for the selected ticket
     :unvote                        - remove vote for the selected ticket
+    :view {ticket}                 - display {ticket}
+    :query {JQL}                   - display results of JQL
+    :help                          - show help page
     :<up>                          - select previous command
     :quit or :q                    - quit
 
