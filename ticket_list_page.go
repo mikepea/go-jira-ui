@@ -100,6 +100,9 @@ func (p *TicketListPage) Create() {
 	if len(p.cachedResults) == 0 {
 		p.cachedResults = JiraQueryAsStrings(query, p.ActiveQuery.Template)
 	}
+	if p.selectedLine >= len(p.cachedResults) {
+		p.selectedLine = len(p.cachedResults) - 1
+	}
 	p.displayLines = make([]string, len(p.cachedResults))
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = fmt.Sprintf("%s: %s", p.ActiveQuery.Name, p.ActiveQuery.JQL)

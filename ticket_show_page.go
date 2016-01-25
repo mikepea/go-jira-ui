@@ -187,6 +187,9 @@ func (p *TicketShowPage) Create() {
 	}
 	p.cachedResults = WrapText(JiraTicketAsStrings(p.apiBody, p.Template), p.WrapWidth)
 	p.displayLines = make([]string, len(p.cachedResults))
+	if p.selectedLine >= len(p.cachedResults) {
+		p.selectedLine = len(p.cachedResults) - 1
+	}
 	ls.ItemFgColor = ui.ColorYellow
 	ls.Height = ui.TermHeight() - 2
 	ls.Width = ui.TermWidth()
