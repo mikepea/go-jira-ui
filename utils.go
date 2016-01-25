@@ -123,7 +123,7 @@ func JiraTicketAsStrings(data interface{}, templateName string) []string {
 	c := jira.New(opts)
 	buf := new(bytes.Buffer)
 	template := c.GetTemplate(templateName)
-	log.Debug("JiraTicketsAsStrings: template = %q", template)
+	log.Debugf("JiraTicketsAsStrings: template = %q", template)
 	if template == "" {
 		template = strings.Replace(default_view_template, "ENDPOINT", opts["endpoint"].(string), 1)
 	}
@@ -139,7 +139,7 @@ func HelpTextAsStrings(data interface{}, templateName string) []string {
 	if template == "" {
 		template = default_help_template
 	}
-	log.Debug("HelpTextAsStrings: template = %q", template)
+	log.Debugf("HelpTextAsStrings: template = %q", template)
 	jira.RunTemplate(template, data, buf)
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
@@ -184,7 +184,7 @@ func WrapText(lines []string, maxWidth uint) []string {
 
 func parseYaml(file string, v map[string]interface{}) {
 	if fh, err := ioutil.ReadFile(file); err == nil {
-		log.Debug("Parsing YAML file: %s", file)
+		log.Debugf("Parsing YAML file: %s", file)
 		yaml.Unmarshal(fh, &v)
 	}
 }
@@ -202,7 +202,7 @@ func loadConfigs(opts map[string]interface{}) {
 			parseYaml(file, tmp)
 			for k, v := range tmp {
 				if _, ok := opts[k]; !ok {
-					log.Debug("Setting %q to %#v from %s", k, v, file)
+					log.Debugf("Setting %q to %#v from %s", k, v, file)
 					opts[k] = v
 				}
 			}
@@ -253,7 +253,7 @@ func getJiraOpts() map[string]interface{} {
 
 	for k, v := range cliOpts {
 		if _, ok := opts[k]; !ok {
-			log.Debug("Setting %q to %#v from cli options", k, v)
+			log.Debugf("Setting %q to %#v from cli options", k, v)
 			opts[k] = v
 		}
 	}
@@ -261,7 +261,7 @@ func getJiraOpts() map[string]interface{} {
 	loadConfigs(opts)
 	for k, v := range defaults {
 		if _, ok := opts[k]; !ok {
-			log.Debug("Setting %q to %#v from defaults", k, v)
+			log.Debugf("Setting %q to %#v from defaults", k, v)
 			opts[k] = v
 		}
 	}

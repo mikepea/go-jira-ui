@@ -50,7 +50,7 @@ func getQueries() (queries []Query) {
 
 func (p *QueryPage) Search() {
 	s := p.ActiveSearch
-	log.Noticef("QueryPage: search! %q", s.command)
+	log.Debugf("QueryPage: search! %q", s.command)
 	n := len(p.cachedResults)
 	if s.command == "" {
 		return
@@ -64,7 +64,7 @@ func (p *QueryPage) Search() {
 	startLine := (p.selectedLine + n + increment) % n
 	for i := startLine; i != p.selectedLine; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i].Name) {
-			log.Noticef("Match found, line %d", i)
+			log.Debugf("Match found, line %d", i)
 			p.SetSelectedLine(i)
 			p.Update()
 			break
