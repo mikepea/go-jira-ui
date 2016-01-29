@@ -94,7 +94,7 @@ func (p *LabelListPage) Create() {
 		p.statusBar = new(StatusBar)
 	}
 	if p.commandBar == nil {
-		p.commandBar = new(CommandBar)
+		p.commandBar = commandBar
 	}
 	queryName := p.ActiveQuery.Name
 	queryJQL := p.ActiveQuery.JQL
