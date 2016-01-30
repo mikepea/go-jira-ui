@@ -259,6 +259,9 @@ func handleAnyKey(e ui.Event) {
 		} else if key == "<up>" {
 			cb.PreviousCommand()
 			return
+		} else if key == "<down>" {
+			cb.NextCommand()
+			return
 		} else {
 			handleEditBoxKey(cb, key)
 			return

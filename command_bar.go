@@ -87,6 +87,36 @@ func (p *CommandBar) PreviousCommand() {
 	}
 }
 
+func (p *CommandBar) NextCommand() {
+	if obj, ok := currentPage.(CommandBoxer); ok {
+		ct := p.commandType
+		switch {
+		case (ct == ':'):
+			if len(p.commandHistory) == 0 {
+				return
+			}
+			p.text = []byte(string(p.commandType) + p.commandHistory[p.commandHistoryIndex])
+			if p.commandHistoryIndex < len(p.commandHistory)-1 {
+				p.commandHistoryIndex = p.commandHistoryIndex + 1
+			} else {
+				p.resetCommandIndex()
+			}
+		case (ct == '/' || ct == '?'):
+			if len(p.searchHistory) == 0 {
+				return
+			}
+			p.text = []byte(string(p.commandType) + p.searchHistory[p.searchHistoryIndex])
+			if p.searchHistoryIndex < len(p.commandHistory)-1 {
+				p.searchHistoryIndex = p.searchHistoryIndex + 1
+			} else {
+				p.resetSearchIndex()
+			}
+		}
+		p.MoveCursorToEnd()
+		obj.Update()
+	}
+}
+
 func (p *CommandBar) Reset() {
 	p.text = []byte(``)
 	p.line_voffset = 0
