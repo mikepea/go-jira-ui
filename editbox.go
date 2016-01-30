@@ -89,6 +89,10 @@ func (eb *EditBox) MoveCursorTo(boffset int) {
 	eb.cursor_voffset, eb.cursor_coffset = voffset_coffset(eb.text, boffset)
 }
 
+func (eb *EditBox) MoveCursorToEnd() {
+	eb.MoveCursorTo(len(eb.text))
+}
+
 func rune_advance_len(r rune, pos int) int {
 	if r == '\t' {
 		return tabstop_length - pos%tabstop_length

@@ -93,7 +93,7 @@ func (p *TicketListPage) Create() {
 		p.statusBar = new(StatusBar)
 	}
 	if p.commandBar == nil {
-		p.commandBar = new(CommandBar)
+		p.commandBar = commandBar
 	}
 	query := p.ActiveQuery.JQL
 	if sort := p.ActiveSort.JQL; sort != "" {

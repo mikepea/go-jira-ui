@@ -83,6 +83,7 @@ var ticketListPage *TicketListPage
 var labelListPage *LabelListPage
 var sortOrderPage *SortOrderPage
 var passwordInputBox *PasswordInputBox
+var commandBar *CommandBar
 
 func changePage() {
 	switch currentPage.(type) {
@@ -234,6 +235,7 @@ Query Options:
 	ticketQueryPage = new(QueryPage)
 	passwordInputBox = new(PasswordInputBox)
 	helpPage = new(HelpPage)
+	commandBar = new(CommandBar)
 
 	switch command {
 	case "list":
