@@ -1,8 +1,9 @@
 package jiraui
 
 import (
-	ui "github.com/gizak/termui"
 	"os"
+
+	ui "github.com/gizak/termui"
 )
 
 func registerKeyboardHandlers() {

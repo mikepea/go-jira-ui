@@ -2,10 +2,11 @@ package jiraui
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/coryb/optigo"
 	ui "github.com/gizak/termui"
 	"github.com/op/go-logging"
-	"os"
 )
 
 var exitNow = false

@@ -1,8 +1,9 @@
 package jiraui
 
 import (
-	ui "github.com/gizak/termui"
 	"strings"
+
+	ui "github.com/gizak/termui"
 )
 
 type PasswordInputBox struct {

@@ -3,14 +3,15 @@ package jiraui
 import (
 	"bytes"
 	"fmt"
-	"github.com/Netflix-Skunkworks/go-jira"
-	ui "github.com/gizak/termui"
-	"github.com/mitchellh/go-wordwrap"
-	"gopkg.in/coryb/yaml.v2"
 	"io/ioutil"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/Netflix-Skunkworks/go-jira"
+	ui "github.com/gizak/termui"
+	"github.com/mitchellh/go-wordwrap"
+	"gopkg.in/coryb/yaml.v2"
 )
 
 func countLabelsFromQuery(query string) map[string]int {

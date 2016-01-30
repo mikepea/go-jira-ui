@@ -2,6 +2,7 @@ package jiraui
 
 import (
 	"fmt"
+
 	ui "github.com/gizak/termui"
 )
 

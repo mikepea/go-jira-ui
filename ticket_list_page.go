@@ -2,8 +2,9 @@ package jiraui
 
 import (
 	"fmt"
-	ui "github.com/gizak/termui"
 	"regexp"
+
+	ui "github.com/gizak/termui"
 )
 
 type TicketListPage struct {
