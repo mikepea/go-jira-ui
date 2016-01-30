@@ -22,20 +22,30 @@ func (p *CommandBar) resetCommandIndex() {
 	p.previousCommandIndex = len(p.previousCommands) - 1
 }
 
+func addCommandIfNotSameAsLast(new string, history *[]string) {
+	log.Noticef("addCommandIfNotSameAsLast: got %s", new)
+	l := len(*history)
+	if l > 0 && new == (*history)[l-1] {
+		return
+	} else {
+		log.Noticef("addCommandIfNotSameAsLast: Adding %s", new)
+		*history = append(*history, new)
+	}
+}
+
 func (p *CommandBar) Submit() {
 	if obj, ok := currentPage.(CommandBoxer); ok {
 		obj.SetCommandMode(false)
 		obj.ExecuteCommand()
 		if len(p.text) > 1 {
-			switch p.text[0] {
-			case ':':
-				p.previousCommands = append(p.previousCommands, string(p.text[1:]))
+			ct := p.text[0]
+			cb := string(p.text[1:])
+			switch {
+			case ct == ':':
+				addCommandIfNotSameAsLast(cb, &p.previousCommands)
 				p.resetCommandIndex()
-			case '/':
-				p.previousSearches = append(p.previousSearches, string(p.text[1:]))
-				p.resetSearchIndex()
-			case '?':
-				p.previousSearches = append(p.previousSearches, string(p.text[1:]))
+			case (ct == '/' || ct == '?'):
+				addCommandIfNotSameAsLast(cb, &p.previousSearches)
 				p.resetSearchIndex()
 			}
 		}
