@@ -180,7 +180,7 @@ func (p *QueryPage) Create() {
 		p.statusBar = new(StatusBar)
 	}
 	if p.commandBar == nil {
-		p.commandBar = new(CommandBar)
+		p.commandBar = commandBar
 	}
 	p.cachedResults = getQueries()
 	p.displayLines = make([]string, len(p.cachedResults))

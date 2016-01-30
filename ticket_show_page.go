@@ -169,7 +169,7 @@ func (p *TicketShowPage) Create() {
 		p.statusBar = new(StatusBar)
 	}
 	if p.commandBar == nil {
-		p.commandBar = new(CommandBar)
+		p.commandBar = commandBar
 	}
 	p.uiList = ls
 	if p.Template == "" {
