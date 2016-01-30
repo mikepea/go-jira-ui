@@ -7,14 +7,39 @@ import (
 type CommandBar struct {
 	uiList *ui.List
 	EditBox
-	previousCommands []string
+	commandType          byte
+	previousCommandIndex int
+	previousSearchIndex  int
+	previousCommands     []string
+	previousSearches     []string
+}
+
+func (p *CommandBar) resetSearchIndex() {
+	p.previousSearchIndex = len(p.previousSearches) - 1
+}
+
+func (p *CommandBar) resetCommandIndex() {
+	p.previousCommandIndex = len(p.previousCommands) - 1
 }
 
 func (p *CommandBar) Submit() {
 	if obj, ok := currentPage.(CommandBoxer); ok {
 		obj.SetCommandMode(false)
 		obj.ExecuteCommand()
-		p.previousCommands = append(p.previousCommands, string(p.text))
+		if len(p.text) > 1 {
+			switch p.text[0] {
+			case ':':
+				p.previousCommands = append(p.previousCommands, string(p.text[1:]))
+				p.resetCommandIndex()
+			case '/':
+				p.previousSearches = append(p.previousSearches, string(p.text[1:]))
+				p.resetSearchIndex()
+			case '?':
+				p.previousSearches = append(p.previousSearches, string(p.text[1:]))
+				p.resetSearchIndex()
+			}
+		}
+		p.text = []byte("")
 	}
 	// currentPage may have changed
 	if obj, ok := currentPage.(CommandBoxer); ok {
@@ -23,11 +48,31 @@ func (p *CommandBar) Submit() {
 }
 
 func (p *CommandBar) PreviousCommand() {
-	if len(p.previousCommands) == 0 {
-		return
-	}
 	if obj, ok := currentPage.(CommandBoxer); ok {
-		p.text = []byte(p.previousCommands[len(p.previousCommands)-1])
+		ct := p.commandType
+		switch {
+		case (ct == ':'):
+			if len(p.previousCommands) == 0 {
+				return
+			}
+			p.text = []byte(string(p.commandType) + p.previousCommands[p.previousCommandIndex])
+			if p.previousCommandIndex > 0 {
+				p.previousCommandIndex = p.previousCommandIndex - 1
+			} else {
+				p.resetCommandIndex()
+			}
+		case (ct == '/' || ct == '?'):
+			if len(p.previousSearches) == 0 {
+				return
+			}
+			p.text = []byte(string(p.commandType) + p.previousSearches[p.previousSearchIndex])
+			if p.previousSearchIndex > 0 {
+				p.previousSearchIndex = p.previousSearchIndex - 1
+			} else {
+				p.resetSearchIndex()
+			}
+		}
+		p.MoveCursorToEnd()
 		obj.Update()
 	}
 }
@@ -41,6 +86,13 @@ func (p *CommandBar) Reset() {
 }
 
 func (p *CommandBar) Update() {
+	if len(p.text) == 0 {
+		if obj, ok := currentPage.(CommandBoxer); ok {
+			obj.SetCommandMode(false)
+		}
+	} else {
+		p.commandType = p.text[0]
+	}
 	ls := p.uiList
 	strs := []string{string(p.text)}
 	ls.Items = strs
