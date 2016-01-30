@@ -7,19 +7,19 @@ import (
 type CommandBar struct {
 	uiList *ui.List
 	EditBox
-	commandType          byte
-	previousCommandIndex int
-	previousSearchIndex  int
-	previousCommands     []string
-	previousSearches     []string
+	commandType         byte
+	commandHistoryIndex int
+	searchHistoryIndex  int
+	commandHistory      []string
+	searchHistory       []string
 }
 
 func (p *CommandBar) resetSearchIndex() {
-	p.previousSearchIndex = len(p.previousSearches) - 1
+	p.searchHistoryIndex = len(p.searchHistory) - 1
 }
 
 func (p *CommandBar) resetCommandIndex() {
-	p.previousCommandIndex = len(p.previousCommands) - 1
+	p.commandHistoryIndex = len(p.commandHistory) - 1
 }
 
 func addCommandIfNotSameAsLast(new string, history *[]string) {
@@ -42,10 +42,10 @@ func (p *CommandBar) Submit() {
 			cb := string(p.text[1:])
 			switch {
 			case ct == ':':
-				addCommandIfNotSameAsLast(cb, &p.previousCommands)
+				addCommandIfNotSameAsLast(cb, &p.commandHistory)
 				p.resetCommandIndex()
 			case (ct == '/' || ct == '?'):
-				addCommandIfNotSameAsLast(cb, &p.previousSearches)
+				addCommandIfNotSameAsLast(cb, &p.searchHistory)
 				p.resetSearchIndex()
 			}
 		}
@@ -62,22 +62,22 @@ func (p *CommandBar) PreviousCommand() {
 		ct := p.commandType
 		switch {
 		case (ct == ':'):
-			if len(p.previousCommands) == 0 {
+			if len(p.commandHistory) == 0 {
 				return
 			}
-			p.text = []byte(string(p.commandType) + p.previousCommands[p.previousCommandIndex])
-			if p.previousCommandIndex > 0 {
-				p.previousCommandIndex = p.previousCommandIndex - 1
+			p.text = []byte(string(p.commandType) + p.commandHistory[p.commandHistoryIndex])
+			if p.commandHistoryIndex > 0 {
+				p.commandHistoryIndex = p.commandHistoryIndex - 1
 			} else {
 				p.resetCommandIndex()
 			}
 		case (ct == '/' || ct == '?'):
-			if len(p.previousSearches) == 0 {
+			if len(p.searchHistory) == 0 {
 				return
 			}
-			p.text = []byte(string(p.commandType) + p.previousSearches[p.previousSearchIndex])
-			if p.previousSearchIndex > 0 {
-				p.previousSearchIndex = p.previousSearchIndex - 1
+			p.text = []byte(string(p.commandType) + p.searchHistory[p.searchHistoryIndex])
+			if p.searchHistoryIndex > 0 {
+				p.searchHistoryIndex = p.searchHistoryIndex - 1
 			} else {
 				p.resetSearchIndex()
 			}
