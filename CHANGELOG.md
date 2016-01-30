@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v0.3.1
+------
+
+* Bugfix: incorrect logging level causing display error
+
 v0.3.0
 ------
 

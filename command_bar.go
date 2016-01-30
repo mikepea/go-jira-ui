@@ -23,12 +23,12 @@ func (p *CommandBar) resetCommandIndex() {
 }
 
 func addCommandIfNotSameAsLast(new string, history *[]string) {
-	log.Noticef("addCommandIfNotSameAsLast: got %s", new)
+	log.Debugf("addCommandIfNotSameAsLast: got %s", new)
 	l := len(*history)
 	if l > 0 && new == (*history)[l-1] {
 		return
 	} else {
-		log.Noticef("addCommandIfNotSameAsLast: Adding %s", new)
+		log.Debugf("addCommandIfNotSameAsLast: Adding %s", new)
 		*history = append(*history, new)
 	}
 }
