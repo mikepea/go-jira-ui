@@ -85,7 +85,7 @@ func runJiraCmdLabels(ticketId string, action string, labels []string) {
 }
 
 func findTicketIdInString(line string) string {
-	re := regexp.MustCompile(`[A-Z]{3,12}-[0-9]{1,6}`)
+	re := regexp.MustCompile(`[A-Z]{2,12}-[0-9]{1,6}`)
 	return strings.TrimSpace(re.FindString(line))
 }
 
