@@ -4,3 +4,4 @@ bin/
 pkg/
 .jira.d
 *.swp
+err

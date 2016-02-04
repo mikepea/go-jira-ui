@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v0.3.2
+------
+
+* Bugfix: allow 2-character project names for findTicketIdInString [Aneesh Goel]
+
 v0.3.1
 ------
 
