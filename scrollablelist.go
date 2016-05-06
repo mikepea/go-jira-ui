@@ -1,4 +1,4 @@
-package main
+package jiraui
 
 import (
 	ui "github.com/gizak/termui"
@@ -46,6 +46,20 @@ func (sl *ScrollableList) colorsForItem(i int) (fg, bg ui.Attribute) {
 		return sl.CursorFgColor, sl.CursorBgColor
 	}
 	return sl.ItemFgColor, sl.ItemBgColor
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
 
 // Implements the termui.Bufferer interface
