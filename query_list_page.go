@@ -175,7 +175,7 @@ func (p *QueryPage) Create() {
 	log.Debugf("QueryPage.Create(): self:        %s (%p)", p.Id(), p)
 	log.Debugf("QueryPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)

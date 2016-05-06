@@ -15,7 +15,7 @@ type Search struct {
 
 type BaseListPage struct {
 	selectedLine     int
-	uiList           *ui.List
+	uiList           *ScrollableList
 	displayLines     []string
 	cachedResults    []string
 	firstDisplayLine int
@@ -167,7 +167,7 @@ func (p *BaseListPage) Refresh() {
 
 func (p *BaseListPage) Create() {
 	ui.Clear()
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
 	p.cachedResults = make([]string, 0)
 	p.displayLines = make([]string, len(p.cachedResults))

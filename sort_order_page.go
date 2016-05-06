@@ -136,7 +136,7 @@ func (p *SortOrderPage) Refresh() {
 }
 
 func (p *SortOrderPage) Create() {
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
 	p.selectedLine = 0
 	p.firstDisplayLine = 0

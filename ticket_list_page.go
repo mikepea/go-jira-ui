@@ -88,7 +88,7 @@ func (p *TicketListPage) Create() {
 	log.Debugf("TicketListPage.Create(): self:        %s (%p)", p.Id(), p)
 	log.Debugf("TicketListPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)

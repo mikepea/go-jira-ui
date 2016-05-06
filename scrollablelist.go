@@ -31,6 +31,14 @@ type ScrollableList struct {
 	Cursor int
 }
 
+// NewScrollableList returns a new *ScrollableList with current theme.
+func NewScrollableList() *ScrollableList {
+	l := &ScrollableList{Block: *ui.NewBlock()}
+	l.CursorBgColor = ui.ColorBlack
+	l.CursorFgColor = ui.ColorWhite
+	return l
+}
+
 // Add an element to the list
 func (sl *ScrollableList) Add(s string) {
 	sl.Items = append(sl.Items, s)

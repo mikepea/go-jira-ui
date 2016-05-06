@@ -269,6 +269,6 @@ func getJiraOpts() map[string]interface{} {
 	return opts
 }
 
-func lastLineDisplayed(ls *ui.List, firstLine int, correction int) int {
+func lastLineDisplayed(ls *ScrollableList, firstLine int, correction int) int {
 	return firstLine + ls.Height - correction
 }

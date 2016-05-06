@@ -165,7 +165,7 @@ func (p *TicketShowPage) Create() {
 		}
 	}
 	ui.Clear()
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)
 	}

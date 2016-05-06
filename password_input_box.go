@@ -17,7 +17,7 @@ func (p *PasswordInputBox) Update() {
 }
 
 func (p *PasswordInputBox) Create() {
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
 	var strs []string
 	ls.Items = strs

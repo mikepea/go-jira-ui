@@ -89,7 +89,7 @@ func (p *LabelListPage) Update() {
 
 func (p *LabelListPage) Create() {
 	ui.Clear()
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)
