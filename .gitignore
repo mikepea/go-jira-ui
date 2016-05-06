@@ -5,3 +5,4 @@ pkg/
 .jira.d
 *.swp
 err
+main
