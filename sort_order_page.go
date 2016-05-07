@@ -56,13 +56,7 @@ func (p *SortOrderPage) IsPopulated() bool {
 
 func (p *SortOrderPage) markActiveLine() {
 	for i, v := range p.cachedResults {
-		selected := ""
-		if i == p.selectedLine {
-			selected = "fg-white,bg-blue"
-			p.displayLines[i] = fmt.Sprintf("[%s](%s)", v.Name, selected)
-		} else {
-			p.displayLines[i] = fmt.Sprintf("%s", v.Name)
-		}
+		p.displayLines[i] = fmt.Sprintf("%s", v.Name)
 	}
 }
 
@@ -97,7 +91,7 @@ func (p *SortOrderPage) NextPara() {
 }
 
 func (p *SortOrderPage) SelectedSort() Sort {
-	return p.cachedResults[p.selectedLine]
+	return p.cachedResults[p.uiList.Cursor]
 }
 
 func (p *SortOrderPage) SelectItem() {
@@ -130,7 +124,7 @@ func (p *SortOrderPage) Refresh() {
 func (p *SortOrderPage) Create() {
 	ls := NewScrollableList()
 	p.uiList = ls
-	p.selectedLine = 0
+	p.uiList.Cursor = 0
 	p.firstDisplayLine = 0
 	if len(p.cachedResults) == 0 {
 		p.cachedResults = getSorts()

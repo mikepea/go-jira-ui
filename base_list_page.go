@@ -14,7 +14,6 @@ type Search struct {
 }
 
 type BaseListPage struct {
-	selectedLine     int
 	uiList           *ScrollableList
 	displayLines     []string
 	cachedResults    []string
@@ -58,10 +57,10 @@ func (p *BaseListPage) IsPopulated() bool {
 }
 
 func (p *BaseListPage) FixFirstDisplayLine(n int) {
-	if p.selectedLine < p.firstDisplayLine {
-		p.firstDisplayLine = p.selectedLine
-	} else if p.selectedLine > p.lastDisplayedLine() {
-		p.firstDisplayLine = p.selectedLine - (p.PageLines() - 1)
+	if p.uiList.Cursor < p.firstDisplayLine {
+		p.firstDisplayLine = p.uiList.Cursor
+	} else if p.uiList.Cursor > p.lastDisplayedLine() {
+		p.firstDisplayLine = p.uiList.Cursor - (p.PageLines() - 1)
 	}
 }
 
@@ -109,7 +108,7 @@ func (p *BaseListPage) lastDisplayedLine() int {
 
 func (p *BaseListPage) SetSelectedLine(line int) {
 	if line > 0 && line < len(p.cachedResults) {
-		p.selectedLine = line
+		p.uiList.Cursor = line
 		p.FixFirstDisplayLine(0)
 	}
 }
@@ -117,7 +116,7 @@ func (p *BaseListPage) SetSelectedLine(line int) {
 func (p *BaseListPage) markActiveLine() {
 	for i, v := range p.cachedResults {
 		selected := ""
-		if i == p.selectedLine {
+		if i == p.uiList.Cursor {
 			selected = "fg-white,bg-blue"
 			if v == "" {
 				v = " "

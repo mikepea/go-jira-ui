@@ -36,8 +36,8 @@ func (p *TicketShowPage) Search() {
 	}
 	// we use modulo here so we can loop through every line.
 	// adding 'n' means we never have '-1 % n'.
-	startLine := (p.selectedLine + n + increment) % n
-	for i := startLine; i != p.selectedLine; i = (i + increment + n) % n {
+	startLine := (p.uiList.Cursor + n + increment) % n
+	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i]) {
 			p.SetSelectedLine(i)
 			p.Update()
@@ -47,7 +47,7 @@ func (p *TicketShowPage) Search() {
 }
 
 func (p *TicketShowPage) SelectItem() {
-	selected := p.cachedResults[p.selectedLine]
+	selected := p.cachedResults[p.uiList.Cursor]
 	if ok, _ := regexp.MatchString(`^epic_links:`, selected); ok {
 		q := new(TicketListPage)
 		q.ActiveQuery.Name = fmt.Sprintf("Open Tasks in Epic %s", p.TicketId)
@@ -193,8 +193,8 @@ func (p *TicketShowPage) Create() {
 	}
 	p.cachedResults = WrapText(JiraTicketAsStrings(p.apiBody, p.Template), p.WrapWidth)
 	p.displayLines = make([]string, len(p.cachedResults))
-	if p.selectedLine >= len(p.cachedResults) {
-		p.selectedLine = len(p.cachedResults) - 1
+	if p.uiList.Cursor >= len(p.cachedResults) {
+		p.uiList.Cursor = len(p.cachedResults) - 1
 	}
 	ls.ItemFgColor = ui.ColorYellow
 	ls.Height = ui.TermHeight() - 2

@@ -62,8 +62,8 @@ func (p *QueryPage) Search() {
 	}
 	// we use modulo here so we can loop through every line.
 	// adding 'n' means we never have '-1 % n'.
-	startLine := (p.selectedLine + n + increment) % n
-	for i := startLine; i != p.selectedLine; i = (i + increment + n) % n {
+	startLine := (p.uiList.Cursor + n + increment) % n
+	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i].Name) {
 			log.Debugf("Match found, line %d", i)
 			p.SetSelectedLine(i)
@@ -83,20 +83,14 @@ func (p *QueryPage) IsPopulated() bool {
 
 func (p *QueryPage) SetSelectedLine(line int) {
 	if line > 0 && line < len(p.cachedResults) {
-		p.selectedLine = line
+		p.uiList.Cursor = line
 		p.FixFirstDisplayLine(0)
 	}
 }
 
 func (p *QueryPage) markActiveLine() {
 	for i, v := range p.cachedResults {
-		selected := ""
-		if i == p.selectedLine {
-			selected = "fg-white,bg-blue"
-			p.displayLines[i] = fmt.Sprintf("[%-50s | %s](%s)", v.Name, v.JQL, selected)
-		} else {
-			p.displayLines[i] = fmt.Sprintf("%-50s [|](fg-blue) [%s](fg-green)", v.Name, v.JQL)
-		}
+		p.displayLines[i] = fmt.Sprintf("%-50s [|](fg-blue) [%s](fg-green)", v.Name, v.JQL)
 	}
 }
 
@@ -131,7 +125,7 @@ func (p *QueryPage) NextPara() {
 }
 
 func (p *QueryPage) SelectedQuery() Query {
-	return p.cachedResults[p.selectedLine]
+	return p.cachedResults[p.uiList.Cursor]
 }
 
 func (p *QueryPage) SelectItem() {
