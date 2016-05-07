@@ -7,8 +7,8 @@ const (
 issue: [{{ .key }}](fg-red)
 summary: [{{ .fields.summary }}](fg-blue)
 
-self: {{ .self }}
 browse: ENDPOINT/browse/{{ .key }}
+self: {{ .self }}
 priority: {{ .fields.priority.name }}
 status: {{ .fields.status.name }}
 votes: {{ .fields.votes.votes }}
