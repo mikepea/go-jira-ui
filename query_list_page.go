@@ -102,40 +102,32 @@ func (p *QueryPage) markActiveLine() {
 
 func (p *QueryPage) PreviousPara() {
 	newDisplayLine := 0
-	if p.selectedLine == 0 {
+	sl := p.uiList.Cursor
+	if sl == 0 {
 		return
 	}
-	for i := p.selectedLine - 1; i > 0; i-- {
+	for i := sl - 1; i > 0; i-- {
 		if p.cachedResults[i].JQL == "" {
 			newDisplayLine = i
 			break
 		}
 	}
-	p.PreviousLine(p.selectedLine - newDisplayLine)
+	p.PreviousLine(sl - newDisplayLine)
 }
 
 func (p *QueryPage) NextPara() {
 	newDisplayLine := len(p.cachedResults) - 1
-	if p.selectedLine == newDisplayLine {
+	sl := p.uiList.Cursor
+	if sl == newDisplayLine {
 		return
 	}
-	for i := p.selectedLine + 1; i < len(p.cachedResults); i++ {
+	for i := sl + 1; i < len(p.cachedResults); i++ {
 		if p.cachedResults[i].JQL == "" {
 			newDisplayLine = i
 			break
 		}
 	}
-	p.NextLine(newDisplayLine - p.selectedLine)
-}
-
-func (p *QueryPage) BottomOfPage() {
-	p.selectedLine = len(p.cachedResults) - 1
-	firstLine := p.selectedLine - (p.uiList.Height - 3)
-	if firstLine > 0 {
-		p.firstDisplayLine = firstLine
-	} else {
-		p.firstDisplayLine = 0
-	}
+	p.NextLine(newDisplayLine - sl)
 }
 
 func (p *QueryPage) SelectedQuery() Query {

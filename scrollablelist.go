@@ -118,25 +118,37 @@ func (sl *ScrollableList) ScrollDown() {
 // Move the cursor down one row; moving the cursor out of the window will cause
 // scrolling.
 func (sl *ScrollableList) CursorDown() {
-	if sl.Cursor < len(sl.Items)-1 {
-		sl.Cursor += 1
-		if sl.Cursor > sl.Offset+sl.InnerHeight()-1 {
-			sl.Offset += 1
-		}
-		sl.render()
+	sl.CursorDownLines(1)
+}
+
+func (sl *ScrollableList) CursorDownLines(n int) {
+	if sl.Cursor < len(sl.Items)-n {
+		sl.Cursor += n
+	} else {
+		sl.Cursor = len(sl.Items) - 1
 	}
+	if sl.Cursor > sl.Offset+sl.InnerHeight()-n {
+		sl.Offset += n
+	}
+	sl.render()
 }
 
 // Move the cursor up one row; moving the cursor out of the window will cause
 // scrolling.
 func (sl *ScrollableList) CursorUp() {
-	if sl.Cursor > 0 {
-		sl.Cursor -= 1
-		if sl.Cursor < sl.Offset {
-			sl.Offset = sl.Cursor
-		}
-		sl.render()
+	sl.CursorUpLines(1)
+}
+
+func (sl *ScrollableList) CursorUpLines(n int) {
+	if sl.Cursor > n {
+		sl.Cursor -= n
+	} else {
+		sl.Cursor = 0
 	}
+	if sl.Cursor < sl.Offset {
+		sl.Offset = sl.Cursor
+	}
+	sl.render()
 }
 
 // Move the window down one frame; this will move the cursor as well.

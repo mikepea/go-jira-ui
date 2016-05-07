@@ -74,30 +74,32 @@ func (p *TicketShowPage) Id() string {
 
 func (p *TicketShowPage) PreviousPara() {
 	newDisplayLine := 0
-	if p.selectedLine == 0 {
+	sl := p.uiList.Cursor
+	if sl == 0 {
 		return
 	}
-	for i := p.selectedLine - 1; i > 0; i-- {
+	for i := sl - 1; i > 0; i-- {
 		if ok, _ := regexp.MatchString(`^\s*$`, p.cachedResults[i]); ok {
 			newDisplayLine = i
 			break
 		}
 	}
-	p.PreviousLine(p.selectedLine - newDisplayLine)
+	p.PreviousLine(sl - newDisplayLine)
 }
 
 func (p *TicketShowPage) NextPara() {
 	newDisplayLine := len(p.cachedResults) - 1
-	if p.selectedLine == newDisplayLine {
+	sl := p.uiList.Cursor
+	if sl == newDisplayLine {
 		return
 	}
-	for i := p.selectedLine + 1; i < len(p.cachedResults); i++ {
+	for i := sl + 1; i < len(p.cachedResults); i++ {
 		if ok, _ := regexp.MatchString(`^\s*$`, p.cachedResults[i]); ok {
 			newDisplayLine = i
 			break
 		}
 	}
-	p.NextLine(newDisplayLine - p.selectedLine)
+	p.NextLine(newDisplayLine - sl)
 }
 
 func (p *TicketShowPage) GoBack() {
