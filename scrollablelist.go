@@ -77,6 +77,9 @@ func (sl *ScrollableList) Buffer() ui.Buffer {
 	end := min(sl.Offset+sl.InnerHeight(), len(sl.Items))
 	for i, item := range sl.Items[start:end] {
 		fg, bg := sl.colorsForItem(start + i)
+		if item == "" {
+			item = " "
+		}
 		cells := ui.DefaultTxBuilder.Build(item, fg, bg)
 		cells = ui.DTrimTxCls(cells, sl.InnerWidth())
 		offsetX := 0
