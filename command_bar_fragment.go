@@ -70,10 +70,18 @@ func handleCommand(command string) {
 		if len(command) > 10 {
 			handleCommentCommand(string(command[9:]))
 		}
+	case action == "search" || action == "search-open" || action == "so":
+		handleSearchOpen(args)
+	case action == "search-all" || action == "sa":
+		handleSearchAll(args)
+	case action == "search-project-open" || action == "spo":
+		handleSearchProjectOpen(args)
+	case action == "search-project-all" || action == "spa":
+		handleSearchProjectAll(args)
 	case action == "query":
 		n := len(":query ")
 		if len(command) > n {
-			handleQueryCommand(string(command[(n - 1):]))
+			handleQueryCommand("adhoc query", string(command[(n-1):]))
 		}
 	case action == "view":
 		if len(args) > 0 {
@@ -148,13 +156,47 @@ func handleViewCommand(ticket string) {
 	changePage()
 }
 
-func handleQueryCommand(query string) {
+func handleSearchOpen(args []string) {
+	if len(args) == 0 {
+		return
+	}
+	query := `text ~ "` + strings.Join(args, ` `) + `" AND resolution = Unresolved`
+	handleQueryCommand("so "+strings.Join(args, ` `), query)
+}
+
+func handleSearchAll(args []string) {
+	if len(args) == 0 {
+		return
+	}
+	query := `text ~ "` + strings.Join(args, ` `) + `"`
+	handleQueryCommand("sa "+strings.Join(args, ` `), query)
+}
+
+func handleSearchProjectAll(args []string) {
+	if len(args) < 2 {
+		return
+	}
+	project := args[0]
+	query := `project = ` + project + ` AND text ~ "` + strings.Join(args[1:], ` `) + `"`
+	handleQueryCommand("spa "+strings.Join(args, ` `), query)
+}
+
+func handleSearchProjectOpen(args []string) {
+	if len(args) < 2 {
+		return
+	}
+	project := args[0]
+	query := `project = ` + project + ` AND text ~ "` + strings.Join(args[1:], ` `) + `" AND resolution = Unresolved`
+	handleQueryCommand("spo "+strings.Join(args, ` `), query)
+}
+
+func handleQueryCommand(name string, query string) {
 	log.Debugf("handleQueryCommand: query %q", query)
 	if query == "" {
 		return
 	}
 	q := new(TicketListPage)
-	q.ActiveQuery.Name = "adhoc query"
+	q.ActiveQuery.Name = name
 	q.ActiveQuery.JQL = query
 	previousPages = append(previousPages, currentPage)
 	currentPage = q

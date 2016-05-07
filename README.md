@@ -80,6 +80,10 @@ Commands (like vim/tig/less):
     :unvote                        - remove vote for the selected ticket
     :view {ticket}                 - display {ticket}
     :query {JQL}                   - display results of JQL
+    :search|so {text}              - quick search for {text} in open tickets
+    :search-all|sa {text}          - quick search for {text} in all tickets
+    :spo {project} {text}          - quick search for {text} in open {project} tickets
+    :spa {project} {text}          - quick search for {text} in all {project} tickets
     :help                          - show help page
     :<up>                          - select previous command
     :quit or :q                    - quit
