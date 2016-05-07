@@ -23,6 +23,7 @@ func handleLabelViewKey() {
 	case *TicketListPage:
 		q := new(LabelListPage)
 		q.ActiveQuery = page.ActiveQuery
+		previousPages = append(previousPages, currentPage)
 		currentPage = q
 		changePage()
 	}
@@ -36,6 +37,7 @@ func handleSortOrderKey() {
 	switch currentPage.(type) {
 	case *TicketListPage:
 		q := new(SortOrderPage)
+		previousPages = append(previousPages, currentPage)
 		currentPage = q
 		changePage()
 	}
@@ -135,7 +137,7 @@ func handleNextSearchKey() {
 }
 
 func handleHelp() {
-	previousPage = currentPage
+	previousPages = append(previousPages, currentPage)
 	currentPage = helpPage
 	changePage()
 }

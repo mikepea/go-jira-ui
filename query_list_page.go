@@ -134,8 +134,8 @@ func (p *QueryPage) SelectItem() {
 	}
 	q := new(TicketListPage)
 	q.ActiveQuery = p.SelectedQuery()
-	ticketListPage = q
-	currentPage = ticketListPage
+	previousPages = append(previousPages, currentPage)
+	currentPage = q
 	changePage()
 }
 

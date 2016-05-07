@@ -76,17 +76,19 @@ type Navigable interface {
 }
 
 var currentPage Navigable
-var previousPage Navigable
+var previousPages []Navigable
 
 var ticketQueryPage *QueryPage
 var helpPage *HelpPage
-var ticketListPage *TicketListPage
 var labelListPage *LabelListPage
 var sortOrderPage *SortOrderPage
 var passwordInputBox *PasswordInputBox
 var commandBar *CommandBar
 
 func changePage() {
+	if currentPage == nil {
+		currentPage = new(QueryPage)
+	}
 	switch currentPage.(type) {
 	case *QueryPage:
 		log.Debugf("changePage: QueryPage %s (%p)", currentPage.Id(), currentPage)
@@ -233,21 +235,19 @@ Query Options:
 
 	registerKeyboardHandlers()
 
-	ticketQueryPage = new(QueryPage)
-	passwordInputBox = new(PasswordInputBox)
 	helpPage = new(HelpPage)
 	commandBar = new(CommandBar)
 
 	switch command {
 	case "list":
-		ticketListPage = new(TicketListPage)
 		if query := cliOpts["query"]; query == nil {
 			log.Error("Must supply a --query option to %q", command)
 			os.Exit(1)
 		} else {
-			ticketListPage.ActiveQuery.JQL = query.(string)
-			ticketListPage.ActiveQuery.Name = "adhoc"
-			currentPage = ticketListPage
+			p := new(TicketListPage)
+			p.ActiveQuery.JQL = query.(string)
+			p.ActiveQuery.Name = "adhoc"
+			currentPage = p
 		}
 	case "view":
 		requireArgs(1)
@@ -255,9 +255,9 @@ Query Options:
 		p.TicketId = args[0]
 		currentPage = p
 	case "toplevel":
-		currentPage = ticketQueryPage
+		currentPage = new(QueryPage)
 	case "password":
-		currentPage = passwordInputBox
+		currentPage = new(PasswordInputBox)
 	default:
 		log.Error("Unknown command %s", command)
 		os.Exit(1)

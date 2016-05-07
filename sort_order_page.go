@@ -99,10 +99,17 @@ func (p *SortOrderPage) SelectItem() {
 		return
 	}
 	q := new(TicketListPage)
-	q.ActiveQuery = ticketListPage.ActiveQuery
-	q.ActiveSort = p.SelectedSort()
-	ticketListPage = q
-	currentPage = ticketListPage
+	// pop old page, we're going to 'replace' it
+	var oldTicketListPage Navigable
+	if len(previousPages) > 0 {
+		oldTicketListPage, previousPages = previousPages[len(previousPages)-1], previousPages[:len(previousPages)-1]
+		switch a := oldTicketListPage.(type) {
+		case *TicketListPage:
+			q.ActiveQuery = a.ActiveQuery
+			q.ActiveSort = p.SelectedSort()
+			currentPage = q
+		}
+	}
 	changePage()
 }
 

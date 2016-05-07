@@ -33,7 +33,7 @@ func (p *HelpPage) Search() {
 }
 
 func (p *HelpPage) GoBack() {
-	currentPage = previousPage
+	currentPage, previousPages = previousPages[len(previousPages)-1], previousPages[:len(previousPages)-1]
 	changePage()
 }
 

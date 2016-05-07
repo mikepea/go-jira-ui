@@ -52,6 +52,7 @@ func (p *TicketShowPage) SelectItem() {
 		q := new(TicketListPage)
 		q.ActiveQuery.Name = fmt.Sprintf("Open Tasks in Epic %s", p.TicketId)
 		q.ActiveQuery.JQL = fmt.Sprintf("\"Epic Link\" = %s AND resolution = Unresolved", p.TicketId)
+		previousPages = append(previousPages, currentPage)
 		currentPage = q
 	} else {
 		newTicketId := findTicketIdInString(selected)
@@ -104,10 +105,10 @@ func (p *TicketShowPage) NextPara() {
 
 func (p *TicketShowPage) GoBack() {
 	if len(p.TicketTrail) == 0 {
-		if ticketListPage != nil {
-			currentPage = ticketListPage
+		if len(previousPages) > 0 {
+			currentPage, previousPages = previousPages[len(previousPages)-1], previousPages[:len(previousPages)-1]
 		} else {
-			currentPage = ticketQueryPage
+			currentPage = new(QueryPage)
 		}
 	} else {
 		last := len(p.TicketTrail) - 1
@@ -157,7 +158,7 @@ func (p *TicketShowPage) Create() {
 	log.Debugf("TicketShowPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	p.opts = getJiraOpts()
 	if p.TicketId == "" {
-		p.TicketId = ticketListPage.GetSelectedTicketId()
+		return
 	}
 	if p.MaxWrapWidth == 0 {
 		if m := p.opts["max_wrap"]; m != nil {

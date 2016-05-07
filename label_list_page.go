@@ -51,16 +51,26 @@ func (p *LabelListPage) labelsAsSortedListWithCounts() []string {
 
 func (p *LabelListPage) SelectItem() {
 	label := p.cachedResults[p.uiList.Cursor]
-	q := new(TicketListPage)
-	if label == "NOT LABELLED" {
-		q.ActiveQuery.Name = ticketListPage.ActiveQuery.Name + " (unlabelled)"
-		q.ActiveQuery.JQL = ticketListPage.ActiveQuery.JQL + " AND labels IS EMPTY"
-	} else {
-		q.ActiveQuery.Name = ticketListPage.ActiveQuery.Name + "+" + label
-		q.ActiveQuery.JQL = ticketListPage.ActiveQuery.JQL + " AND labels = " + label
+	// calling TicketList page is the last 'previousPage'. We leave it on the stack,
+	// as we will likely want to GoBack to it.
+	switch oldTicketListPage := previousPages[len(previousPages)-1].(type) {
+	default:
+		return
+	case *TicketListPage:
+		q := new(TicketListPage)
+		if label == "NOT LABELLED" {
+			q.ActiveQuery.Name = oldTicketListPage.ActiveQuery.Name + " (unlabelled)"
+			q.ActiveQuery.JQL = oldTicketListPage.ActiveQuery.JQL + " AND labels IS EMPTY"
+		} else {
+			q.ActiveQuery.Name = oldTicketListPage.ActiveQuery.Name + "+" + label
+			q.ActiveQuery.JQL = oldTicketListPage.ActiveQuery.JQL + " AND labels = " + label
+		}
+		// our label list is useful, prob want to come back to it to look at a different
+		// label
+		previousPages = append(previousPages, currentPage)
+		currentPage = q
+		changePage()
 	}
-	currentPage = q
-	changePage()
 }
 
 func (p *LabelListPage) markActiveLine() {
@@ -70,7 +80,11 @@ func (p *LabelListPage) markActiveLine() {
 }
 
 func (p *LabelListPage) GoBack() {
-	currentPage = ticketListPage
+	if len(previousPages) == 0 {
+		currentPage = new(QueryPage)
+	} else {
+		currentPage, previousPages = previousPages[len(previousPages)-1], previousPages[:len(previousPages)-1]
+	}
 	changePage()
 }
 

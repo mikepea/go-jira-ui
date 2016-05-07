@@ -51,13 +51,18 @@ func (p *TicketListPage) SelectItem() {
 	}
 	q := new(TicketShowPage)
 	q.TicketId = p.GetSelectedTicketId()
+	previousPages = append(previousPages, currentPage)
 	currentPage = q
 	q.Create()
 	changePage()
 }
 
 func (p *TicketListPage) GoBack() {
-	currentPage = ticketQueryPage
+	if len(previousPages) == 0 {
+		currentPage = ticketQueryPage
+	} else {
+		currentPage, previousPages = previousPages[len(previousPages)-1], previousPages[:len(previousPages)-1]
+	}
 	changePage()
 }
 
@@ -79,7 +84,7 @@ func (p *TicketListPage) Refresh() {
 	pDeref := &p
 	q := *pDeref
 	q.cachedResults = make([]string, 0)
-	ticketListPage = q
+	currentPage = q
 	changePage()
 	q.Create()
 }

@@ -143,6 +143,7 @@ func handleViewCommand(ticket string) {
 	}
 	q := new(TicketShowPage)
 	q.TicketId = ticket
+	previousPages = append(previousPages, currentPage)
 	currentPage = q
 	changePage()
 }
@@ -155,6 +156,7 @@ func handleQueryCommand(query string) {
 	q := new(TicketListPage)
 	q.ActiveQuery.Name = "adhoc query"
 	q.ActiveQuery.JQL = query
+	previousPages = append(previousPages, currentPage)
 	currentPage = q
 	changePage()
 }
