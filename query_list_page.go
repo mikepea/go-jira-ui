@@ -62,8 +62,8 @@ func (p *QueryPage) Search() {
 	}
 	// we use modulo here so we can loop through every line.
 	// adding 'n' means we never have '-1 % n'.
-	startLine := (p.selectedLine + n + increment) % n
-	for i := startLine; i != p.selectedLine; i = (i + increment + n) % n {
+	startLine := (p.uiList.Cursor + n + increment) % n
+	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i].Name) {
 			log.Debugf("Match found, line %d", i)
 			p.SetSelectedLine(i)
@@ -83,63 +83,49 @@ func (p *QueryPage) IsPopulated() bool {
 
 func (p *QueryPage) SetSelectedLine(line int) {
 	if line > 0 && line < len(p.cachedResults) {
-		p.selectedLine = line
+		p.uiList.Cursor = line
 		p.FixFirstDisplayLine(0)
 	}
 }
 
 func (p *QueryPage) markActiveLine() {
 	for i, v := range p.cachedResults {
-		selected := ""
-		if i == p.selectedLine {
-			selected = "fg-white,bg-blue"
-			p.displayLines[i] = fmt.Sprintf("[%-50s | %s](%s)", v.Name, v.JQL, selected)
-		} else {
-			p.displayLines[i] = fmt.Sprintf("%-50s [|](fg-blue) [%s](fg-green)", v.Name, v.JQL)
-		}
+		p.displayLines[i] = fmt.Sprintf("%-50s [|](fg-blue) [%s](fg-green)", v.Name, v.JQL)
 	}
 }
 
 func (p *QueryPage) PreviousPara() {
 	newDisplayLine := 0
-	if p.selectedLine == 0 {
+	sl := p.uiList.Cursor
+	if sl == 0 {
 		return
 	}
-	for i := p.selectedLine - 1; i > 0; i-- {
+	for i := sl - 1; i > 0; i-- {
 		if p.cachedResults[i].JQL == "" {
 			newDisplayLine = i
 			break
 		}
 	}
-	p.PreviousLine(p.selectedLine - newDisplayLine)
+	p.PreviousLine(sl - newDisplayLine)
 }
 
 func (p *QueryPage) NextPara() {
 	newDisplayLine := len(p.cachedResults) - 1
-	if p.selectedLine == newDisplayLine {
+	sl := p.uiList.Cursor
+	if sl == newDisplayLine {
 		return
 	}
-	for i := p.selectedLine + 1; i < len(p.cachedResults); i++ {
+	for i := sl + 1; i < len(p.cachedResults); i++ {
 		if p.cachedResults[i].JQL == "" {
 			newDisplayLine = i
 			break
 		}
 	}
-	p.NextLine(newDisplayLine - p.selectedLine)
-}
-
-func (p *QueryPage) BottomOfPage() {
-	p.selectedLine = len(p.cachedResults) - 1
-	firstLine := p.selectedLine - (p.uiList.Height - 3)
-	if firstLine > 0 {
-		p.firstDisplayLine = firstLine
-	} else {
-		p.firstDisplayLine = 0
-	}
+	p.NextLine(newDisplayLine - sl)
 }
 
 func (p *QueryPage) SelectedQuery() Query {
-	return p.cachedResults[p.selectedLine]
+	return p.cachedResults[p.uiList.Cursor]
 }
 
 func (p *QueryPage) SelectItem() {
@@ -175,7 +161,7 @@ func (p *QueryPage) Create() {
 	log.Debugf("QueryPage.Create(): self:        %s (%p)", p.Id(), p)
 	log.Debugf("QueryPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)

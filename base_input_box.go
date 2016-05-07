@@ -6,7 +6,7 @@ import (
 
 type BaseInputBox struct {
 	EditBox
-	uiList *ui.List
+	uiList *ScrollableList
 }
 
 func (p *BaseInputBox) Update() {
@@ -19,7 +19,7 @@ func (p *BaseInputBox) Id() string {
 }
 
 func (p *BaseInputBox) Create() {
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	var strs []string
 	p.uiList = ls
 	ls.Items = strs
@@ -27,7 +27,6 @@ func (p *BaseInputBox) Create() {
 	ls.BorderFg = ui.ColorRed
 	ls.Height = 1
 	ls.Width = 30
-	ls.Overflow = "wrap"
 	ls.X = ui.TermWidth()/2 - ls.Width/2
 	ls.Y = ui.TermHeight()/2 - ls.Height/2
 	p.Update()

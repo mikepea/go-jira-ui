@@ -56,56 +56,42 @@ func (p *SortOrderPage) IsPopulated() bool {
 
 func (p *SortOrderPage) markActiveLine() {
 	for i, v := range p.cachedResults {
-		selected := ""
-		if i == p.selectedLine {
-			selected = "fg-white,bg-blue"
-			p.displayLines[i] = fmt.Sprintf("[%s](%s)", v.Name, selected)
-		} else {
-			p.displayLines[i] = fmt.Sprintf("%s", v.Name)
-		}
+		p.displayLines[i] = fmt.Sprintf("%s", v.Name)
 	}
 }
 
 func (p *SortOrderPage) PreviousPara() {
 	newDisplayLine := 0
-	if p.selectedLine == 0 {
+	sl := p.uiList.Cursor
+	if sl == 0 {
 		return
 	}
-	for i := p.selectedLine - 1; i > 0; i-- {
+	for i := sl - 1; i > 0; i-- {
 		if p.cachedResults[i].JQL == "" {
 			newDisplayLine = i
 			break
 		}
 	}
-	p.PreviousLine(p.selectedLine - newDisplayLine)
+	p.PreviousLine(sl - newDisplayLine)
 }
 
 func (p *SortOrderPage) NextPara() {
 	newDisplayLine := len(p.cachedResults) - 1
-	if p.selectedLine == newDisplayLine {
+	sl := p.uiList.Cursor
+	if sl == newDisplayLine {
 		return
 	}
-	for i := p.selectedLine + 1; i < len(p.cachedResults); i++ {
+	for i := sl + 1; i < len(p.cachedResults); i++ {
 		if p.cachedResults[i].JQL == "" {
 			newDisplayLine = i
 			break
 		}
 	}
-	p.NextLine(newDisplayLine - p.selectedLine)
-}
-
-func (p *SortOrderPage) BottomOfPage() {
-	p.selectedLine = len(p.cachedResults) - 1
-	firstLine := p.selectedLine - (p.uiList.Height - 3)
-	if firstLine > 0 {
-		p.firstDisplayLine = firstLine
-	} else {
-		p.firstDisplayLine = 0
-	}
+	p.NextLine(newDisplayLine - sl)
 }
 
 func (p *SortOrderPage) SelectedSort() Sort {
-	return p.cachedResults[p.selectedLine]
+	return p.cachedResults[p.uiList.Cursor]
 }
 
 func (p *SortOrderPage) SelectItem() {
@@ -136,9 +122,9 @@ func (p *SortOrderPage) Refresh() {
 }
 
 func (p *SortOrderPage) Create() {
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
-	p.selectedLine = 0
+	p.uiList.Cursor = 0
 	p.firstDisplayLine = 0
 	if len(p.cachedResults) == 0 {
 		p.cachedResults = getSorts()

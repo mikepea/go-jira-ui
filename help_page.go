@@ -22,8 +22,8 @@ func (p *HelpPage) Search() {
 	}
 	// we use modulo here so we can loop through every line.
 	// adding 'n' means we never have '-1 % n'.
-	startLine := (p.selectedLine + n + increment) % n
-	for i := startLine; i != p.selectedLine; i = (i + increment + n) % n {
+	startLine := (p.uiList.Cursor + n + increment) % n
+	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i]) {
 			p.SetSelectedLine(i)
 			p.Update()
@@ -58,7 +58,7 @@ func (p *HelpPage) Update() {
 
 func (p *HelpPage) Create() {
 	ui.Clear()
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)

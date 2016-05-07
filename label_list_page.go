@@ -26,8 +26,8 @@ func (p *LabelListPage) Search() {
 	}
 	// we use modulo here so we can loop through every line.
 	// adding 'n' means we never have '-1 % n'.
-	startLine := (p.selectedLine + n + increment) % n
-	for i := startLine; i != p.selectedLine; i = (i + increment + n) % n {
+	startLine := (p.uiList.Cursor + n + increment) % n
+	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i]) {
 			p.SetSelectedLine(i)
 			p.Update()
@@ -50,7 +50,7 @@ func (p *LabelListPage) labelsAsSortedListWithCounts() []string {
 }
 
 func (p *LabelListPage) SelectItem() {
-	label := p.cachedResults[p.selectedLine]
+	label := p.cachedResults[p.uiList.Cursor]
 	q := new(TicketListPage)
 	if label == "NOT LABELLED" {
 		q.ActiveQuery.Name = ticketListPage.ActiveQuery.Name + " (unlabelled)"
@@ -65,11 +65,7 @@ func (p *LabelListPage) SelectItem() {
 
 func (p *LabelListPage) markActiveLine() {
 	for i, v := range p.cachedResults {
-		selected := ""
-		if i == p.selectedLine {
-			selected = "fg-white,bg-blue"
-		}
-		p.displayLines[i] = fmt.Sprintf("[%-40s -- %d tickets](%s)", v, p.labelCounts[v], selected)
+		p.displayLines[i] = fmt.Sprintf("%-40s -- %d tickets", v, p.labelCounts[v])
 	}
 }
 
@@ -89,7 +85,7 @@ func (p *LabelListPage) Update() {
 
 func (p *LabelListPage) Create() {
 	ui.Clear()
-	ls := ui.NewList()
+	ls := NewScrollableList()
 	p.uiList = ls
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)
