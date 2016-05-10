@@ -115,19 +115,7 @@ func (p *BaseListPage) SetSelectedLine(line int) {
 
 func (p *BaseListPage) markActiveLine() {
 	for i, v := range p.cachedResults {
-		selected := ""
-		if i == p.uiList.Cursor {
-			selected = "fg-white,bg-blue"
-			if v == "" {
-				v = " "
-			} else if ok, _ := regexp.MatchString(`\[.+\]\((fg|bg)-[a-z]{1,6}\)`, v); ok {
-				r := regexp.MustCompile(`\[(.*?)\]\((fg|bg)-[a-z]{1,6}\)`)
-				v = r.ReplaceAllString(v, `$1`)
-			}
-			p.displayLines[i] = fmt.Sprintf("[%s](%s)", v, selected)
-		} else {
-			p.displayLines[i] = v
-		}
+		p.displayLines[i] = v
 	}
 }
 
