@@ -6,7 +6,7 @@ import (
 	ui "github.com/gizak/termui"
 )
 
-func registerKeyboardHandlers() {
+func registerEventHandlers() {
 	ui.Handle("/sys/kbd/", func(ev ui.Event) {
 		handleAnyKey(ev)
 	})
@@ -16,6 +16,12 @@ func registerKeyboardHandlers() {
 	ui.Handle("/sys/wnd/resize", func(ui.Event) {
 		handleResize()
 	})
+}
+
+func deregisterEventHandlers() {
+	ui.Handle("/sys/kbd/", func(ev ui.Event) {})
+	ui.Handle("/sys/kbd/C-c", func(ev ui.Event) {})
+	ui.Handle("/sys/wnd/resize", func(ev ui.Event) {})
 }
 
 func handleLabelViewKey() {

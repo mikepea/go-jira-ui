@@ -70,6 +70,8 @@ func handleCommand(command string) {
 		if len(command) > 10 {
 			handleCommentCommand(string(command[9:]))
 		}
+	case action == "shell":
+		runShell()
 	case action == "search" || action == "search-open" || action == "so":
 		handleSearchOpen(args)
 	case action == "search-all" || action == "sa":

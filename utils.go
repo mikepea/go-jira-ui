@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"regexp"
 	"strings"
 
@@ -38,13 +39,43 @@ func countLabelsFromQueryData(data interface{}) map[string]int {
 	return counts
 }
 
+func RunExternalCommand(fn func() error) error {
+	log.Debugf("ShellOut() called with %q", fn)
+	deregisterEventHandlers()
+	ui.Clear()
+	stty := exec.Command("stty", "-f", "/dev/tty", "echo", "opost")
+	_ = stty.Run()
+	err := fn() // magic happens
+	stty = exec.Command("stty", "-f", "/dev/tty", "-echo", "-opost")
+	_ = stty.Run()
+	registerEventHandlers()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func runShell() {
+	_ = RunExternalCommand(
+		func() error {
+			cmd := exec.Command("bash")
+			cmd.Stdout, cmd.Stderr, cmd.Stdin = os.Stdout, os.Stderr, os.Stdin
+			return cmd.Run()
+		})
+}
+
 func runJiraCmdEdit(ticketId string) {
-	opts := getJiraOpts()
-	c := jira.New(opts)
-	ui.Close()
-	c.CmdEdit(ticketId)
-	log.Notice("Regrettably, need to exit after edit. See https://github.com/mikepea/go-jira-ui/issues/8")
-	os.Exit(0)
+	_ = RunExternalCommand(
+		func() error {
+			opts := getJiraOpts()
+			c := jira.New(opts)
+			return c.CmdEdit(ticketId)
+		})
+	switch c := currentPage.(type) {
+	case Refresher:
+		c.Refresh()
+	}
+	changePage()
 }
 
 func runJiraCmdCommentNoEditor(ticketId string, comment string) {

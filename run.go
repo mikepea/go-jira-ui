@@ -233,7 +233,7 @@ Query Options:
 	}
 	defer ui.Close()
 
-	registerKeyboardHandlers()
+	registerEventHandlers()
 
 	helpPage = new(HelpPage)
 	commandBar = new(CommandBar)
