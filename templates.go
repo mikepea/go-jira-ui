@@ -1,7 +1,7 @@
 package jiraui
 
 const (
-	default_list_template = `{{ range .issues }}[{{ .key | printf "%-12s"}}](fg-red)  [{{ if .fields.assignee }}{{ .fields.assignee.name | printf "%-10s" }}{{else}}{{"Unassigned"| printf "%-10s" }}{{end}} ](fg-blue) [{{ .fields.status.name | printf "%-12s"}}](fg-blue) [{{ dateFormat "2006-01-02" .fields.created }}](fg-blue)/[{{ dateFormat "2006-01-02T15:04" .fields.updated }}](fg-green)  {{ .fields.summary | printf "%-75s"}}
+	default_list_template = `{{ range .issues }}[{{ .key | printf "%-18s"}}](fg-red)  [{{ if .fields.assignee }}{{ .fields.assignee.name | printf "%-10s" }}{{else}}{{"Unassigned"| printf "%-10s" }}{{end}} ](fg-blue) [{{ .fields.status.name | printf "%-12s"}}](fg-blue) [{{ dateFormat "2006-01-02" .fields.created }}](fg-blue)/[{{ age .fields.updated | printf "%-15s" }}](fg-green)  {{ .fields.summary | printf "%-75s"}}
 {{ end }}`
 	default_view_template = `
 issue: [{{ .key }}](fg-red)
@@ -12,8 +12,8 @@ self: {{ .self }}
 priority: {{ .fields.priority.name }}
 status: {{ .fields.status.name }}
 votes: {{ .fields.votes.votes }}
-created: {{ .fields.created }}
-updated: {{ .fields.updated }}
+created: {{ .fields.created }} ({{ age .fields.created }} ago)
+updated: {{ .fields.updated }} ({{ age .fields.updated }} ago)
 assignee: {{ if .fields.assignee }}{{ .fields.assignee.name }}{{end}}
 reporter: {{ if .fields.reporter }}{{ .fields.reporter.name }}{{end}}
 issuetype: {{ .fields.issuetype.name }}
