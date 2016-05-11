@@ -36,6 +36,14 @@ type CommandBoxer interface {
 	Update()
 }
 
+type NextTicketer interface {
+	NextTicket()
+}
+
+type PrevTicketer interface {
+	PrevTicket()
+}
+
 type GoBacker interface {
 	GoBack()
 }

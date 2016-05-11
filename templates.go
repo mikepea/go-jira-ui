@@ -59,6 +59,8 @@ subtasks:
     V            - Remove vote on the selected ticket
     w            - Watch the selected ticket
     W            - Unwatch the selected ticket
+    N            - Show next ticket in query results (ticket detail page only)
+    P            - Show prev ticket in query results (ticket detail page only)
     h            - show help page
 
 [Commands (a'la vim/tig):](fg-blue)

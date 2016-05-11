@@ -125,6 +125,11 @@ func (sl *ScrollableList) CursorDown() {
 }
 
 func (sl *ScrollableList) CursorDownLines(n int) {
+	sl.SilentCursorDownLines(n)
+	sl.render()
+}
+
+func (sl *ScrollableList) SilentCursorDownLines(n int) {
 	if sl.Cursor < len(sl.Items)-n {
 		sl.Cursor += n
 	} else {
@@ -133,7 +138,6 @@ func (sl *ScrollableList) CursorDownLines(n int) {
 	if sl.Cursor > sl.Offset+sl.InnerHeight()-n {
 		sl.Offset += n
 	}
-	sl.render()
 }
 
 // Move the cursor up one row; moving the cursor out of the window will cause
@@ -143,6 +147,11 @@ func (sl *ScrollableList) CursorUp() {
 }
 
 func (sl *ScrollableList) CursorUpLines(n int) {
+	sl.SilentCursorUpLines(n)
+	sl.render()
+}
+
+func (sl *ScrollableList) SilentCursorUpLines(n int) {
 	if sl.Cursor > n {
 		sl.Cursor -= n
 	} else {
@@ -151,7 +160,6 @@ func (sl *ScrollableList) CursorUpLines(n int) {
 	if sl.Cursor < sl.Offset {
 		sl.Offset = sl.Cursor
 	}
-	sl.render()
 }
 
 // Move the window down one frame; this will move the cursor as well.

@@ -93,8 +93,9 @@ func (p *TicketListPage) Create() {
 	log.Debugf("TicketListPage.Create(): self:        %s (%p)", p.Id(), p)
 	log.Debugf("TicketListPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
-	ls := NewScrollableList()
-	p.uiList = ls
+	if p.uiList == nil {
+		p.uiList = NewScrollableList()
+	}
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)
 	}
@@ -113,11 +114,11 @@ func (p *TicketListPage) Create() {
 		p.uiList.Cursor = len(p.cachedResults) - 1
 	}
 	p.displayLines = make([]string, len(p.cachedResults))
-	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = fmt.Sprintf("%s: %s", p.ActiveQuery.Name, p.ActiveQuery.JQL)
-	ls.Height = ui.TermHeight() - 2
-	ls.Width = ui.TermWidth()
-	ls.Y = 0
+	p.uiList.ItemFgColor = ui.ColorYellow
+	p.uiList.BorderLabel = fmt.Sprintf("%s: %s", p.ActiveQuery.Name, p.ActiveQuery.JQL)
+	p.uiList.Height = ui.TermHeight() - 2
+	p.uiList.Width = ui.TermWidth()
+	p.uiList.Y = 0
 	p.statusBar.Create()
 	p.commandBar.Create()
 	p.Update()
