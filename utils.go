@@ -62,6 +62,7 @@ func runShell() {
 			cmd.Stdout, cmd.Stderr, cmd.Stdin = os.Stdout, os.Stderr, os.Stdin
 			return cmd.Run()
 		})
+	changePage()
 }
 
 func runJiraCmdEdit(ticketId string) {
@@ -70,6 +71,22 @@ func runJiraCmdEdit(ticketId string) {
 			opts := getJiraOpts()
 			c := jira.New(opts)
 			return c.CmdEdit(ticketId)
+		})
+	switch c := currentPage.(type) {
+	case Refresher:
+		c.Refresh()
+	}
+	changePage()
+}
+
+func runJiraCmdCreate(project string, summary string) {
+	_ = RunExternalCommand(
+		func() error {
+			opts := getJiraOpts()
+			opts["project"] = project
+			opts["summary"] = summary
+			c := jira.New(opts)
+			return c.CmdCreate()
 		})
 	switch c := currentPage.(type) {
 	case Refresher:

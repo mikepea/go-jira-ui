@@ -65,6 +65,8 @@ Actions:
     W            - Unwatch the selected ticket
     v            - Vote for the selected ticket
     V            - Remove vote on the selected ticket
+    N            - Next ticket in results
+    P            - Previous ticket in results
     h            - show help page
 
 Commands (like vim/tig/less):

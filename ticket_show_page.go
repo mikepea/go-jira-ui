@@ -73,6 +73,46 @@ func (p *TicketShowPage) Id() string {
 	return p.TicketId
 }
 
+func (p *TicketShowPage) NextTicket() {
+	if len(previousPages) == 0 {
+		return
+	}
+	pp := previousPages[len(previousPages)-1]
+	switch pp := pp.(type) {
+	case *TicketListPage:
+		line := pp.uiList.Cursor
+		pp.uiList.SilentCursorDownLines(1)
+		if pp.uiList.Cursor == line {
+			return
+		}
+		q := new(TicketShowPage)
+		q.TicketId = pp.ActiveTicketId()
+		currentPage = q
+		changePage()
+	}
+	return
+}
+
+func (p *TicketShowPage) PrevTicket() {
+	if len(previousPages) == 0 {
+		return
+	}
+	pp := previousPages[len(previousPages)-1]
+	switch pp := pp.(type) {
+	case *TicketListPage:
+		line := pp.uiList.Cursor
+		pp.uiList.SilentCursorUpLines(1)
+		if pp.uiList.Cursor == line {
+			return
+		}
+		q := new(TicketShowPage)
+		q.TicketId = pp.ActiveTicketId()
+		currentPage = q
+		changePage()
+	}
+	return
+}
+
 func (p *TicketShowPage) PreviousPara() {
 	newDisplayLine := 0
 	sl := p.uiList.Cursor

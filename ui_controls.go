@@ -142,6 +142,18 @@ func handleNextSearchKey() {
 	}
 }
 
+func handleNextTicketKey() {
+	if obj, ok := currentPage.(NextTicketer); ok {
+		obj.NextTicket()
+	}
+}
+
+func handlePrevTicketKey() {
+	if obj, ok := currentPage.(PrevTicketer); ok {
+		obj.PrevTicket()
+	}
+}
+
 func handleHelp() {
 	previousPages = append(previousPages, currentPage)
 	currentPage = helpPage
@@ -203,6 +215,10 @@ func handleNavigateKey(e ui.Event) {
 		handleCommandKey(e)
 	case "n":
 		handleNextSearchKey()
+	case "N":
+		handleNextTicketKey()
+	case "P":
+		handlePrevTicketKey()
 	case "h":
 		handleHelp()
 	}

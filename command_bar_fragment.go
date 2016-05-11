@@ -49,6 +49,8 @@ func handleCommand(command string) {
 	switch {
 	case action == "q" || action == "quit":
 		handleQuit()
+	case action == "create":
+		handleCreateCommand(args)
 	case action == "label" || action == "labels":
 		handleLabelCommand(args)
 	case action == "help":
@@ -90,6 +92,18 @@ func handleCommand(command string) {
 			handleViewCommand(args[0])
 		}
 	}
+}
+
+func handleCreateCommand(args []string) {
+	if len(args) == 0 {
+		return
+	}
+	project := args[0]
+	summary := ""
+	if len(args) > 1 {
+		summary = strings.Join(args[1:], ` `)
+	}
+	runJiraCmdCreate(project, summary)
 }
 
 func handleLabelCommand(args []string) {
