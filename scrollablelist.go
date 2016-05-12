@@ -34,7 +34,7 @@ type ScrollableList struct {
 // NewScrollableList returns a new *ScrollableList with current theme.
 func NewScrollableList() *ScrollableList {
 	l := &ScrollableList{Block: *ui.NewBlock()}
-	l.CursorBgColor = ui.ColorBlack
+	l.CursorBgColor = ui.ColorBlue
 	l.CursorFgColor = ui.ColorWhite
 	return l
 }
