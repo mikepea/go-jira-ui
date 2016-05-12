@@ -119,8 +119,10 @@ func changePage() {
 	}
 }
 
+const LOG_MODULE = "jiraui"
+
 var (
-	log    = logging.MustGetLogger("jiraui")
+	log    = logging.MustGetLogger(LOG_MODULE)
 	format = "%{color}%{time:2006-01-02T15:04:05.000Z07:00} %{level:-5s} [%{shortfile}]%{color:reset} %{message}"
 )
 
@@ -129,7 +131,8 @@ var cliOpts map[string]interface{}
 func Run() {
 
 	var err error
-	logging.SetLevel(logging.NOTICE, "")
+	logging.SetLevel(logging.NOTICE, "jira")
+	logging.SetLevel(logging.NOTICE, LOG_MODULE)
 
 	usage := func(ok bool) {
 		printer := fmt.Printf
@@ -190,7 +193,7 @@ Query Options:
 			os.Exit(0)
 		},
 		"v|verbose+": func() {
-			logging.SetLevel(logging.GetLevel("")+1, "")
+			logging.SetLevel(logging.GetLevel(LOG_MODULE)+1, LOG_MODULE)
 		},
 		"u|user=s":        setopt,
 		"endpoint=s":      setopt,
