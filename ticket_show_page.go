@@ -184,11 +184,7 @@ func (p *TicketShowPage) Refresh() {
 }
 
 func (p *TicketShowPage) Update() {
-	ls := p.uiList
-	log.Debugf("TicketShowPage.Update(): self:        %s (%p), ls: (%p)", p.Id(), p, ls)
-	p.markActiveLine()
-	ls.Items = p.displayLines
-	ui.Render(ls)
+	ui.Render(p.uiList)
 	p.statusBar.Update()
 	p.commandBar.Update()
 }
@@ -233,10 +229,7 @@ func (p *TicketShowPage) Create() {
 		p.apiBody, _ = FetchJiraTicket(p.TicketId)
 	}
 	p.cachedResults = WrapText(JiraTicketAsStrings(p.apiBody, p.Template), p.WrapWidth)
-	p.displayLines = make([]string, len(p.cachedResults))
-	if p.uiList.Cursor >= len(p.cachedResults) {
-		p.uiList.Cursor = len(p.cachedResults) - 1
-	}
+	ls.Items = p.cachedResults
 	ls.ItemFgColor = ui.ColorYellow
 	ls.Height = ui.TermHeight() - 2
 	ls.Width = ui.TermWidth()

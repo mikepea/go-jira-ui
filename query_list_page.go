@@ -81,10 +81,12 @@ func (p *QueryPage) IsPopulated() bool {
 	}
 }
 
-func (p *QueryPage) markActiveLine() {
+func (p *QueryPage) itemizeResults() []string {
+	items := make([]string, len(p.cachedResults))
 	for i, v := range p.cachedResults {
-		p.displayLines[i] = fmt.Sprintf("%-50s [|](fg-blue) [%s](fg-green)", v.Name, v.JQL)
+		items[i] = fmt.Sprintf("%-50s [|](fg-blue) [%s](fg-green)", v.Name, v.JQL)
 	}
+	return items
 }
 
 func (p *QueryPage) PreviousPara() {
@@ -135,8 +137,6 @@ func (p *QueryPage) SelectItem() {
 func (p *QueryPage) Update() {
 	ls := p.uiList
 	log.Debugf("QueryPage.Update(): self:        %s (%p), ls: (%p)", p.Id(), p, ls)
-	p.markActiveLine()
-	ls.Items = p.displayLines
 	ui.Render(ls)
 	p.statusBar.Update()
 	p.commandBar.Update()
@@ -163,7 +163,7 @@ func (p *QueryPage) Create() {
 		p.commandBar = commandBar
 	}
 	p.cachedResults = getQueries()
-	p.displayLines = make([]string, len(p.cachedResults))
+	ls.Items = p.itemizeResults()
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "Queries"
 	ls.Height = ui.TermHeight() - 2

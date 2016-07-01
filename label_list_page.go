@@ -73,10 +73,12 @@ func (p *LabelListPage) SelectItem() {
 	}
 }
 
-func (p *LabelListPage) markActiveLine() {
+func (p *LabelListPage) itemizeResults() []string {
+	items := make([]string, len(p.cachedResults))
 	for i, v := range p.cachedResults {
-		p.displayLines[i] = fmt.Sprintf("%-40s -- %d tickets", v, p.labelCounts[v])
+		items[i] = fmt.Sprintf("%-40s -- %d tickets", v, p.labelCounts[v])
 	}
+	return items
 }
 
 func (p *LabelListPage) GoBack() {
@@ -90,8 +92,6 @@ func (p *LabelListPage) GoBack() {
 
 func (p *LabelListPage) Update() {
 	ls := p.uiList
-	p.markActiveLine()
-	ls.Items = p.displayLines
 	ui.Render(ls)
 	p.statusBar.Update()
 	p.commandBar.Update()
@@ -112,7 +112,7 @@ func (p *LabelListPage) Create() {
 	p.labelCounts = countLabelsFromQuery(queryJQL)
 	p.cachedResults = p.labelsAsSortedList()
 	p.isPopulated = true
-	p.displayLines = make([]string, len(p.cachedResults))
+	ls.Items = p.itemizeResults()
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = fmt.Sprintf("Label view -- %s: %s", queryName, queryJQL)
 	ls.Height = ui.TermHeight() - 2
