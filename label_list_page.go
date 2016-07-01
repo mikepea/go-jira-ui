@@ -29,7 +29,7 @@ func (p *LabelListPage) Search() {
 	startLine := (p.uiList.Cursor + n + increment) % n
 	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i]) {
-			p.SetSelectedLine(i)
+			p.uiList.SetCursorLine(i)
 			p.Update()
 			break
 		}
@@ -73,10 +73,12 @@ func (p *LabelListPage) SelectItem() {
 	}
 }
 
-func (p *LabelListPage) markActiveLine() {
+func (p *LabelListPage) itemizeResults() []string {
+	items := make([]string, len(p.cachedResults))
 	for i, v := range p.cachedResults {
-		p.displayLines[i] = fmt.Sprintf("%-40s -- %d tickets", v, p.labelCounts[v])
+		items[i] = fmt.Sprintf("%-40s -- %d tickets", v, p.labelCounts[v])
 	}
+	return items
 }
 
 func (p *LabelListPage) GoBack() {
@@ -90,8 +92,6 @@ func (p *LabelListPage) GoBack() {
 
 func (p *LabelListPage) Update() {
 	ls := p.uiList
-	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
 	p.statusBar.Update()
 	p.commandBar.Update()
@@ -99,8 +99,9 @@ func (p *LabelListPage) Update() {
 
 func (p *LabelListPage) Create() {
 	ui.Clear()
-	ls := NewScrollableList()
-	p.uiList = ls
+	if p.uiList == nil {
+		p.uiList = NewScrollableList()
+	}
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)
 	}
@@ -112,12 +113,12 @@ func (p *LabelListPage) Create() {
 	p.labelCounts = countLabelsFromQuery(queryJQL)
 	p.cachedResults = p.labelsAsSortedList()
 	p.isPopulated = true
-	p.displayLines = make([]string, len(p.cachedResults))
-	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = fmt.Sprintf("Label view -- %s: %s", queryName, queryJQL)
-	ls.Height = ui.TermHeight() - 2
-	ls.Width = ui.TermWidth()
-	ls.Y = 0
+	p.uiList.Items = p.itemizeResults()
+	p.uiList.ItemFgColor = ui.ColorYellow
+	p.uiList.BorderLabel = fmt.Sprintf("Label view -- %s: %s", queryName, queryJQL)
+	p.uiList.Height = ui.TermHeight() - 2
+	p.uiList.Width = ui.TermWidth()
+	p.uiList.Y = 0
 	p.statusBar.Create()
 	p.commandBar.Create()
 	p.Update()

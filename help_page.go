@@ -25,7 +25,7 @@ func (p *HelpPage) Search() {
 	startLine := (p.uiList.Cursor + n + increment) % n
 	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i]) {
-			p.SetSelectedLine(i)
+			p.uiList.SetCursorLine(i)
 			p.Update()
 			break
 		}
@@ -49,8 +49,6 @@ func (p *HelpPage) Refresh() {
 
 func (p *HelpPage) Update() {
 	ls := p.uiList
-	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
 	p.statusBar.Update()
 	p.commandBar.Update()
@@ -69,7 +67,7 @@ func (p *HelpPage) Create() {
 	if len(p.cachedResults) == 0 {
 		p.cachedResults = HelpTextAsStrings(nil, "jira_ui_help")
 	}
-	p.displayLines = make([]string, len(p.cachedResults))
+	ls.Items = p.cachedResults
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "Help"
 	ls.Height = ui.TermHeight() - 2

@@ -54,10 +54,12 @@ func (p *SortOrderPage) IsPopulated() bool {
 	}
 }
 
-func (p *SortOrderPage) markActiveLine() {
+func (p *SortOrderPage) itemizeResults() []string {
+	items := make([]string, len(p.cachedResults))
 	for i, v := range p.cachedResults {
-		p.displayLines[i] = fmt.Sprintf("%s", v.Name)
+		items[i] = fmt.Sprintf("%s", v.Name)
 	}
+	return items
 }
 
 func (p *SortOrderPage) PreviousPara() {
@@ -115,8 +117,6 @@ func (p *SortOrderPage) SelectItem() {
 
 func (p *SortOrderPage) Update() {
 	ls := p.uiList
-	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
 }
 
@@ -132,11 +132,10 @@ func (p *SortOrderPage) Create() {
 	ls := NewScrollableList()
 	p.uiList = ls
 	p.uiList.Cursor = 0
-	p.firstDisplayLine = 0
 	if len(p.cachedResults) == 0 {
 		p.cachedResults = getSorts()
-		p.displayLines = make([]string, len(p.cachedResults))
 	}
+	ls.Items = p.itemizeResults()
 	ls.ItemFgColor = ui.ColorGreen
 	ls.BorderLabel = "Sort By..."
 	ls.BorderFg = ui.ColorRed

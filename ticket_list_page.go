@@ -30,7 +30,7 @@ func (p *TicketListPage) Search() {
 	startLine := (p.uiList.Cursor + n + increment) % n
 	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i]) {
-			p.SetSelectedLine(i)
+			p.uiList.SetCursorLine(i)
 			p.Update()
 			break
 		}
@@ -71,11 +71,7 @@ func (p *TicketListPage) EditTicket() {
 }
 
 func (p *TicketListPage) Update() {
-	ls := p.uiList
-	log.Debugf("TicketListPage.Update(): self:        %s (%p), ls: (%p)", p.Id(), p, ls)
-	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
-	ui.Render(ls)
+	ui.Render(p.uiList)
 	p.statusBar.Update()
 	p.commandBar.Update()
 }
@@ -113,7 +109,7 @@ func (p *TicketListPage) Create() {
 	if p.uiList.Cursor >= len(p.cachedResults) {
 		p.uiList.Cursor = len(p.cachedResults) - 1
 	}
-	p.displayLines = make([]string, len(p.cachedResults))
+	p.uiList.Items = p.cachedResults
 	p.uiList.ItemFgColor = ui.ColorYellow
 	p.uiList.BorderLabel = fmt.Sprintf("%s: %s", p.ActiveQuery.Name, p.ActiveQuery.JQL)
 	p.uiList.Height = ui.TermHeight() - 2

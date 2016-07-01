@@ -14,12 +14,10 @@ type Search struct {
 }
 
 type BaseListPage struct {
-	uiList           *ScrollableList
-	displayLines     []string
-	cachedResults    []string
-	firstDisplayLine int
-	isPopulated      bool
-	ActiveSearch     Search
+	uiList        *ScrollableList
+	cachedResults []string
+	isPopulated   bool
+	ActiveSearch  Search
 }
 
 func (p *BaseListPage) SetSearch(searchCommand string) {
@@ -53,14 +51,6 @@ func (p *BaseListPage) IsPopulated() bool {
 		return true
 	} else {
 		return false
-	}
-}
-
-func (p *BaseListPage) FixFirstDisplayLine(n int) {
-	if p.uiList.Cursor < p.firstDisplayLine {
-		p.firstDisplayLine = p.uiList.Cursor
-	} else if p.uiList.Cursor > p.lastDisplayedLine() {
-		p.firstDisplayLine = p.uiList.Cursor - (p.PageLines() - 1)
 	}
 }
 
@@ -102,32 +92,14 @@ func (p *BaseListPage) BottomOfPage() {
 	p.uiList.ScrollToBottom()
 }
 
-func (p *BaseListPage) lastDisplayedLine() int {
-	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 3)
-}
-
-func (p *BaseListPage) SetSelectedLine(line int) {
-	if line > 0 && line < len(p.cachedResults) {
-		p.uiList.Cursor = line
-		p.FixFirstDisplayLine(0)
-	}
-}
-
-func (p *BaseListPage) markActiveLine() {
-	for i, v := range p.cachedResults {
-		p.displayLines[i] = v
-	}
-}
-
 func (p *BaseListPage) Id() string {
 	return fmt.Sprintf("BaseListPage(%p)", p)
 }
 
 func (p *BaseListPage) Update() {
-	ls := p.uiList
-	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
-	ui.Render(ls)
+	log.Debugf("BaseListPage.Update(): self:        %s (%p)", p.Id(), p)
+	log.Debugf("BaseListPage.Update(): currentPage: %s (%p)", currentPage.Id(), currentPage)
+	ui.Render(p.uiList)
 }
 
 func (p *BaseListPage) Refresh() {
@@ -139,11 +111,13 @@ func (p *BaseListPage) Refresh() {
 }
 
 func (p *BaseListPage) Create() {
+	log.Debugf("BaseListPage.Create(): self:        %s (%p)", p.Id(), p)
+	log.Debugf("BaseListPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
 	ls := NewScrollableList()
 	p.uiList = ls
 	p.cachedResults = make([]string, 0)
-	p.displayLines = make([]string, len(p.cachedResults))
+	ls.Items = p.cachedResults
 	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "Updating, please wait"
 	ls.Height = ui.TermHeight()

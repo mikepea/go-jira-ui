@@ -66,7 +66,7 @@ func (p *QueryPage) Search() {
 	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i].Name) {
 			log.Debugf("Match found, line %d", i)
-			p.SetSelectedLine(i)
+			p.uiList.SetCursorLine(i)
 			p.Update()
 			break
 		}
@@ -81,17 +81,12 @@ func (p *QueryPage) IsPopulated() bool {
 	}
 }
 
-func (p *QueryPage) SetSelectedLine(line int) {
-	if line > 0 && line < len(p.cachedResults) {
-		p.uiList.Cursor = line
-		p.FixFirstDisplayLine(0)
-	}
-}
-
-func (p *QueryPage) markActiveLine() {
+func (p *QueryPage) itemizeResults() []string {
+	items := make([]string, len(p.cachedResults))
 	for i, v := range p.cachedResults {
-		p.displayLines[i] = fmt.Sprintf("%-50s [|](fg-blue) [%s](fg-green)", v.Name, v.JQL)
+		items[i] = fmt.Sprintf("%-50s [|](fg-blue) [%s](fg-green)", v.Name, v.JQL)
 	}
+	return items
 }
 
 func (p *QueryPage) PreviousPara() {
@@ -142,8 +137,6 @@ func (p *QueryPage) SelectItem() {
 func (p *QueryPage) Update() {
 	ls := p.uiList
 	log.Debugf("QueryPage.Update(): self:        %s (%p), ls: (%p)", p.Id(), p, ls)
-	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
 	ui.Render(ls)
 	p.statusBar.Update()
 	p.commandBar.Update()
@@ -161,8 +154,15 @@ func (p *QueryPage) Create() {
 	log.Debugf("QueryPage.Create(): self:        %s (%p)", p.Id(), p)
 	log.Debugf("QueryPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
-	ls := NewScrollableList()
-	p.uiList = ls
+	if p.uiList == nil {
+		p.uiList = NewScrollableList()
+	}
+	if p.statusBar == nil {
+		p.statusBar = new(StatusBar)
+	}
+	if p.commandBar == nil {
+		p.commandBar = commandBar
+	}
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)
 	}
@@ -170,12 +170,12 @@ func (p *QueryPage) Create() {
 		p.commandBar = commandBar
 	}
 	p.cachedResults = getQueries()
-	p.displayLines = make([]string, len(p.cachedResults))
-	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = "Queries"
-	ls.Height = ui.TermHeight() - 2
-	ls.Width = ui.TermWidth()
-	ls.Y = 0
+	p.uiList.Items = p.itemizeResults()
+	p.uiList.ItemFgColor = ui.ColorYellow
+	p.uiList.BorderLabel = "Queries"
+	p.uiList.Height = ui.TermHeight() - 2
+	p.uiList.Width = ui.TermWidth()
+	p.uiList.Y = 0
 	p.statusBar.Create()
 	p.commandBar.Create()
 	p.Update()
