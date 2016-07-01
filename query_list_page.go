@@ -66,7 +66,7 @@ func (p *QueryPage) Search() {
 	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i].Name) {
 			log.Debugf("Match found, line %d", i)
-			p.SetSelectedLine(i)
+			p.uiList.SetCursorLine(i)
 			p.Update()
 			break
 		}
@@ -78,13 +78,6 @@ func (p *QueryPage) IsPopulated() bool {
 		return true
 	} else {
 		return false
-	}
-}
-
-func (p *QueryPage) SetSelectedLine(line int) {
-	if line > 0 && line < len(p.cachedResults) {
-		p.uiList.Cursor = line
-		p.FixFirstDisplayLine(0)
 	}
 }
 

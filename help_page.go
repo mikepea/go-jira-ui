@@ -25,7 +25,7 @@ func (p *HelpPage) Search() {
 	startLine := (p.uiList.Cursor + n + increment) % n
 	for i := startLine; i != p.uiList.Cursor; i = (i + increment + n) % n {
 		if s.re.MatchString(p.cachedResults[i]) {
-			p.SetSelectedLine(i)
+			p.uiList.SetCursorLine(i)
 			p.Update()
 			break
 		}

@@ -56,14 +56,6 @@ func (p *BaseListPage) IsPopulated() bool {
 	}
 }
 
-func (p *BaseListPage) FixFirstDisplayLine(n int) {
-	if p.uiList.Cursor < p.firstDisplayLine {
-		p.firstDisplayLine = p.uiList.Cursor
-	} else if p.uiList.Cursor > p.lastDisplayedLine() {
-		p.firstDisplayLine = p.uiList.Cursor - (p.PageLines() - 1)
-	}
-}
-
 func (p *BaseListPage) PreviousLine(n int) {
 	p.uiList.CursorUpLines(n)
 }
@@ -106,13 +98,6 @@ func (p *BaseListPage) lastDisplayedLine() int {
 	return lastLineDisplayed(p.uiList, p.firstDisplayLine, 3)
 }
 
-func (p *BaseListPage) SetSelectedLine(line int) {
-	if line > 0 && line < len(p.cachedResults) {
-		p.uiList.Cursor = line
-		p.FixFirstDisplayLine(0)
-	}
-}
-
 func (p *BaseListPage) markActiveLine() {
 	for i, v := range p.cachedResults {
 		p.displayLines[i] = v
@@ -124,6 +109,8 @@ func (p *BaseListPage) Id() string {
 }
 
 func (p *BaseListPage) Update() {
+	log.Debugf("BaseListPage.Update(): self:        %s (%p)", p.Id(), p)
+	log.Debugf("BaseListPage.Update(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ls := p.uiList
 	p.markActiveLine()
 	ls.Items = p.displayLines[p.firstDisplayLine:]
@@ -139,6 +126,8 @@ func (p *BaseListPage) Refresh() {
 }
 
 func (p *BaseListPage) Create() {
+	log.Debugf("BaseListPage.Create(): self:        %s (%p)", p.Id(), p)
+	log.Debugf("BaseListPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
 	ls := NewScrollableList()
 	p.uiList = ls

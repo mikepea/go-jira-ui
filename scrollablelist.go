@@ -162,6 +162,28 @@ func (sl *ScrollableList) SilentCursorUpLines(n int) {
 	}
 }
 
+func (sl *ScrollableList) SetCursorLine(n int) {
+	if n > len(sl.Items) || n < 0 {
+		return
+	}
+	if !(n >= sl.Offset && n < min(sl.Offset+sl.InnerHeight(), len(sl.Items))) {
+		// not on same page
+		if n < sl.Cursor {
+			// scrolling up to new line
+			if sl.Offset > n {
+				sl.Offset = n
+			}
+		} else {
+			// scrolling down to new line
+			if sl.Offset < n {
+				sl.Offset = n
+			}
+		}
+	}
+	sl.Cursor = n
+	sl.render()
+}
+
 // Move the window down one frame; this will move the cursor as well.
 func (sl *ScrollableList) PageDown() {
 	if sl.Offset < len(sl.Items)-sl.InnerHeight() {
