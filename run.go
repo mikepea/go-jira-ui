@@ -130,10 +130,6 @@ var cliOpts map[string]interface{}
 
 func Run() {
 
-	var err error
-	logging.SetLevel(logging.NOTICE, "jira")
-	logging.SetLevel(logging.NOTICE, LOG_MODULE)
-
 	usage := func(ok bool) {
 		printer := fmt.Printf
 		if !ok {
@@ -156,6 +152,7 @@ Usage:
 
 General Options:
   -e --endpoint=URI   URI to use for jira
+  -l --log=FILE       FILE to use for log (default /dev/null)
   -h --help           Show this usage
   -u --user=USER      Username to use for authenticaion
   -v --verbose        Increase output logging
@@ -182,9 +179,13 @@ Query Options:
 	}
 
 	cliOpts = make(map[string]interface{})
+	cliOpts["log"] = "/dev/null"
 	setopt := func(name string, value interface{}) {
 		cliOpts[name] = value
 	}
+
+	logging.SetLevel(logging.NOTICE, "jira")
+	logging.SetLevel(logging.NOTICE, LOG_MODULE)
 
 	op := optigo.NewDirectAssignParser(map[string]interface{}{
 		"h|help": usage,
@@ -195,6 +196,7 @@ Query Options:
 		"v|verbose+": func() {
 			logging.SetLevel(logging.GetLevel(LOG_MODULE)+1, LOG_MODULE)
 		},
+		"l|log=s":         setopt,
 		"u|user=s":        setopt,
 		"endpoint=s":      setopt,
 		"q|query=s":       setopt,
@@ -209,6 +211,13 @@ Query Options:
 		usage(false)
 	}
 	args := op.Args
+	f, err := os.Create(cliOpts["log"].(string))
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	backend := logging.NewLogBackend(f, "", 0)
+	logging.SetBackend(backend)
 
 	var command string
 	if len(args) > 0 {
