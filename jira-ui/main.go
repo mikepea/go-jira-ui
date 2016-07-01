@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os/exec"
 
 	"github.com/mikepea/go-jira-ui"
@@ -9,6 +10,7 @@ import (
 func resetTTY() {
 	cmd := exec.Command("reset")
 	_ = cmd.Run()
+	fmt.Println()
 }
 
 func main() {
