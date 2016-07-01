@@ -154,8 +154,15 @@ func (p *QueryPage) Create() {
 	log.Debugf("QueryPage.Create(): self:        %s (%p)", p.Id(), p)
 	log.Debugf("QueryPage.Create(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ui.Clear()
-	ls := NewScrollableList()
-	p.uiList = ls
+	if p.uiList == nil {
+		p.uiList = NewScrollableList()
+	}
+	if p.statusBar == nil {
+		p.statusBar = new(StatusBar)
+	}
+	if p.commandBar == nil {
+		p.commandBar = commandBar
+	}
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)
 	}
@@ -163,12 +170,12 @@ func (p *QueryPage) Create() {
 		p.commandBar = commandBar
 	}
 	p.cachedResults = getQueries()
-	ls.Items = p.itemizeResults()
-	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = "Queries"
-	ls.Height = ui.TermHeight() - 2
-	ls.Width = ui.TermWidth()
-	ls.Y = 0
+	p.uiList.Items = p.itemizeResults()
+	p.uiList.ItemFgColor = ui.ColorYellow
+	p.uiList.BorderLabel = "Queries"
+	p.uiList.Height = ui.TermHeight() - 2
+	p.uiList.Width = ui.TermWidth()
+	p.uiList.Y = 0
 	p.statusBar.Create()
 	p.commandBar.Create()
 	p.Update()

@@ -99,8 +99,9 @@ func (p *LabelListPage) Update() {
 
 func (p *LabelListPage) Create() {
 	ui.Clear()
-	ls := NewScrollableList()
-	p.uiList = ls
+	if p.uiList == nil {
+		p.uiList = NewScrollableList()
+	}
 	if p.statusBar == nil {
 		p.statusBar = new(StatusBar)
 	}
@@ -112,12 +113,12 @@ func (p *LabelListPage) Create() {
 	p.labelCounts = countLabelsFromQuery(queryJQL)
 	p.cachedResults = p.labelsAsSortedList()
 	p.isPopulated = true
-	ls.Items = p.itemizeResults()
-	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = fmt.Sprintf("Label view -- %s: %s", queryName, queryJQL)
-	ls.Height = ui.TermHeight() - 2
-	ls.Width = ui.TermWidth()
-	ls.Y = 0
+	p.uiList.Items = p.itemizeResults()
+	p.uiList.ItemFgColor = ui.ColorYellow
+	p.uiList.BorderLabel = fmt.Sprintf("Label view -- %s: %s", queryName, queryJQL)
+	p.uiList.Height = ui.TermHeight() - 2
+	p.uiList.Width = ui.TermWidth()
+	p.uiList.Y = 0
 	p.statusBar.Create()
 	p.commandBar.Create()
 	p.Update()
