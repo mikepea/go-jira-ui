@@ -113,7 +113,7 @@ func (p *BaseListPage) Update() {
 	log.Debugf("BaseListPage.Update(): currentPage: %s (%p)", currentPage.Id(), currentPage)
 	ls := p.uiList
 	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
+	ls.Items = p.displayLines
 	ui.Render(ls)
 }
 

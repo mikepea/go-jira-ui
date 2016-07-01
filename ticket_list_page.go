@@ -74,7 +74,7 @@ func (p *TicketListPage) Update() {
 	ls := p.uiList
 	log.Debugf("TicketListPage.Update(): self:        %s (%p), ls: (%p)", p.Id(), p, ls)
 	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
+	ls.Items = p.displayLines
 	ui.Render(ls)
 	p.statusBar.Update()
 	p.commandBar.Update()

@@ -116,7 +116,7 @@ func (p *SortOrderPage) SelectItem() {
 func (p *SortOrderPage) Update() {
 	ls := p.uiList
 	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
+	ls.Items = p.displayLines
 	ui.Render(ls)
 }
 

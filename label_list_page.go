@@ -91,7 +91,7 @@ func (p *LabelListPage) GoBack() {
 func (p *LabelListPage) Update() {
 	ls := p.uiList
 	p.markActiveLine()
-	ls.Items = p.displayLines[p.firstDisplayLine:]
+	ls.Items = p.displayLines
 	ui.Render(ls)
 	p.statusBar.Update()
 	p.commandBar.Update()
