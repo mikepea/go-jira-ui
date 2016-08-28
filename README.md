@@ -58,6 +58,7 @@ useful:
 Actions:
 
     <enter>      - select query/ticket
+    r            - mark ticket for ranking (use naviation to change rank, <enter> to submit)
     L            - Label view (query results page only)
     E            - Edit ticket
     S            - Select sort order (query results page only)

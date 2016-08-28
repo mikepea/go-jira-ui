@@ -132,6 +132,15 @@ func runJiraCmdLabels(ticketId string, action string, labels []string) {
 	}
 }
 
+func runJiraCmdRank(ticketId, targetId string, order jira.RankOrder) {
+	opts := getJiraOpts()
+	c := jira.New(opts)
+	err := c.RankIssue(ticketId, targetId, order)
+	if err != nil {
+		log.Errorf("Error modifying issue rank: %q", err)
+	}
+}
+
 func findTicketIdInString(line string) string {
 	re := regexp.MustCompile(`[A-Z]{2,12}-[0-9]{1,6}`)
 	return strings.TrimSpace(re.FindString(line))

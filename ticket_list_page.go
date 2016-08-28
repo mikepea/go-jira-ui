@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	ui "github.com/gizak/termui"
+	"github.com/Netflix-Skunkworks/go-jira"
 )
 
 type TicketListPage struct {
@@ -13,6 +14,7 @@ type TicketListPage struct {
 	StatusBarFragment
 	ActiveQuery Query
 	ActiveSort  Sort
+	RankingTicketId string
 }
 
 func (p *TicketListPage) Search() {
@@ -45,7 +47,43 @@ func (p *TicketListPage) GetSelectedTicketId() string {
 	return findTicketIdInString(p.cachedResults[p.uiList.Cursor])
 }
 
+func (p *TicketListPage) MarkItemForRanking() {
+	p.RankingTicketId = p.GetSelectedTicketId()
+}
+
+func (p *TicketListPage) PreviousLine(n int) {
+	if p.RankingTicketId != "" {
+		p.uiList.MoveUp(n)
+	} else {
+		p.uiList.CursorUpLines(n)
+	}
+}
+
+func (p *TicketListPage) NextLine(n int) {
+	if p.RankingTicketId != "" {
+		p.uiList.MoveDown(n)
+	} else {
+		p.uiList.CursorDownLines(n)
+	}
+}
+
 func (p *TicketListPage) SelectItem() {
+	if p.RankingTicketId != "" {
+		log.Debugf("Setting Rank for %s", p.RankingTicketId)
+		order := jira.RANKBEFORE
+		var targetId string
+		if p.uiList.Cursor == 0 {
+			order = jira.RANKAFTER
+			targetId = findTicketIdInString(p.cachedResults[p.uiList.Cursor+1])
+		} else {
+			targetId = findTicketIdInString(p.cachedResults[p.uiList.Cursor-1])
+		}
+		runJiraCmdRank(p.RankingTicketId, targetId, order)
+		p.RankingTicketId = ""
+		p.Refresh()
+		return
+	}
+
 	if len(p.cachedResults) == 0 {
 		return
 	}

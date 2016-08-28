@@ -80,6 +80,12 @@ func handleSelectKey() {
 	}
 }
 
+func handleMarkTicketKey() {
+	if obj, ok := currentPage.(RankSelector); ok {
+		obj.MarkItemForRanking()
+	}
+}
+
 func handleTopOfPageKey() {
 	if obj, ok := currentPage.(PagePager); ok {
 		obj.TopOfPage()
@@ -221,6 +227,8 @@ func handleNavigateKey(e ui.Event) {
 		handlePrevTicketKey()
 	case "h":
 		handleHelp()
+	case "r":
+		handleMarkTicketKey()
 	}
 }
 
