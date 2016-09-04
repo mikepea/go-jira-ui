@@ -21,6 +21,7 @@ var baseSorts = []Sort{
 	Sort{"created, oldest first", "ORDER BY created ASC"},
 	Sort{"updated, newest first", "ORDER BY updated DESC"},
 	Sort{"updated, oldest first", "ORDER BY updated ASC"},
+	Sort{"rank", "ORDER BY Rank DESC"},
 	Sort{"---", ""}, // no-op line in UI
 }
 

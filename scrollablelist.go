@@ -118,6 +118,30 @@ func (sl *ScrollableList) ScrollDown() {
 	}
 }
 
+// Swap current row with previous row, then move
+// cursor to previous row
+func (sl *ScrollableList) MoveUp(n int) {
+	if sl.Cursor >= n {
+		cur := sl.Items[sl.Cursor]
+		up := sl.Items[sl.Cursor - n]
+		sl.Items[sl.Cursor] = up
+		sl.Items[sl.Cursor - n] = cur
+	}
+	sl.CursorUpLines(n)
+}
+
+// Swap current row with next row, then move
+// cursor to next row
+func (sl *ScrollableList) MoveDown(n int) {
+	if sl.Cursor < len(sl.Items) - n {
+		cur := sl.Items[sl.Cursor]
+		down := sl.Items[sl.Cursor + n]
+		sl.Items[sl.Cursor] = down
+		sl.Items[sl.Cursor + n] = cur
+	}
+	sl.CursorDownLines(n)
+}
+
 // Move the cursor down one row; moving the cursor out of the window will cause
 // scrolling.
 func (sl *ScrollableList) CursorDown() {

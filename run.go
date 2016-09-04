@@ -83,6 +83,10 @@ type Navigable interface {
 	Id() string
 }
 
+type RankSelector interface {
+	MarkItemForRanking()
+}
+
 var currentPage Navigable
 var previousPages []Navigable
 
