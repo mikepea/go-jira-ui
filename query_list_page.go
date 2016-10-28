@@ -24,7 +24,6 @@ var baseQueries = []Query{
 	Query{"My Reported Tickets", "reporter = currentUser() AND resolution = Unresolved", ""},
 	Query{"My Watched Tickets", "watcher = currentUser() AND resolution = Unresolved", ""},
 	Query{"My Voted Tickets", "voter = currentUser() AND resolution = Unresolved", ""},
-	Query{"---", "", ""}, // no-op line in UI
 }
 
 func getQueries() (queries []Query) {
@@ -46,7 +45,17 @@ func getQueries() (queries []Query) {
 			queries = append(queries, Query{q2["name"], q2["jql"], q2["template"]})
 		}
 	}
-	return append(baseQueries, queries...)
+	if len(queries) > 0 {
+		queries = append(
+			queries,
+			Query{"---", "", ""}, // no-op line in UI
+		)
+		return append(
+			queries,
+			baseQueries...
+		);
+	}
+	return baseQueries
 }
 
 func (p *QueryPage) Search() {
