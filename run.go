@@ -211,7 +211,7 @@ Query Options:
 	})
 
 	if err := op.ProcessAll(os.Args[1:]); err != nil {
-		log.Error("%s", err)
+		log.Errorf("%s", err)
 		usage(false)
 	}
 	args := op.Args
@@ -238,7 +238,7 @@ Query Options:
 
 	requireArgs := func(count int) {
 		if len(args) < count {
-			log.Error("Not enough arguments. %d required, %d provided", count, len(args))
+			log.Errorf("Not enough arguments. %d required, %d provided", count, len(args))
 			usage(false)
 		}
 	}
@@ -265,7 +265,7 @@ Query Options:
 	switch command {
 	case "list":
 		if query := cliOpts["query"]; query == nil {
-			log.Error("Must supply a --query option to %q", command)
+			log.Errorf("Must supply a --query option to %q", command)
 			os.Exit(1)
 		} else {
 			p := new(TicketListPage)
@@ -283,7 +283,7 @@ Query Options:
 	case "password":
 		currentPage = new(PasswordInputBox)
 	default:
-		log.Error("Unknown command %s", command)
+		log.Errorf("Unknown command %s", command)
 		os.Exit(1)
 	}
 
