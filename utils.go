@@ -143,6 +143,12 @@ func runJiraCmdRank(ticketId, targetId string, order jira.RankOrder) {
 
 func findTicketIdInString(line string) string {
 	re := regexp.MustCompile(`[A-Z]{2,12}-[0-9]{1,6}`)
+	re_too_long := regexp.MustCompile(`[A-Z]{13}-[0-9]{1,6}`)
+
+	if re_too_long.MatchString(line) {
+		return ""
+	}
+
 	return strings.TrimSpace(re.FindString(line))
 }
 
