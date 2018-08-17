@@ -5,7 +5,7 @@ import (
 	"regexp"
 
 	ui "github.com/gizak/termui"
-	"github.com/Netflix-Skunkworks/go-jira"
+	"gopkg.in/Netflix-Skunkworks/go-jira.v0"
 )
 
 type TicketListPage struct {

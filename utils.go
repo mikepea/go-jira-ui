@@ -9,9 +9,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Netflix-Skunkworks/go-jira"
 	ui "github.com/gizak/termui"
 	"github.com/mitchellh/go-wordwrap"
+	"gopkg.in/Netflix-Skunkworks/go-jira.v0"
 	"gopkg.in/coryb/yaml.v2"
 )
 
