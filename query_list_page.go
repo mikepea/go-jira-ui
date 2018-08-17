@@ -52,8 +52,8 @@ func getQueries() (queries []Query) {
 		)
 		return append(
 			queries,
-			baseQueries...
-		);
+			baseQueries...,
+		)
 	}
 	return baseQueries
 }

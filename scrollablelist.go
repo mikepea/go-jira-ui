@@ -123,9 +123,9 @@ func (sl *ScrollableList) ScrollDown() {
 func (sl *ScrollableList) MoveUp(n int) {
 	if sl.Cursor >= n {
 		cur := sl.Items[sl.Cursor]
-		up := sl.Items[sl.Cursor - n]
+		up := sl.Items[sl.Cursor-n]
 		sl.Items[sl.Cursor] = up
-		sl.Items[sl.Cursor - n] = cur
+		sl.Items[sl.Cursor-n] = cur
 	}
 	sl.CursorUpLines(n)
 }
@@ -133,11 +133,11 @@ func (sl *ScrollableList) MoveUp(n int) {
 // Swap current row with next row, then move
 // cursor to next row
 func (sl *ScrollableList) MoveDown(n int) {
-	if sl.Cursor < len(sl.Items) - n {
+	if sl.Cursor < len(sl.Items)-n {
 		cur := sl.Items[sl.Cursor]
-		down := sl.Items[sl.Cursor + n]
+		down := sl.Items[sl.Cursor+n]
 		sl.Items[sl.Cursor] = down
-		sl.Items[sl.Cursor + n] = cur
+		sl.Items[sl.Cursor+n] = cur
 	}
 	sl.CursorDownLines(n)
 }

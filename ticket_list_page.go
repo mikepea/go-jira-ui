@@ -12,8 +12,8 @@ type TicketListPage struct {
 	BaseListPage
 	CommandBarFragment
 	StatusBarFragment
-	ActiveQuery Query
-	ActiveSort  Sort
+	ActiveQuery     Query
+	ActiveSort      Sort
 	RankingTicketId string
 }
 
