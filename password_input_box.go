@@ -3,7 +3,7 @@ package jiraui
 import (
 	"strings"
 
-	ui "github.com/gizak/termui"
+	ui "gopkg.in/gizak/termui.v2"
 )
 
 type PasswordInputBox struct {

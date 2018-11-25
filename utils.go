@@ -9,10 +9,10 @@ import (
 	"regexp"
 	"strings"
 
-	ui "github.com/gizak/termui"
 	"github.com/mitchellh/go-wordwrap"
 	"gopkg.in/Netflix-Skunkworks/go-jira.v0"
 	"gopkg.in/coryb/yaml.v2"
+	ui "gopkg.in/gizak/termui.v2"
 )
 
 func countLabelsFromQuery(query string) map[string]int {

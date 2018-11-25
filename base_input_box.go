@@ -1,7 +1,7 @@
 package jiraui
 
 import (
-	ui "github.com/gizak/termui"
+	ui "gopkg.in/gizak/termui.v2"
 )
 
 type BaseInputBox struct {

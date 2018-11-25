@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/coryb/optigo"
-	ui "github.com/gizak/termui"
 	"github.com/op/go-logging"
+	ui "gopkg.in/gizak/termui.v2"
 )
 
 var exitNow = false

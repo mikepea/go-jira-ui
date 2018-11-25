@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"regexp"
 
-	ui "github.com/gizak/termui"
 	"gopkg.in/Netflix-Skunkworks/go-jira.v0"
+	ui "gopkg.in/gizak/termui.v2"
 )
 
 type TicketListPage struct {
