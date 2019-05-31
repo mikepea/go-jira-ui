@@ -3,6 +3,8 @@ go-jira-ui
 
 go-jira-ui is an ncurses command line tool for accessing JIRA.
 
+![Screenshot showing issue list from ad-hoc query](screenshot.png)
+
 It is built around the excellent [go-jira](https://github.com/Netflix-Skunkworks/go-jira) and
 [termui](https://github.com/gizak/termui) libraries.
 
