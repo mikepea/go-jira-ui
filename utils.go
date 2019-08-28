@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/mitchellh/go-wordwrap"
-	"gopkg.in/Netflix-Skunkworks/go-jira.v0"
+	"gopkg.in/Netflix-Skunkworks/go-jira.v1"
 	"gopkg.in/coryb/yaml.v2"
 	ui "gopkg.in/gizak/termui.v2"
 )
