@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"gopkg.in/Netflix-Skunkworks/go-jira.v1"
+	//"gopkg.in/Netflix-Skunkworks/go-jira.v1"
 	ui "gopkg.in/gizak/termui.v2"
 )
 
@@ -70,15 +70,18 @@ func (p *TicketListPage) NextLine(n int) {
 func (p *TicketListPage) SelectItem() {
 	if p.RankingTicketId != "" {
 		log.Debugf("Setting Rank for %s", p.RankingTicketId)
-		order := jira.RANKAFTER
+		log.Info("TODO: Reenable RANKAFTER")
+		//order := jira.RANKAFTER
 		var targetId string
 		if p.uiList.Cursor == 0 {
-			order = jira.RANKBEFORE
+			log.Info("TODO: Reenable RANKBEFORE")
+			//order = jira.RANKBEFORE
 			targetId = findTicketIdInString(p.cachedResults[p.uiList.Cursor+1])
 		} else {
 			targetId = findTicketIdInString(p.cachedResults[p.uiList.Cursor-1])
 		}
-		runJiraCmdRank(p.RankingTicketId, targetId, order)
+		//runJiraCmdRank(p.RankingTicketId, targetId, order)
+		log.Infof("TODO: Reenable runJiraCmdRank: %#v", targetId)
 		p.RankingTicketId = ""
 		p.Refresh()
 		return
@@ -105,7 +108,8 @@ func (p *TicketListPage) GoBack() {
 }
 
 func (p *TicketListPage) EditTicket() {
-	runJiraCmdEdit(p.GetSelectedTicketId())
+	//runJiraCmdEdit(p.GetSelectedTicketId())
+	log.Infof("TODO: Reenable runJiraCmdEdit")
 }
 
 func (p *TicketListPage) Update() {

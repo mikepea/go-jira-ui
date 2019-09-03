@@ -65,11 +65,12 @@ func runShell() {
 	changePage()
 }
 
+/*
 func runJiraCmdEdit(ticketId string) {
 	_ = RunExternalCommand(
 		func() error {
 			opts := getJiraOpts()
-			c := jira.New(opts)
+			c := jira.NewJira(opts["endpoint"].(string))
 			return c.CmdEdit(ticketId)
 		})
 	switch c := currentPage.(type) {
@@ -78,14 +79,16 @@ func runJiraCmdEdit(ticketId string) {
 	}
 	changePage()
 }
+*/
 
+/*
 func runJiraCmdCreate(project string, summary string) {
 	_ = RunExternalCommand(
 		func() error {
 			opts := getJiraOpts()
 			opts["project"] = project
 			opts["summary"] = summary
-			c := jira.New(opts)
+			c := jira.NewJira(opts["endpoint"].(string))
 			return c.CmdCreate()
 		})
 	switch c := currentPage.(type) {
@@ -94,23 +97,25 @@ func runJiraCmdCreate(project string, summary string) {
 	}
 	changePage()
 }
+*/
 
+/*
 func runJiraCmdCommentNoEditor(ticketId string, comment string) {
 	opts := getJiraOpts()
 	opts["comment"] = comment
-	c := jira.New(opts)
+	c := jira.NewJira(opts["endpoint"].(string))
 	c.CmdComment(ticketId)
 }
 
 func runJiraCmdAssign(ticketId string, user string) {
 	opts := getJiraOpts()
-	c := jira.New(opts)
+	c := jira.NewJira(opts["endpoint"].(string))
 	c.CmdAssign(ticketId, user)
 }
 
 func runJiraCmdWatch(ticketId string, watcher string, remove bool) {
 	opts := getJiraOpts()
-	c := jira.New(opts)
+	c := jira.NewJira(opts["endpoint"].(string))
 	if watcher == "" {
 		watcher = opts["user"].(string)
 	}
@@ -119,13 +124,13 @@ func runJiraCmdWatch(ticketId string, watcher string, remove bool) {
 
 func runJiraCmdVote(ticketId string, up bool) {
 	opts := getJiraOpts()
-	c := jira.New(opts)
+	c := jira.NewJira(opts["endpoint"].(string))
 	c.CmdVote(ticketId, up)
 }
 
 func runJiraCmdLabels(ticketId string, action string, labels []string) {
 	opts := getJiraOpts()
-	c := jira.New(opts)
+	c := jira.NewJira(opts["endpoint"].(string))
 	err := c.CmdLabels(action, ticketId, labels)
 	if err != nil {
 		log.Errorf("Error writing labels: %q", err)
@@ -134,12 +139,13 @@ func runJiraCmdLabels(ticketId string, action string, labels []string) {
 
 func runJiraCmdRank(ticketId, targetId string, order jira.RankOrder) {
 	opts := getJiraOpts()
-	c := jira.New(opts)
+	c := jira.NewJira(opts["endpoint"].(string))
 	err := c.RankIssue(ticketId, targetId, order)
 	if err != nil {
 		log.Errorf("Error modifying issue rank: %q", err)
 	}
 }
+*/
 
 func findTicketIdInString(line string) string {
 	re := regexp.MustCompile(`[A-Z]{2,12}-[0-9]{1,6}`)
@@ -155,56 +161,70 @@ func findTicketIdInString(line string) string {
 func runJiraQuery(query string) (interface{}, error) {
 	opts := getJiraOpts()
 	opts["query"] = query
-	c := jira.New(opts)
-	return c.FindIssues()
+	c := jira.NewJira(opts["endpoint"].(string))
+	//return c.FindIssues()
+	log.Infof("TODO: reenable c.FindIssues: %#v", c)
+	return nil, nil
 }
 
 func JiraQueryAsStrings(query string, templateName string) []string {
 	opts := getJiraOpts()
 	opts["query"] = query
-	c := jira.New(opts)
-	data, _ := c.FindIssues()
+	c := jira.NewJira(opts["endpoint"].(string))
+	//data, _ := c.FindIssues()
+	log.Infof("TODO: reenable c.FindIssues: %#v", c)
+	var data interface{}
 	buf := new(bytes.Buffer)
 	if templateName == "" {
 		templateName = "jira_ui_list"
 	}
-	template := c.GetTemplate(templateName)
+	//template := c.GetTemplate(templateName)
+	template := ""
 	if template == "" {
 		template = default_list_template
 	}
-	jira.RunTemplate(template, data, buf)
+	//jira.RunTemplate(template, data, buf)
+	log.Infof("TODO: reenable c.RunTemplate: %#v, %#v", data, buf)
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
 func FetchJiraTicket(id string) (interface{}, error) {
 	opts := getJiraOpts()
-	c := jira.New(opts)
-	return c.ViewIssue(id)
+	c := jira.NewJira(opts["endpoint"].(string))
+	//return c.ViewIssue(id)
+	log.Infof("TODO: reenable c.ViewIssue: %#v", c)
+	return nil, nil
 }
 
 func JiraTicketAsStrings(data interface{}, templateName string) []string {
 	opts := getJiraOpts()
-	c := jira.New(opts)
+	c := jira.NewJira(opts["endpoint"].(string))
 	buf := new(bytes.Buffer)
-	template := c.GetTemplate(templateName)
+	//template := c.GetTemplate(templateName)
+	log.Infof("TODO: reenable c.GetTemplate: %#v", c)
+	template := ""
 	log.Debugf("JiraTicketsAsStrings: template = %q", template)
 	if template == "" {
 		template = strings.Replace(default_view_template, "ENDPOINT", opts["endpoint"].(string), 1)
 	}
-	jira.RunTemplate(template, data, buf)
+	//jira.RunTemplate(template, data, buf)
+	log.Infof("TODO: reenable c.RunTemplate: %#v, %#v", data, buf)
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
 func HelpTextAsStrings(data interface{}, templateName string) []string {
 	opts := getJiraOpts()
-	c := jira.New(opts)
+	c := jira.NewJira(opts["endpoint"].(string))
 	buf := new(bytes.Buffer)
-	template := c.GetTemplate(templateName)
+	//template := c.GetTemplate(templateName)
+	log.Infof("TODO: reenable c.GetTemplate: %#v", c)
+	template := ""
 	if template == "" {
 		template = default_help_template
 	}
 	log.Debugf("HelpTextAsStrings: template = %q", template)
-	jira.RunTemplate(template, data, buf)
+	//jira.RunTemplate(template, data, buf)
+	log.Infof("TODO: reenable c.RunTemplate: %#v, %#v", data, buf)
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
@@ -254,9 +274,12 @@ func parseYaml(file string, v map[string]interface{}) {
 }
 
 func loadConfigs(opts map[string]interface{}) {
-	paths := jira.FindParentPaths(".jira.d/jira-ui-config.yml")
-	paths = append(jira.FindParentPaths(".jira.d/config.yml"), paths...)
-	paths = append([]string{"/etc/go-jira-ui.yml", "/etc/go-jira.yml"}, paths...)
+	/*
+		paths := figtree.FindParentPaths(".jira.d/jira-ui-config.yml")
+		paths = append(figtree.FindParentPaths(".jira.d/config.yml"), paths...)
+		paths = append([]string{"/etc/go-jira-ui.yml", "/etc/go-jira.yml"}, paths...)
+	*/
+	var paths []string
 
 	// iterate paths in reverse
 	for i := len(paths) - 1; i >= 0; i-- {
@@ -275,9 +298,11 @@ func loadConfigs(opts map[string]interface{}) {
 }
 
 func doLogin(opts map[string]interface{}) error {
-	c := jira.New(opts)
+	c := jira.NewJira(opts["endpoint"].(string))
 	fmt.Printf("Logging in as %s:\n", opts["user"])
-	return c.CmdLogin()
+	//return c.CmdLogin()
+	log.Infof("TODO: reenable c.CmdLogin: %#v", c)
+	return nil
 }
 
 func ensureLoggedIntoJira() error {
@@ -286,13 +311,17 @@ func ensureLoggedIntoJira() error {
 	testSessionQuery := fmt.Sprintf("reporter = %s", opts["user"])
 	if _, err := os.Stat(fmt.Sprintf("%s/.jira.d/cookies.js", homeDir)); err != nil {
 		return doLogin(opts)
-	} else if data, err := runJiraQuery(testSessionQuery); err != nil {
+		//} else if data, err := runJiraQuery(testSessionQuery); err != nil {
+	} else if _, err := runJiraQuery(testSessionQuery); err != nil {
 		return doLogin(opts)
-	} else if val, ok := data.(map[string]interface{})["errorMessages"]; ok {
-		if len(val.([]interface{})) > 0 {
-			return doLogin(opts)
-		}
+		/*
+			} else if val, ok := data.(map[string]interface{})["errorMessages"]; ok {
+				if len(val.([]interface{})) > 0 {
+					return doLogin(opts)
+				}
+		*/
 	}
+	log.Infof("TODO: refactor ensureLoggedIntoJira")
 	return nil
 }
 

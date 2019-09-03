@@ -103,7 +103,8 @@ func handleCreateCommand(args []string) {
 	if len(args) > 1 {
 		summary = strings.Join(args[1:], ` `)
 	}
-	runJiraCmdCreate(project, summary)
+	//runJiraCmdCreate(project, summary)
+	log.Infof("TODO: Reenable runJiraCmdCreate: %#v, %#v", project, summary)
 }
 
 func handleLabelCommand(args []string) {
@@ -129,7 +130,8 @@ func handleLabelCommand(args []string) {
 		default:
 			labels = args
 		}
-		runJiraCmdLabels(ticketId, action, labels)
+		//runJiraCmdLabels(ticketId, action, labels)
+		log.Infof("TODO: Reenable runJiraCmdLabels: %#v, %#v", action, labels)
 		obj.Refresh()
 	}
 }
@@ -142,7 +144,7 @@ func handleCommentCommand(comment string) {
 			return
 		}
 		log.Debugf("handleCommentCommand: ticket: %s, comment %s", ticketId, comment)
-		runJiraCmdCommentNoEditor(ticketId, comment)
+		//runJiraCmdCommentNoEditor(ticketId, comment)
 		obj.Refresh()
 	}
 }
@@ -155,7 +157,7 @@ func handleAssignCommand(user string) {
 			return
 		}
 		log.Debugf("handleAssignCommand: ticket: %s, user %s", ticketId, user)
-		runJiraCmdAssign(ticketId, user)
+		//runJiraCmdAssign(ticketId, user)
 		obj.Refresh()
 	}
 }
@@ -226,7 +228,7 @@ func handleVoteCommand(up bool) {
 		if ticketId == "" {
 			return
 		}
-		runJiraCmdVote(ticketId, up)
+		//runJiraCmdVote(ticketId, up)
 		obj.Refresh()
 	}
 }
@@ -240,18 +242,18 @@ func handleWatchCommand(args []string) {
 		}
 		log.Debugf("handleWatchCommand: ticket: %s, args %s", ticketId, args)
 		if len(args) == 0 {
-			runJiraCmdWatch(ticketId, "", false) // watch issue
+			//runJiraCmdWatch(ticketId, "", false) // watch issue
 		} else if args[0] == "add" {
 			if len(args) > 1 {
-				runJiraCmdWatch(ticketId, args[1], false) // add any user as watcher
+				//runJiraCmdWatch(ticketId, args[1], false) // add any user as watcher
 			} else {
-				runJiraCmdWatch(ticketId, "", false) // add self as watcher
+				//runJiraCmdWatch(ticketId, "", false) // add self as watcher
 			}
 		} else if args[0] == "remove" {
 			if len(args) > 1 {
-				runJiraCmdWatch(ticketId, args[1], true) // remove any user as watcher
+				//runJiraCmdWatch(ticketId, args[1], true) // remove any user as watcher
 			} else {
-				runJiraCmdWatch(ticketId, "", true) // remove self as watcher
+				//runJiraCmdWatch(ticketId, "", true) // remove self as watcher
 			}
 		} else {
 			return

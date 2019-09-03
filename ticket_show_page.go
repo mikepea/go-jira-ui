@@ -158,7 +158,8 @@ func (p *TicketShowPage) GoBack() {
 }
 
 func (p *TicketShowPage) EditTicket() {
-	runJiraCmdEdit(p.TicketId)
+	//runJiraCmdEdit(p.TicketId)
+	log.Infof("TODO: Reenable runJiraCmdEdit")
 }
 
 func (p *TicketShowPage) ActiveTicketId() string {
