@@ -11,8 +11,8 @@ import (
 
 	"github.com/mikepea/go-jira-ui"
 
-	"gopkg.in/Netflix-Skunkworks/go-jira.v1/jiracli"
-	"gopkg.in/Netflix-Skunkworks/go-jira.v1/jiracmd"
+	"github.com/go-jira/jira/jiracli"
+	"github.com/go-jira/jira/jiracmd"
 	"gopkg.in/op/go-logging.v1"
 )
 
