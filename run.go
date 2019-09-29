@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/coryb/optigo"
 	"github.com/op/go-logging"
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 	ui "gopkg.in/gizak/termui.v2"
@@ -135,8 +134,6 @@ var cliOpts map[string]interface{}
 
 func Run(app *kingpin.Application) {
 
-	log.Debugf("%#v", app)
-
 	usage := func(ok bool) {
 		printer := fmt.Printf
 		if !ok {
@@ -187,37 +184,42 @@ Query Options:
 
 	cliOpts = make(map[string]interface{})
 	cliOpts["log"] = "/dev/null"
-	setopt := func(name string, value interface{}) {
-		cliOpts[name] = value
-	}
+	/*
+		setopt := func(name string, value interface{}) {
+			cliOpts[name] = value
+		}
+	*/
 
 	logging.SetLevel(logging.NOTICE, "jira")
 	logging.SetLevel(logging.NOTICE, LOG_MODULE)
 
-	op := optigo.NewDirectAssignParser(map[string]interface{}{
-		"h|help": usage,
-		"version": func() {
-			fmt.Println(fmt.Sprintf("version: %s", VERSION))
-			os.Exit(0)
-		},
-		"v|verbose+": func() {
-			logging.SetLevel(logging.GetLevel(LOG_MODULE)+1, LOG_MODULE)
-		},
-		"l|log=s":         setopt,
-		"u|user=s":        setopt,
-		"endpoint=s":      setopt,
-		"q|query=s":       setopt,
-		"f|queryfields=s": setopt,
-		"t|template=s":    setopt,
-		"m|max_wrap=i":    setopt,
-		"skip_login":      setopt,
-	})
+	/*
+		op := optigo.NewDirectAssignParser(map[string]interface{}{
+			"h|help": usage,
+			"version": func() {
+				fmt.Println(fmt.Sprintf("version: %s", VERSION))
+				os.Exit(0)
+			},
+			"v|verbose+": func() {
+				logging.SetLevel(logging.GetLevel(LOG_MODULE)+1, LOG_MODULE)
+			},
+			"l|log=s":         setopt,
+			"u|user=s":        setopt,
+			"endpoint=s":      setopt,
+			"q|query=s":       setopt,
+			"f|queryfields=s": setopt,
+			"t|template=s":    setopt,
+			"m|max_wrap=i":    setopt,
+			"skip_login":      setopt,
+		})
 
-	if err := op.ProcessAll(os.Args[1:]); err != nil {
-		log.Errorf("%s", err)
-		usage(false)
-	}
-	args := op.Args
+		if err := op.ProcessAll(os.Args[1:]); err != nil {
+			log.Errorf("%s", err)
+			usage(false)
+		}
+		args := op.Args
+	*/
+	var args []string
 	f, err := os.Create(cliOpts["log"].(string))
 	if err != nil {
 		panic(err)

@@ -34,6 +34,7 @@ func (ol *oreoLogger) Printf(format string, args ...interface{}) {
 
 func main() {
 	defer resetTTY()
+	defer jiracli.HandleExit()
 
 	configDir := ".jira.d"
 	fig := figtree.NewFigTree(
@@ -54,4 +55,8 @@ func main() {
 	app := jiracli.CommandLine(fig, o)
 
 	jiraui.Run(app)
+
+	fmt.Println("")
+	fmt.Println("Kingpin app:")
+	fmt.Printf("%#v\n", app)
 }
