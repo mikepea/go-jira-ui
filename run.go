@@ -91,6 +91,7 @@ var previousPages []Navigable
 
 var ticketQueryPage *QueryPage
 var helpPage *HelpPage
+var debugPage *DebugPage
 var labelListPage *LabelListPage
 var sortOrderPage *SortOrderPage
 var passwordInputBox *PasswordInputBox
@@ -118,6 +119,9 @@ func changePage() {
 		currentPage.Create()
 	case *HelpPage:
 		log.Debugf("changePage: HelpPage %s (%p)", currentPage.Id(), currentPage)
+		currentPage.Create()
+	case *DebugPage:
+		log.Debugf("changePage: DebugPage %s (%p)", currentPage.Id(), currentPage)
 		currentPage.Create()
 	}
 }
@@ -232,6 +236,7 @@ func Run() {
 	registerEventHandlers()
 
 	helpPage = new(HelpPage)
+	debugPage = new(DebugPage)
 	commandBar = new(CommandBar)
 
 	switch command {

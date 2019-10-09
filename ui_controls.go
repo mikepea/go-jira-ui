@@ -166,6 +166,12 @@ func handleHelp() {
 	changePage()
 }
 
+func handleDebug() {
+	previousPages = append(previousPages, currentPage)
+	currentPage = debugPage
+	changePage()
+}
+
 func handleNavigateKey(e ui.Event) {
 	key := e.Data.(ui.EvtKbd).KeyStr
 	switch key {
@@ -227,6 +233,8 @@ func handleNavigateKey(e ui.Event) {
 		handlePrevTicketKey()
 	case "h":
 		handleHelp()
+	case "D":
+		handleDebug()
 	case "r":
 		handleMarkTicketKey()
 	}

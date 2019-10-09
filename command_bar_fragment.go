@@ -55,6 +55,8 @@ func handleCommand(command string) {
 		handleLabelCommand(args)
 	case action == "help":
 		handleHelp()
+	case action == "debug":
+		handleDebug()
 	case action == "watch":
 		handleWatchCommand(args)
 	case action == "vote":
