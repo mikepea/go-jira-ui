@@ -2,14 +2,19 @@ package jiraui
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"os/exec"
 	"regexp"
 	"strings"
 
+	"github.com/coryb/figtree"
+	"github.com/coryb/oreo"
 	"github.com/go-jira/jira"
+	"github.com/go-jira/jira/jiracli"
 	"github.com/mitchellh/go-wordwrap"
 	"gopkg.in/coryb/yaml.v2"
 	ui "gopkg.in/gizak/termui.v2"
@@ -158,33 +163,68 @@ func findTicketIdInString(line string) string {
 	return strings.TrimSpace(re.FindString(line))
 }
 
+func LoadConfigs(fig *figtree.FigTree, opts interface{}) {
+	_ = fig.LoadAllConfigs("config.yml", opts)
+}
+
+func NewJiraClient() *jira.Jira {
+	globals := jiracli.GlobalOptions{}
+	configDir := ".jira.d"
+	o := oreo.New()
+	o = o.WithPreCallback(func(req *http.Request) (*http.Request, error) {
+		if globals.AuthMethod() == "api-token" {
+			// need to set basic auth header with user@domain:api-token
+			token := globals.GetPass()
+			authHeader := fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", globals.Login.Value, token))))
+			req.Header.Add("Authorization", authHeader)
+		}
+		return req, nil
+	})
+
+	fig := figtree.NewFigTree(
+		figtree.WithHome(jiracli.Homedir()),
+		figtree.WithEnvPrefix("JIRA"),
+		figtree.WithConfigDir(configDir),
+	)
+	LoadConfigs(fig, &globals)
+
+	if globals.AuthMethod() == "api-token" {
+		o = o.WithCookieFile("")
+	}
+	if globals.Login.Value == "" {
+		globals.Login = globals.User
+	}
+
+	return &jira.Jira{
+		Endpoint: globals.Endpoint.Value,
+		UA:       o,
+	}
+}
+
 func runJiraQuery(query string) (interface{}, error) {
-	opts := getJiraOpts()
-	opts["query"] = query
-	c := jira.NewJira(opts["endpoint"].(string))
+	c := NewJiraClient()
 	//return c.FindIssues()
 	log.Infof("TODO: reenable c.FindIssues: %#v", c)
 	return nil, nil
 }
 
 func JiraQueryAsStrings(query string, templateName string) []string {
-	opts := getJiraOpts()
-	opts["query"] = query
-	c := jira.NewJira(opts["endpoint"].(string))
-	//data, _ := c.FindIssues()
-	log.Infof("TODO: reenable c.FindIssues: %#v", c)
-	var data interface{}
+	c := NewJiraClient()
+	opts := new(jira.SearchOptions)
+	opts.Query = query
+
+	data, err := jira.Search(c.UA, c.Endpoint, opts, jira.WithAutoPagination())
+	if err != nil {
+		//panic(err) // TODO better error handling, it's Jira that failed here.
+		log.Infof("jira.Search failed: %s", err)
+	}
+
 	buf := new(bytes.Buffer)
 	if templateName == "" {
-		templateName = "jira_ui_list"
+		//templateName = "jira_ui_list" // TODO will need to add this to jiracli.AllTemplates
+		templateName = "list"
 	}
-	//template := c.GetTemplate(templateName)
-	template := ""
-	if template == "" {
-		template = default_list_template
-	}
-	//jira.RunTemplate(template, data, buf)
-	log.Infof("TODO: reenable c.RunTemplate: %#v, %#v", data, buf)
+	jiracli.RunTemplate(templateName, data, buf)
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
