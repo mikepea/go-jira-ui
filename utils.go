@@ -240,18 +240,8 @@ func JiraTicketAsStrings(data interface{}, templateName string) []string {
 }
 
 func HelpTextAsStrings(data interface{}, templateName string) []string {
-	opts := getJiraOpts()
-	c := jira.NewJira(opts["endpoint"].(string))
 	buf := new(bytes.Buffer)
-	//template := c.GetTemplate(templateName)
-	log.Infof("TODO: reenable c.GetTemplate: %#v", c)
-	template := ""
-	if template == "" {
-		template = default_help_template
-	}
-	log.Debugf("HelpTextAsStrings: template = %q", template)
-	//jira.RunTemplate(template, data, buf)
-	log.Infof("TODO: reenable c.RunTemplate: %#v, %#v", data, buf)
+	jiracli.RunTemplate(templateName, data, buf)
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
