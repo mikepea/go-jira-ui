@@ -229,26 +229,13 @@ func JiraQueryAsStrings(query string, templateName string) []string {
 }
 
 func FetchJiraTicket(id string) (interface{}, error) {
-	opts := getJiraOpts()
-	c := jira.NewJira(opts["endpoint"].(string))
-	//return c.ViewIssue(id)
-	log.Infof("TODO: reenable c.ViewIssue: %#v", c)
-	return nil, nil
+	c := NewJiraClient()
+	return c.GetIssue(id, nil)
 }
 
 func JiraTicketAsStrings(data interface{}, templateName string) []string {
-	opts := getJiraOpts()
-	c := jira.NewJira(opts["endpoint"].(string))
 	buf := new(bytes.Buffer)
-	//template := c.GetTemplate(templateName)
-	log.Infof("TODO: reenable c.GetTemplate: %#v", c)
-	template := ""
-	log.Debugf("JiraTicketsAsStrings: template = %q", template)
-	if template == "" {
-		template = strings.Replace(default_view_template, "ENDPOINT", opts["endpoint"].(string), 1)
-	}
-	//jira.RunTemplate(template, data, buf)
-	log.Infof("TODO: reenable c.RunTemplate: %#v, %#v", data, buf)
+	jiracli.RunTemplate(templateName, data, buf)
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")
 }
 
