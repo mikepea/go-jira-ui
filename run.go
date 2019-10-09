@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/op/go-logging"
-	kingpin "gopkg.in/alecthomas/kingpin.v2"
 	ui "gopkg.in/gizak/termui.v2"
 )
 
@@ -132,7 +131,7 @@ var (
 
 var cliOpts map[string]interface{}
 
-func Run(app *kingpin.Application) {
+func Run() {
 
 	usage := func(ok bool) {
 		printer := fmt.Printf
