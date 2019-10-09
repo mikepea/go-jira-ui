@@ -337,34 +337,6 @@ func loadConfigs(opts map[string]interface{}) {
 	}
 }
 
-func doLogin(opts map[string]interface{}) error {
-	c := jira.NewJira(opts["endpoint"].(string))
-	fmt.Printf("Logging in as %s:\n", opts["user"])
-	//return c.CmdLogin()
-	log.Infof("TODO: reenable c.CmdLogin: %#v", c)
-	return nil
-}
-
-func ensureLoggedIntoJira() error {
-	homeDir := os.Getenv("HOME")
-	opts := getJiraOpts()
-	testSessionQuery := fmt.Sprintf("reporter = %s", opts["user"])
-	if _, err := os.Stat(fmt.Sprintf("%s/.jira.d/cookies.js", homeDir)); err != nil {
-		return doLogin(opts)
-		//} else if data, err := runJiraQuery(testSessionQuery); err != nil {
-	} else if _, err := runJiraQuery(testSessionQuery); err != nil {
-		return doLogin(opts)
-		/*
-			} else if val, ok := data.(map[string]interface{})["errorMessages"]; ok {
-				if len(val.([]interface{})) > 0 {
-					return doLogin(opts)
-				}
-		*/
-	}
-	log.Infof("TODO: refactor ensureLoggedIntoJira")
-	return nil
-}
-
 func getJiraOpts() map[string]interface{} {
 	user := os.Getenv("USER")
 	home := os.Getenv("HOME")
