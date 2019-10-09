@@ -160,7 +160,6 @@ General Options:
   -h --help           Show this usage
   -u --user=USER      Username to use for authenticaion
   -v --verbose        Increase output logging
-  --skiplogin         Skip the login check. You must have a valid session token (eg via 'jira login')
   --version           Print version
 
 Ticket View Options:
@@ -210,7 +209,6 @@ Query Options:
 			"f|queryfields=s": setopt,
 			"t|template=s":    setopt,
 			"m|max_wrap=i":    setopt,
-			"skip_login":      setopt,
 		})
 
 		if err := op.ProcessAll(os.Args[1:]); err != nil {
@@ -245,14 +243,6 @@ Query Options:
 		if len(args) < count {
 			log.Errorf("Not enough arguments. %d required, %d provided", count, len(args))
 			usage(false)
-		}
-	}
-
-	if val, ok := cliOpts["skip_login"]; !ok || !val.(bool) {
-		err = ensureLoggedIntoJira()
-		if err != nil {
-			log.Error("Login failed. Aborting")
-			os.Exit(2)
 		}
 	}
 
