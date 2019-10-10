@@ -220,8 +220,7 @@ func JiraQueryAsStrings(query string, templateName string) []string {
 
 	buf := new(bytes.Buffer)
 	if templateName == "" {
-		//templateName = "jira_ui_list" // TODO will need to add this to jiracli.AllTemplates
-		templateName = "list"
+		templateName = "jira_ui_list"
 	}
 	jiracli.RunTemplate(templateName, data, buf)
 	return strings.Split(strings.TrimSpace(buf.String()), "\n")

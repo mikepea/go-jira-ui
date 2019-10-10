@@ -5,15 +5,15 @@ import (
 )
 
 func init() {
-	jiracli.AllTemplates["jira_ui_list"] = default_list_template
+	jiracli.AllTemplates["jira_ui_list"] = default_list_template_new
 	jiracli.AllTemplates["jira_ui_view"] = default_view_template
 	jiracli.AllTemplates["jira_ui_help"] = default_help_template
 }
 
 const (
-	default_list_template = `{{ range .issues }}[{{ .key | printf "%-18s"}}](fg-red)  [{{ if .fields.assignee }}{{ .fields.assignee.name | printf "%-10s" }}{{else}}{{"Unassigned"| printf "%-10s" }}{{end}} ](fg-blue) [{{ .fields.status.name | printf "%-12s"}}](fg-blue) [{{ dateFormat "2006-01-02" .fields.created }}](fg-blue)/[{{ age .fields.updated | printf "%-15s" }}](fg-green)  {{ .fields.summary | printf "%-75s"}}
-{{ end }}`
-	default_view_template = `
+	default_list_template     = "{{ range .issues }}[{{ .key | printf \"%-18s\"}}](fg-green){{   [{{ if .fields.assignee }}{{ .fields.assignee.name | printf \"%-10s\" }}{{else}}{{\"Unassigned\"| printf \"%-10s\" }}{{end}} ](fg-blue) [{{ .fields.status.name | printf \"%-12s\"}}](fg-blue) [{{ dateFormat \"2006-01-02\" .fields.created }}](fg-blue)/[{{ age .fields.updated | printf \"%-15s\" }}](fg-green)  {{ .fields.summary | printf \"%-75s\"}}\n{{ end }}"
+	default_list_template_new = "{{ range .issues }}[{{ .key | printf \"%-18s\"}}](fg-green)  [{{ if .fields.assignee }}{{ .fields.assignee.name | printf \"%-10s\" }}{{else}}{{\"Unassigned\"| printf \"%-10s\" }}{{end}} ](fg-blue) [{{ .fields.status.name | printf \"%-12s\"}}](fg-blue) {{ .fields.summary | printf \"%-75s\"}}\n{{ end }}"
+	default_view_template     = `
 issue: [{{ .key }}](fg-red)
 summary: [{{ .fields.summary }}](fg-blue)
 
