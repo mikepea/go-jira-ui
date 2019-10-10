@@ -70,11 +70,11 @@ func (p *TicketListPage) NextLine(n int) {
 func (p *TicketListPage) SelectItem() {
 	if p.RankingTicketId != "" {
 		log.Debugf("Setting Rank for %s", p.RankingTicketId)
-		log.Info("TODO: Reenable RANKAFTER")
+		log.Infof("TODO: Reenable RANKAFTER")
 		//order := jira.RANKAFTER
 		var targetId string
 		if p.uiList.Cursor == 0 {
-			log.Info("TODO: Reenable RANKBEFORE")
+			log.Infof("TODO: Reenable RANKBEFORE")
 			//order = jira.RANKBEFORE
 			targetId = findTicketIdInString(p.cachedResults[p.uiList.Cursor+1])
 		} else {

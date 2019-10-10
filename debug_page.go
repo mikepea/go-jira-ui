@@ -65,7 +65,8 @@ func (p *DebugPage) Create() {
 		p.commandBar = commandBar
 	}
 	if len(p.cachedResults) == 0 {
-		p.cachedResults = HelpTextAsStrings(nil, "jira_ui_help")
+		// logBuffer contains output of all log.* calls
+		p.cachedResults = logBuffer
 	}
 	ls.Items = p.cachedResults
 	ls.ItemFgColor = ui.ColorYellow

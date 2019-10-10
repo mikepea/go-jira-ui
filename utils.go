@@ -215,8 +215,7 @@ func JiraQueryAsStrings(query string, templateName string) []string {
 
 	data, err := jira.Search(c.UA, c.Endpoint, opts, jira.WithAutoPagination())
 	if err != nil {
-		//panic(err) // TODO better error handling, it's Jira that failed here.
-		log.Infof("jira.Search failed: %s", err)
+		log.Errorf("jira.Search failed: %s", err)
 	}
 
 	buf := new(bytes.Buffer)

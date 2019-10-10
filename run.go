@@ -4,11 +4,34 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/op/go-logging"
 	ui "gopkg.in/gizak/termui.v2"
 )
 
 var exitNow = false
+
+var logBuffer []string
+
+type Logger interface {
+	Errorf(format string, args ...interface{})
+	Infof(format string, args ...interface{})
+	Debugf(format string, args ...interface{})
+}
+
+type ourLogger struct{}
+
+func (*ourLogger) Debugf(format string, args ...interface{}) {
+	logBuffer = append(logBuffer, fmt.Sprintf(format, args))
+}
+
+func (*ourLogger) Infof(format string, args ...interface{}) {
+	logBuffer = append(logBuffer, fmt.Sprintf(format, args))
+}
+
+func (*ourLogger) Errorf(format string, args ...interface{}) {
+	logBuffer = append(logBuffer, fmt.Sprintf(format, args))
+}
+
+var log Logger = new(ourLogger)
 
 type EditPager interface {
 	DeleteRuneBackward()
@@ -126,13 +149,6 @@ func changePage() {
 	}
 }
 
-const LOG_MODULE = "jiraui"
-
-var (
-	log    = logging.MustGetLogger(LOG_MODULE)
-	format = "%{color}%{time:2006-01-02T15:04:05.000Z07:00} %{level:-5s} [%{shortfile}]%{color:reset} %{message}"
-)
-
 var cliOpts map[string]interface{}
 
 func Run() {
@@ -170,9 +186,6 @@ func Run() {
 		}
 	*/
 
-	logging.SetLevel(logging.NOTICE, "jira")
-	logging.SetLevel(logging.NOTICE, LOG_MODULE)
-
 	/*
 		op := optigo.NewDirectAssignParser(map[string]interface{}{
 			"h|help": usage,
@@ -204,8 +217,6 @@ func Run() {
 		panic(err)
 	}
 	defer f.Close()
-	backend := logging.NewLogBackend(f, "", 0)
-	logging.SetBackend(backend)
 
 	var command string
 	if len(args) > 0 {
