@@ -5,7 +5,7 @@ ARG ALPINE_VER=3.12
 # COPY AND BUILD SOURCE
 FROM golang:${GO_VER}-alpine${ALPINE_VER} AS builder
 COPY . /src
-RUN cd /src/jira-ui && go build -o /tmp/jira main.go
+RUN cd /src/jira-ui && go build -o /tmp/jira-ui main.go
 
 ########## ########## ##########
 
@@ -13,7 +13,7 @@ RUN cd /src/jira-ui && go build -o /tmp/jira main.go
 FROM alpine:${ALPINE_VER}
 
 # COPY ARTIFACT FROM BUILDER CONTAINER
-COPY --from=builder /tmp/jira /usr/local/bin/jira
+COPY --from=builder /tmp/jira-ui /usr/local/bin/jira-ui
 
 # INSTALL EDITORS
 RUN apk add --no-cache vim nano
@@ -24,4 +24,4 @@ RUN adduser -D jira && \
     chown -R jira:jira /home/jira
 USER jira
 
-ENTRYPOINT ["/usr/local/bin/jira"]
+ENTRYPOINT ["/usr/local/bin/jira-ui"]
