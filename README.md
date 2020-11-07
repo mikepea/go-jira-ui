@@ -30,6 +30,12 @@ This should be all that's needed to get going.
     #   export PATH=$PATH:$GOBIN
     go get -v github.com/mikepea/go-jira-ui/jira-ui
 
+### Dockerised use
+
+```sh
+docker run --rm -it -v /path/to/.jira.d:/config pmjohann/go-jira-ui
+```
+
 ### Features
 
 * Supply your own JQL queries to view
